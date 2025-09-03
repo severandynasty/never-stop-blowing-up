@@ -1,0 +1,25 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <h1><input name="name" type="text" value="{{actor.name}}" /></h1>
+  </header>
+
+  <section class="sheet-body">
+    <h2>Stats</h2>
+    {{#each system.stats as |value key|}}
+      <div class="field">
+        <label>{{key}}</label>
+        <input type="number" name="system.stats.{{key}}" value="{{value}}" />
+      </div>
+    {{/each}}
+
+    <h2>HP & Boom Level</h2>
+    <div class="field">
+      <label>HP</label>
+      <input type="number" name="system.hp" value="{{system.hp}}" />
+    </div>
+    <div class="field">
+      <label>Boom Level</label>
+      <input type="number" name="system.boomLevel" value="{{system.boomLevel}}" />
+    </div>
+  </section>
+</form>

@@ -1,0 +1,12 @@
+{
+  "id": "never-stop-blowing-up",
+  "title": "Never Stop Blowing Up",
+  "description": "A custom system based on Kids on Bikes",
+  "version": "1.0.0",
+  "esmodules": ["scripts/nsbu.js"],
+  "styles": ["styles/styles.css"],
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12"
+  }
+}

@@ -1,0 +1,12 @@
+.sheet-body {
+  padding: 1em;
+}
+
+.field {
+  margin-bottom: 0.5em;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+}

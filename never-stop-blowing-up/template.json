@@ -1,0 +1,19 @@
+{
+  "Actor": {
+    "types": ["character"],
+    "character": {
+      "system": {
+        "stats": {
+          "grit": 1,
+          "fight": 1,
+          "flight": 1,
+          "brains": 1,
+          "charm": 1,
+          "brawn": 1
+        },
+        "hp": 10,
+        "boomLevel": 1
+      }
+    }
+  }
+}
