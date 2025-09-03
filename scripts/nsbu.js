@@ -9,11 +9,13 @@ class NSBUActorSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
-    return this.object.update(formData);
+    await this.actor.update(formData);
   }
 }
 
 Hooks.once("init", () => {
+  CONFIG.Actor.sheetClasses["character"] = {};
+  Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("never-stop-blowing-up", NSBUActorSheet, {
     types: ["character"],
     makeDefault: true
