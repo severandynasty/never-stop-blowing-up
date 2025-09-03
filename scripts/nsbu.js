@@ -1,6 +1,6 @@
 class NSBUActorSheet extends ActorSheet {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["never-stop-blowing-up", "sheet", "actor"],
       template: "systems/never-stop-blowing-up/sheet.html",
       width: 600,
