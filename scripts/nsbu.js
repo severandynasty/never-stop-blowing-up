@@ -9,14 +9,13 @@ class NSBUActorSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
-    // Save form data to the actor
-    await this.object.update(formData);
+    return this.object.update(formData);
   }
 }
 
 Hooks.once("init", () => {
   Actors.registerSheet("never-stop-blowing-up", NSBUActorSheet, {
-    types: ["character", "npc", "vehicle"],
+    types: ["character"],
     makeDefault: true
   });
 });

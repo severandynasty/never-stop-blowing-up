@@ -4,7 +4,7 @@
   "description": "A custom system for explosive action and chaotic gameplay.",
   "version": "1.0.0",
   "author": "Blake Keller",
-  "esmodules": ["scripts/nbsu.js"],
+  "esmodules": ["scripts/nsbu.js"],
   "styles": ["styles.css"],
   "system": {
     "template": "template.json"
