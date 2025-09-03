@@ -1,0 +1,22 @@
+class NSBUActorSheet extends ActorSheet {
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "actor"],
+      template: "systems/never-stop-blowing-up/sheet.html",
+      width: 600,
+      height: 400
+    });
+  }
+
+  async _updateObject(event, formData) {
+    // Save form data to the actor
+    await this.object.update(formData);
+  }
+}
+
+Hooks.once("init", () => {
+  Actors.registerSheet("never-stop-blowing-up", NSBUActorSheet, {
+    types: ["character", "npc", "vehicle"],
+    makeDefault: true
+  });
+});

@@ -1,0 +1,19 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <header class="sheet-header">
+    <h1>
+      <input name="name" type="text" value="{{actor.name}}" />
+    </h1>
+  </header>
+
+  <section class="sheet-body">
+    <div class="field">
+      <label>Hit Points</label>
+      <input type="number" name="system.hp" value="{{system.hp}}" />
+    </div>
+
+    <div class="field">
+      <label>Boom Level</label>
+      <input type="number" name="system.boomLevel" value="{{system.boomLevel}}" />
+    </div>
+  </section>
+</form>

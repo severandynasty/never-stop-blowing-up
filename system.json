@@ -1,0 +1,14 @@
+{
+  "id": "never-stop-blowing-up",
+  "title": "Never Stop Blowing Up",
+  "description": "A custom system for explosive action and chaotic gameplay.",
+  "version": "1.0.0",
+  "author": "Blake Keller",
+  "esmodules": ["scripts/nbsu.js"],
+  "styles": ["styles.css"],
+  "system": {
+    "template": "template.json"
+  },
+  "minimumCoreVersion": "12",
+  "compatibleCoreVersion": "12"
+}

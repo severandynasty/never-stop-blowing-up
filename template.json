@@ -1,0 +1,14 @@
+{
+  "Actor": {
+    "types": ["character"],
+    "character": {
+      "system": {
+        "hp": 10,
+        "boomLevel": 2,
+        "skills": {
+          "explosives": 3
+        }
+      }
+    }
+  }
+}
