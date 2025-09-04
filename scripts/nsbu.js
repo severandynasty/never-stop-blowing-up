@@ -11,6 +11,18 @@ class NSBUActorSheet extends ActorSheet {
   async _updateObject(event, formData) {
     await this.actor.update(formData);
   }
+
+  activateListeners(html) {
+    super.activateListeners(html);
+    // Auto-save on input change or blur
+    html.find('input, select, textarea').on('change blur', async (event) => {
+      const form = html.find('form')[0];
+      if (!form) return;
+      const formData = new FormData(form);
+      const data = foundry.utils.expandObject(Object.fromEntries(formData.entries()));
+      await this._updateObject(event, data);
+    });
+  }
 }
 
 Hooks.once("init", () => {
