@@ -1,1 +1,2 @@
-{"_id":"test-smokin","name":"Smokin","type":"Item","img":"icons/svg/book.svg","system":{"description":"Test: Lower the DC of a Hot Check by 3 when making a first impression."},"flags":{},"effects":[],"folder":null,"sort":0}
+{"_id":"test-smokin","name":"Smokin'","type":"Item","img":"icons/svg/book.svg","system":{"description":"Test: Lower the DC of a Hot Check by 3 when making a first impression."},"flags":{},"effects":[],"folder":null,"sort":0}
+{"_id":"test-burglar","name":"Burglar","type":"Item","img":"icons/svg/book.svg","system":{"description":"Test: Lower the DC of a Sneak Check by 3 when entering a protected location."},"flags":{},"effects":[],"folder":null,"sort":1}
