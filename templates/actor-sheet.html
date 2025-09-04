@@ -41,27 +41,12 @@
         <div class="injury-circles">
           {{#if system.injuries}}
             {{#each system.injuries as |injury idx|}}
-              <label class="injury-checkbox">
-                <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
-                Injury {{#if (eq idx 0)}}1{{/if}}{{#if (eq idx 1)}}2{{/if}}{{#if (eq idx 2)}}3{{/if}}
-              </label>
+              <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
             {{/each}}
           {{else}}
-            <input type="hidden" name="system.injuries.0" value="false" />
-            <label class="injury-checkbox">
-              <input type="checkbox" name="system.injuries.0" value="true" />
-              Injury 1
-            </label>
-            <input type="hidden" name="system.injuries.1" value="false" />
-            <label class="injury-checkbox">
-              <input type="checkbox" name="system.injuries.1" value="true" />
-              Injury 2
-            </label>
-            <input type="hidden" name="system.injuries.2" value="false" />
-            <label class="injury-checkbox">
-              <input type="checkbox" name="system.injuries.2" value="true" />
-              Injury 3
-            </label>
+            <input type="checkbox" name="system.injuries.0" value="true" />
+            <input type="checkbox" name="system.injuries.1" value="true" />
+            <input type="checkbox" name="system.injuries.2" value="true" />
           {{/if}}
         </div>
       </div>
@@ -81,14 +66,17 @@
       <div class="token-circles">
         {{#if system.turboTokens}}
           {{#each system.turboTokens as |token idx|}}
-            <input type="hidden" name="system.turboTokens.{{idx}}" value="false" />
             <input type="checkbox" name="system.turboTokens.{{idx}}" value="true" {{#if token}}checked{{/if}} />
           {{/each}}
         {{else}}
-          {{#each [0,1,2,3,4,5,6,7] as |idx|}}
-            <input type="hidden" name="system.turboTokens.{{idx}}" value="false" />
-            <input type="checkbox" name="system.turboTokens.{{idx}}" value="true" />
-          {{/each}}
+          <input type="checkbox" name="system.turboTokens.0" value="true" />
+          <input type="checkbox" name="system.turboTokens.1" value="true" />
+          <input type="checkbox" name="system.turboTokens.2" value="true" />
+          <input type="checkbox" name="system.turboTokens.3" value="true" />
+          <input type="checkbox" name="system.turboTokens.4" value="true" />
+          <input type="checkbox" name="system.turboTokens.5" value="true" />
+          <input type="checkbox" name="system.turboTokens.6" value="true" />
+          <input type="checkbox" name="system.turboTokens.7" value="true" />
         {{/if}}
       </div>
     </div>
