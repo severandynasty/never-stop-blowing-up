@@ -23,7 +23,11 @@ function getActorDefaults(type) {
 Hooks.on('preCreateActor', (actor, data, options, userId) => {
   const type = data.type;
   const defaults = getActorDefaults(type);
+  console.log('[NSBU] preCreateActor type:', type);
+  console.log('[NSBU] Defaults:', defaults);
+  console.log('[NSBU] Incoming data.system:', data.system);
   data.system = foundry.utils.mergeObject(defaults, data.system ?? {}, { inplace: false });
+  console.log('[NSBU] Merged data.system:', data.system);
 });
 class NSBUActorSheet extends ActorSheet {
   static get defaultOptions() {
@@ -57,8 +61,9 @@ class NSBUActorSheet extends ActorSheet {
         ref = ref[keys[i]];
       }
       ref[keys[keys.length - 1]] = value;
-  await this.actor.update(updateData);
-  this.render();
+      console.log('[NSBU] Auto-save field:', name, 'Value:', value, 'UpdateData:', updateData);
+      await this.actor.update(updateData);
+      this.render();
     });
   }
 }
