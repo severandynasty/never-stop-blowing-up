@@ -1,3 +1,30 @@
+// Helper to get defaults for an actor type
+function getActorDefaults(type) {
+  const model = game.system.model?.Actor?.[type]?.system;
+  if (!model) return {};
+  // Recursively extract default values
+  function extractDefaults(obj) {
+    if (typeof obj !== 'object' || obj === null) return obj;
+    if (Array.isArray(obj)) return obj.slice();
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value && typeof value === 'object' && 'default' in value) {
+        result[key] = value.default;
+      } else {
+        result[key] = extractDefaults(value);
+      }
+    }
+    return result;
+  }
+  return extractDefaults(model);
+}
+
+// Initialize new actors with defaults
+Hooks.on('preCreateActor', (actor, data, options, userId) => {
+  const type = data.type;
+  const defaults = getActorDefaults(type);
+  data.system = foundry.utils.mergeObject(defaults, data.system ?? {}, { inplace: false });
+});
 class NSBUActorSheet extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -30,7 +57,8 @@ class NSBUActorSheet extends ActorSheet {
         ref = ref[keys[i]];
       }
       ref[keys[keys.length - 1]] = value;
-      await this.actor.update(updateData);
+  await this.actor.update(updateData);
+  this.render();
     });
   }
 }
