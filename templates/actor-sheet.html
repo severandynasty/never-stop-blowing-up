@@ -37,9 +37,12 @@
 
     <div class="nsbu-injuries">
       <label>Injuries</label>
-      <div class="injury-circles">
-        {{#each system.injuries as |injury idx|}}
-          <input type="checkbox" name="system.injuries.{{idx}}" {{#if injury}}checked{{/if}} />
+      <div class="injury-radio-group">
+        {{#each [0,1,2,3] as |level|}}
+          <label class="injury-radio">
+            <input type="radio" name="system.injuryLevel" value="{{level}}" {{#if (eq system.injuryLevel level)}}checked{{/if}} />
+            {{level}}
+          </label>
         {{/each}}
       </div>
     </div>
