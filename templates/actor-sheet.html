@@ -38,12 +38,22 @@
     <div class="nsbu-injuries">
       <label>Injuries</label>
       <div class="injury-radio-group">
-        {{#each [0,1,2,3] as |level|}}
-          <label class="injury-radio">
-            <input type="radio" name="system.injuryLevel" value="{{level}}" {{#if (eq system.injuryLevel level)}}checked{{/if}} />
-            {{level}}
-          </label>
-        {{/each}}
+        <label class="injury-radio">
+          <input type="radio" name="system.injuryLevel" value="0" {{#if (eq system.injuryLevel 0)}}checked{{/if}} />
+          0
+        </label>
+        <label class="injury-radio">
+          <input type="radio" name="system.injuryLevel" value="1" {{#if (eq system.injuryLevel 1)}}checked{{/if}} />
+          1
+        </label>
+        <label class="injury-radio">
+          <input type="radio" name="system.injuryLevel" value="2" {{#if (eq system.injuryLevel 2)}}checked{{/if}} />
+          2
+        </label>
+        <label class="injury-radio">
+          <input type="radio" name="system.injuryLevel" value="3" {{#if (eq system.injuryLevel 3)}}checked{{/if}} />
+          3
+        </label>
       </div>
     </div>
 
@@ -59,9 +69,20 @@
     <div class="nsbu-turbo-tokens">
       <label>Turbo Token Tracker</label>
       <div class="token-circles">
-        {{#each system.turboTokens as |token idx|}}
-          <input type="checkbox" name="system.turboTokens.{{idx}}" {{#if token}}checked{{/if}} />
-        {{/each}}
+        {{#if system.turboTokens}}
+          {{#each system.turboTokens as |token idx|}}
+            <input type="checkbox" name="system.turboTokens.{{idx}}" {{#if token}}checked{{/if}} />
+          {{/each}}
+        {{else}}
+          <input type="checkbox" name="system.turboTokens.0" />
+          <input type="checkbox" name="system.turboTokens.1" />
+          <input type="checkbox" name="system.turboTokens.2" />
+          <input type="checkbox" name="system.turboTokens.3" />
+          <input type="checkbox" name="system.turboTokens.4" />
+          <input type="checkbox" name="system.turboTokens.5" />
+          <input type="checkbox" name="system.turboTokens.6" />
+          <input type="checkbox" name="system.turboTokens.7" />
+        {{/if}}
       </div>
     </div>
 
