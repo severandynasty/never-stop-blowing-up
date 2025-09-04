@@ -32,8 +32,18 @@ Hooks.on('preCreateActor', (actor, data, options, userId) => {
   console.log('[NSBU] preCreateActor type:', type);
   console.log('[NSBU] Defaults:', defaults);
   console.log('[NSBU] Incoming data.system:', data.system);
-  data.system = foundry.utils.mergeObject(defaults, data.system ?? {}, { inplace: false });
-  console.log('[NSBU] Merged data.system:', data.system);
+  // If data.system has a nested 'system' property, flatten it
+  let incoming = data.system ?? {};
+  if (incoming.system && typeof incoming.system === 'object') {
+    incoming = Object.assign({}, incoming, incoming.system);
+    delete incoming.system;
+  }
+  // Merge defaults and incoming data
+  data.system = foundry.utils.mergeObject(defaults, incoming, { inplace: false });
+  // Ensure no nulls for hp, boomLevel, etc.
+  if (data.system.hp == null) data.system.hp = defaults.hp;
+  if (data.system.boomLevel == null) data.system.boomLevel = defaults.boomLevel;
+  console.log('[NSBU] Final merged data.system:', data.system);
 });
 class NSBUActorSheet extends ActorSheet {
   static get defaultOptions() {
