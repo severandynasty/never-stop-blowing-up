@@ -48,8 +48,9 @@ Hooks.on('preCreateActor', (actor, data, options, userId) => {
 class NSBUActorSheet extends ActorSheet {
   getData(options) {
     const data = super.getData(options);
-    // Ensure system is always present and not undefined
     data.system = this.actor.system ?? {};
+    // Include owned items for abilities display
+    data.items = this.actor.items ? this.actor.items.contents : [];
     return data;
   }
   static get defaultOptions() {
@@ -185,7 +186,12 @@ Hooks.once("init", () => {
     makeDefault: true
   });
 
-  CONFIG.Item.sheetClass = NSBUItemSheet;
+  // Register the custom item sheet for all item types
+  Items.unregisterSheet("core", ItemSheet);
+  Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
+    types: ["explosive", "gear", "upgrade", "Item"],
+    makeDefault: true
+  });
 });
 
 Hooks.once('ready', async function() {
