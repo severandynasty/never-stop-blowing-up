@@ -61,9 +61,11 @@ class NSBUActorSheet extends ActorSheet {
         ref = ref[keys[i]];
       }
       ref[keys[keys.length - 1]] = value;
-      console.log('[NSBU] Auto-save field:', name, 'Value:', value, 'UpdateData:', updateData);
-      await this.actor.update(updateData);
-      this.render();
+  console.log('[NSBU] Auto-save field:', name, 'Value:', value, 'UpdateData:', updateData);
+  // Merge update into current actor data
+  const merged = foundry.utils.mergeObject(this.actor.toObject(), updateData, { inplace: false });
+  await this.actor.update(merged.system);
+  this.render();
     });
   }
 }
