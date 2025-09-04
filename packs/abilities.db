@@ -1,12 +1,12 @@
-{"name":"Smokin'","type":"ability","img":"icons/svg/book.svg","system":{"description":"You are always cool under pressure. Once per session, you may reroll any failed roll related to keeping your composure."}}
-{"name":"Burglar","type":"ability","img":"icons/svg/book.svg","system":{"description":"You are skilled at breaking and entering. Once per session, you may automatically succeed at bypassing a lock or security system."}}
-{"name":"Connected","type":"ability","img":"icons/svg/book.svg","system":{"description":"You know people everywhere. Once per session, you may call in a favor from a contact in any location."}}
-{"name":"Driver","type":"ability","img":"icons/svg/book.svg","system":{"description":"You are an expert behind the wheel. Once per session, you may perform an impossible driving maneuver without rolling."}}
-{"name":"Explosives Expert","type":"ability","img":"icons/svg/book.svg","system":{"description":"You know your way around bombs. Once per session, you may defuse or set an explosive device without error."}}
-{"name":"Face","type":"ability","img":"icons/svg/book.svg","system":{"description":"You are a master of persuasion. Once per session, you may convince an NPC to do something against their better judgment."}}
-{"name":"Fighter","type":"ability","img":"icons/svg/book.svg","system":{"description":"You are trained in combat. Once per session, you may win a fight against a single opponent without rolling."}}
-{"name":"Hacker","type":"ability","img":"icons/svg/book.svg","system":{"description":"You can break into any computer system. Once per session, you may access secure digital information instantly."}}
-{"name":"Medic","type":"ability","img":"icons/svg/book.svg","system":{"description":"You can patch up wounds quickly. Once per session, you may heal an injury or stabilize a dying character."}}
-{"name":"Sneak","type":"ability","img":"icons/svg/book.svg","system":{"description":"You move unseen and unheard. Once per session, you may avoid detection in a dangerous situation."}}
-{"name":"Tough","type":"ability","img":"icons/svg/book.svg","system":{"description":"You can take a hit and keep going. Once per session, you may ignore the effects of an injury for one scene."}}
-{"name":"Wheelman","type":"ability","img":"icons/svg/book.svg","system":{"description":"You are the getaway specialist. Once per session, you may escape from pursuit without rolling."}}
+{"name":"Smokin'","type":"Item","img":"icons/svg/book.svg","system":{"description":"You are always cool under pressure. Once per session, you may reroll any failed roll related to keeping your composure."}}
+{"name":"Burglar","type":"Item","img":"icons/svg/book.svg","system":{"description":"You are skilled at breaking and entering. Once per session, you may automatically succeed at bypassing a lock or security system."}}
+{"name":"Connected","type":"Item","img":"icons/svg/book.svg","system":{"description":"You know people everywhere. Once per session, you may call in a favor from a contact in any location."}}
+{"name":"Driver","type":"Item","img":"icons/svg/book.svg","system":{"description":"You are an expert behind the wheel. Once per session, you may perform an impossible driving maneuver without rolling."}}
+{"name":"Explosives Expert","type":"Item","img":"icons/svg/book.svg","system":{"description":"You know your way around bombs. Once per session, you may defuse or set an explosive device without error."}}
+{"name":"Face","type":"Item","img":"icons/svg/book.svg","system":{"description":"You are a master of persuasion. Once per session, you may convince an NPC to do something against their better judgment."}}
+{"name":"Fighter","type":"Item","img":"icons/svg/book.svg","system":{"description":"You are trained in combat. Once per session, you may win a fight against a single opponent without rolling."}}
+{"name":"Hacker","type":"Item","img":"icons/svg/book.svg","system":{"description":"You can break into any computer system. Once per session, you may access secure digital information instantly."}}
+{"name":"Medic","type":"Item","img":"icons/svg/book.svg","system":{"description":"You can patch up wounds quickly. Once per session, you may heal an injury or stabilize a dying character."}}
+{"name":"Sneak","type":"Item","img":"icons/svg/book.svg","system":{"description":"You move unseen and unheard. Once per session, you may avoid detection in a dangerous situation."}}
+{"name":"Tough","type":"Item","img":"icons/svg/book.svg","system":{"description":"You can take a hit and keep going. Once per session, you may ignore the effects of an injury for one scene."}}
+{"name":"Wheelman","type":"Item","img":"icons/svg/book.svg","system":{"description":"You are the getaway specialist. Once per session, you may escape from pursuit without rolling."}}
