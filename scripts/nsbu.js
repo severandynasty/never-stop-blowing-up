@@ -97,6 +97,22 @@ class NSBUActorSheet extends ActorSheet {
   }
 }
 
+class NSBUItemSheet extends ItemSheet {
+  getData(options) {
+    const data = super.getData(options);
+    data.system = this.item.system ?? {};
+    return data;
+  }
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "item"],
+      template: "systems/never-stop-blowing-up/templates/item-sheet.html",
+      width: 400,
+      height: 300
+    });
+  }
+}
+
 Hooks.once("init", () => {
   // Define the system model to match template.json
   game.system.model = {
@@ -168,6 +184,8 @@ Hooks.once("init", () => {
     types: ["character", "npc", "vehicle"],
     makeDefault: true
   });
+
+  CONFIG.Item.sheetClass = NSBUItemSheet;
 });
 
 Hooks.once('ready', async function() {
