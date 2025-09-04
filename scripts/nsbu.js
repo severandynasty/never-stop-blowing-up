@@ -71,11 +71,18 @@ class NSBUActorSheet extends ActorSheet {
       const input = event.currentTarget;
       const name = input.name;
       let value = input.value;
-      // Convert to number if type is number
-      if (input.type === 'number') value = Number(value);
+      // Handle checkboxes: unchecked boxes are not submitted, so use hidden fields
+      if (input.type === 'checkbox') {
+        value = input.checked ? true : false;
+      } else if (input.type === 'number') {
+        value = Number(value);
+      } else if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
       // Build update data object
       const updateData = {};
-      // Support nested property names (e.g., system.stats.grit)
       const keys = name.split('.');
       let ref = updateData;
       for (let i = 0; i < keys.length - 1; i++) {
@@ -83,10 +90,9 @@ class NSBUActorSheet extends ActorSheet {
         ref = ref[keys[i]];
       }
       ref[keys[keys.length - 1]] = value;
-  console.log('[NSBU] Auto-save field:', name, 'Value:', value, 'UpdateData:', updateData);
-  // Update only the changed field
-  await this.actor.update(updateData);
-  this.render();
+      console.log('[NSBU] Auto-save field:', name, 'Value:', value, 'UpdateData:', updateData);
+      await this.actor.update(updateData);
+      this.render();
     });
   }
 }

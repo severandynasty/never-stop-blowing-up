@@ -39,13 +39,21 @@
       <label>Injuries</label>
       <div class="injury-radio-group">
         <div class="injury-circles">
-          {{#each [0,1,2] as |idx|}}
-            <input type="hidden" name="system.injuries.{{idx}}" value="false" />
-            <label class="injury-checkbox">
-              <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if system.injuries.[idx]}}checked{{/if}} />
-              Injury {{add idx 1}}
-            </label>
-          {{/each}}
+          <input type="hidden" name="system.injuries.0" value="false" />
+          <label class="injury-checkbox">
+            <input type="checkbox" name="system.injuries.0" value="true" {{#if system.injuries.0}}checked{{/if}} />
+            Injury 1
+          </label>
+          <input type="hidden" name="system.injuries.1" value="false" />
+          <label class="injury-checkbox">
+            <input type="checkbox" name="system.injuries.1" value="true" {{#if system.injuries.1}}checked{{/if}} />
+            Injury 2
+          </label>
+          <input type="hidden" name="system.injuries.2" value="false" />
+          <label class="injury-checkbox">
+            <input type="checkbox" name="system.injuries.2" value="true" {{#if system.injuries.2}}checked{{/if}} />
+            Injury 3
+          </label>
         </div>
       </div>
     </div>
