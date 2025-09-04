@@ -18,6 +18,12 @@
   "label": "Items",
   "system": "never-stop-blowing-up",
   "type": "Item"
+    },
+    {
+      "name": "abilities",
+      "label": "Abilities",
+      "system": "never-stop-blowing-up",
+      "type": "Item"
     }
   ],
   "compatibility": {
