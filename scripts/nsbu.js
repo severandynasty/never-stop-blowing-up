@@ -169,3 +169,18 @@ Hooks.once("init", () => {
     makeDefault: true
   });
 });
+
+Hooks.once('ready', async function() {
+  // Log all compendium packs
+  console.log("Compendium Packs Loaded:");
+  for (let pack of game.packs) {
+    console.log(`Pack: ${pack.collection} | Label: ${pack.metadata.label} | Type: ${pack.metadata.type}`);
+    if (pack.collection === "never-stop-blowing-up.abilities") {
+      // Try to get all documents in the abilities compendium
+      const index = await pack.getIndex();
+      console.log("Abilities Compendium Index:", index);
+      const docs = await pack.getDocuments();
+      console.log("Abilities Compendium Documents:", docs);
+    }
+  }
+});
