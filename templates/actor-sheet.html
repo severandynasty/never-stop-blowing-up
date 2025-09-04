@@ -41,7 +41,6 @@
         <div class="injury-circles">
           {{#if system.injuries}}
             {{#each system.injuries as |injury idx|}}
-              <input type="hidden" name="system.injuries.{{idx}}" value="false" />
               <label class="injury-checkbox">
                 <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
                 Injury {{#if (eq idx 0)}}1{{/if}}{{#if (eq idx 1)}}2{{/if}}{{#if (eq idx 2)}}3{{/if}}
