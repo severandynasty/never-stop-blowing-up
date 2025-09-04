@@ -1,3 +1,36 @@
+.nsbu-stats-grid {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5em;
+}
+.stats-row > div {
+  background: #fff;
+  border: 2px solid #222;
+  border-radius: 8px;
+  padding: 0.5em;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.stats-row label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.25em;
+  font-size: 1.1em;
+}
+.stats-row input[type="number"] {
+  width: 3em;
+  text-align: center;
+  font-size: 1.1em;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  background: #f9f9f9;
+}
 .sheet-body {
   padding: 1em;
 }
