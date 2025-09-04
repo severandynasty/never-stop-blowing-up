@@ -46,6 +46,12 @@ Hooks.on('preCreateActor', (actor, data, options, userId) => {
   console.log('[NSBU] Final merged data.system:', data.system);
 });
 class NSBUActorSheet extends ActorSheet {
+  getData(options) {
+    const data = super.getData(options);
+    // Ensure system is always present and not undefined
+    data.system = this.actor.system ?? {};
+    return data;
+  }
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["never-stop-blowing-up", "sheet", "actor"],
