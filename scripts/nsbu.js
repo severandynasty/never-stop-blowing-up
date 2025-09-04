@@ -1,3 +1,9 @@
+// Register a Handlebars helper for JSON debug output
+Hooks.once('init', () => {
+  Handlebars.registerHelper('json', function(context) {
+    return JSON.stringify(context, null, 2);
+  });
+});
 // Helper to get defaults for an actor type
 function getActorDefaults(type) {
   const model = game.system.model?.Actor?.[type]?.system;
