@@ -38,22 +38,15 @@
     <div class="nsbu-injuries">
       <label>Injuries</label>
       <div class="injury-radio-group">
-        <label class="injury-radio">
-          <input type="radio" name="system.injuryLevel" value="0" {{#if (eq system.injuryLevel 0)}}checked{{/if}} />
-          0
-        </label>
-        <label class="injury-radio">
-          <input type="radio" name="system.injuryLevel" value="1" {{#if (eq system.injuryLevel 1)}}checked{{/if}} />
-          1
-        </label>
-        <label class="injury-radio">
-          <input type="radio" name="system.injuryLevel" value="2" {{#if (eq system.injuryLevel 2)}}checked{{/if}} />
-          2
-        </label>
-        <label class="injury-radio">
-          <input type="radio" name="system.injuryLevel" value="3" {{#if (eq system.injuryLevel 3)}}checked{{/if}} />
-          3
-        </label>
+        <div class="injury-circles">
+          {{#each [0,1,2] as |idx|}}
+            <input type="hidden" name="system.injuries.{{idx}}" value="false" />
+            <label class="injury-checkbox">
+              <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if system.injuries.[idx]}}checked{{/if}} />
+              Injury {{add idx 1}}
+            </label>
+          {{/each}}
+        </div>
       </div>
     </div>
 
@@ -71,17 +64,14 @@
       <div class="token-circles">
         {{#if system.turboTokens}}
           {{#each system.turboTokens as |token idx|}}
-            <input type="checkbox" name="system.turboTokens.{{idx}}" {{#if token}}checked{{/if}} />
+            <input type="hidden" name="system.turboTokens.{{idx}}" value="false" />
+            <input type="checkbox" name="system.turboTokens.{{idx}}" value="true" {{#if token}}checked{{/if}} />
           {{/each}}
         {{else}}
-          <input type="checkbox" name="system.turboTokens.0" />
-          <input type="checkbox" name="system.turboTokens.1" />
-          <input type="checkbox" name="system.turboTokens.2" />
-          <input type="checkbox" name="system.turboTokens.3" />
-          <input type="checkbox" name="system.turboTokens.4" />
-          <input type="checkbox" name="system.turboTokens.5" />
-          <input type="checkbox" name="system.turboTokens.6" />
-          <input type="checkbox" name="system.turboTokens.7" />
+          {{#each [0,1,2,3,4,5,6,7] as |idx|}}
+            <input type="hidden" name="system.turboTokens.{{idx}}" value="false" />
+            <input type="checkbox" name="system.turboTokens.{{idx}}" value="true" />
+          {{/each}}
         {{/if}}
       </div>
     </div>
