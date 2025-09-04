@@ -3,7 +3,7 @@
   "title": "Never Stop Blowing Up",
   "description": "A custom tabletop RPG system inspired by Kids on Bikes, featuring explosive action and collaborative storytelling.",
   "version": "1.0.0",
-  "authors": ["Blake Keller"],
+  "authors": [{ "name": "Blake Keller" }],
   "esmodules": ["scripts/nsbu.js"],
   "styles": ["styles/styles.css"],
   "packs": [
