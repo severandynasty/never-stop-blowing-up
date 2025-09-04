@@ -8,16 +8,16 @@
   "styles": ["styles/styles.css"],
   "packs": [
     {
-      "name": "characters",
-      "label": "Characters",
-      "system": "never-stop-blowing-up",
-      "entity": "Actor"
+  "name": "characters",
+  "label": "Characters",
+  "system": "never-stop-blowing-up",
+  "type": "Actor"
     },
     {
-      "name": "items",
-      "label": "Items",
-      "system": "never-stop-blowing-up",
-      "entity": "Item"
+  "name": "items",
+  "label": "Items",
+  "system": "never-stop-blowing-up",
+  "type": "Item"
     }
   ],
   "compatibility": {
