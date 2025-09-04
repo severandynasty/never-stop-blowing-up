@@ -23,7 +23,8 @@
       "name": "abilities",
       "label": "Abilities",
       "system": "never-stop-blowing-up",
-      "type": "Item"
+  "type": "Item",
+  "path": "packs/abilities.db"
     }
   ],
   "compatibility": {

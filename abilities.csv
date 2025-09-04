@@ -1,0 +1,36 @@
+Ability Name,Effect
+Smokin',Lower the DC of a Hot Check by 3 when making a first impression.
+Burglar,Lower the DC of a Sneak Check by 3 when entering a protected location.
+Connected,Lower the DC of a Hot Check by 3 when searching for a helpful ally.
+Relentless,Gain 2 Turbo Tokens when you fail a check.
+Escape Artist,Lower the DC of a Sneak Check by 3 when escaping restraints or imprisonment.
+Flashy,Lower the DC of a Hot Check by 5 if it's the first roll after you've Blown Up.
+Transporter,Lower the DC of a Drive Check by 3 to avoid pursuers.
+Inspiring,"Each time you succeed at a check, an ally of your choice receives 1 Turbo Token."
+Loyal,Your Turbo Tokens give friends +1 at a one-to-one rate.
+Lucky,(Once Per Episode) Spend 2 Turbo Tokens to reroll any check.
+Trained,-1 to DCs for a Stat of your choice.
+Studied,(Replaces Trained) -3 to DCs for Stat of your choice.
+Mastery,(Replaces Studied) -5 to DCs for a Stat of your choice.
+Menacing,Use Brawl instead of Hot when intimidating an NPC.
+Nerves of Steel,Spend a Turbo Token to treat a snap decision as a Prepared Action.
+By the Book,Lower the DC of a Hot Check by 3 when interacting with authority figures.
+Poker Face,"When attempting to conceal the truth, use Tough instead of Hot."
+Prepared,(GM's Discretion) Spend 2 Turbo Tokens to just happen to have one commonplace item with you.
+Protector,Lower the DC of a check by 3 when defending your friends. Quick Healing Recover one injury level at the end of an encounter.
+Resilient,Turbo Tokens are worth double when used to boost against an attack that targets you.
+Skilled,Increase your die type for one skill by 1 for the purposes of halving.
+Trainer,"Describe a pep talk you gave earlier to spend Turbo Tokens for a friend, even when you are not present."
+Stealthy,Lower the DC of a Sneak Check by 3 when trying to avoid being seen.
+Suspicious,Lower the DC of a Wits Check by 3 when trying to determine if someone is lying to you.
+Grit,Lower the DC of a Tough Check by 3 when resisting a Brawl Check.
+Martial Artist,Spend a Turbo Token to force an enemy to resist your Brawl with Wits instead of Tough.
+Leap of Faith,Lower the DC of a Stunts Check by 3 when making a jump that could injure you. Neck Snapper Roll a Brawl Check to harmlessly incapacitate any opponent.
+Hacker,Lower the DC of a Tech Check by 3 when breaking into a computer database.
+Duelist,Lower the DC of a Weapons Check by 3 against someone wielding the same weapon.
+Interrogator,Lower the DC of a Wits Check by 3 to draw information out of an opponent.
+Demolitions,Lower the DC of a Tech Check by 3 when explosives are involved.
+Hotwire,"When interacting with vehicles, use Drive instead of Tech."
+Wild Card,You are a Wild Card.
+Trouble Maker,(GM's Discretion) Spend a Turbo Token to locate and receive help from a criminal network.
+Wealthy,Spend a Turbo Token to ease a bad situation with cash.
