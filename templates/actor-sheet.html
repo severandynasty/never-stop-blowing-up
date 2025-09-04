@@ -1,45 +1,76 @@
-<form class="actor-sheet" autocomplete="off">
-  <header class="sheet-header">
-    <h1><input name="name" type="text" value="{{actor.name}}" placeholder="Character Name"/></h1>
-    <div class="resource">
-      <label>HP</label>
-      <input name="system.hp" type="number" value="{{system.hp}}" min="0"/>
-    </div>
-    <div class="resource">
-      <label>Boom Level</label>
-      <input name="system.boomLevel" type="number" value="{{system.boomLevel}}" min="0"/>
-    </div>
-  </header>
 
-  <section class="sheet-body">
-    <pre style="background:#eee; color:#333; padding:0.5em; font-size:0.9em; border:1px solid #ccc;">
-      {{json system}}
-    </pre>
-    <h2>Stats</h2>
-    <div class="stats">
-      {{#each system.stats as |value key|}}
-      <div class="stat">
-        <label>{{key}}</label>
-        <input name="system.stats.{{key}}" type="number" value="{{value}}" min="0"/>
+<form class="actor-sheet nsbu-sheet" autocomplete="off">
+  <div class="nsbu-header">
+    <div class="nsbu-title">
+      <h1>Never Stop <span>Blowing Up</span></h1>
+    </div>
+    <div class="nsbu-player-info">
+      <label>Player</label>
+      <input name="system.player" type="text" value="{{system.player}}" placeholder="Player Name"/>
+      <label>Real World Character</label>
+      <input name="system.realWorldCharacter" type="text" value="{{system.realWorldCharacter}}"/>
+      <label>Movie Character</label>
+      <input name="system.movieCharacter" type="text" value="{{system.movieCharacter}}"/>
+      <label>Pronouns</label>
+      <input name="system.pronouns" type="text" value="{{system.pronouns}}"/>
+    </div>
+  </div>
+
+  <div class="nsbu-main-grid">
+    <div class="nsbu-stats-grid">
+      <div><label>Weapons</label><input name="system.stats.weapons" type="number" value="{{system.stats.weapons}}" min="0"/></div>
+      <div><label>Brawl</label><input name="system.stats.brawl" type="number" value="{{system.stats.brawl}}" min="0"/></div>
+      <div><label>Hot</label><input name="system.stats.hot" type="number" value="{{system.stats.hot}}" min="0"/></div>
+      <div><label>Drive</label><input name="system.stats.drive" type="number" value="{{system.stats.drive}}" min="0"/></div>
+      <div><label>Stunts</label><input name="system.stats.stunts" type="number" value="{{system.stats.stunts}}" min="0"/></div>
+      <div><label>Wits</label><input name="system.stats.wits" type="number" value="{{system.stats.wits}}" min="0"/></div>
+      <div><label>Tech</label><input name="system.stats.tech" type="number" value="{{system.stats.tech}}" min="0"/></div>
+      <div><label>Tough</label><input name="system.stats.tough" type="number" value="{{system.stats.tough}}" min="0"/></div>
+      <div><label>Sneak</label><input name="system.stats.sneak" type="number" value="{{system.stats.sneak}}" min="0"/></div>
+    </div>
+
+    <div class="nsbu-injuries">
+      <label>Injuries</label>
+      <div class="injury-circles">
+        <input type="checkbox" name="system.injuries.0" {{#if system.injuries.0}}checked{{/if}} />
+        <input type="checkbox" name="system.injuries.1" {{#if system.injuries.1}}checked{{/if}} />
+        <input type="checkbox" name="system.injuries.2" {{#if system.injuries.2}}checked{{/if}} />
       </div>
-      {{/each}}
     </div>
 
-    <h2>Skills</h2>
-    <div class="skills">
-      {{#each system.skills as |value key|}}
-      <div class="skill">
-        <label>{{key}}</label>
-        <input name="system.skills.{{key}}" type="number" value="{{value}}" min="0"/>
+    <div class="nsbu-inventory">
+      <label>Inventory</label>
+      <ul class="inventory-list">
+        {{#each system.inventory}}
+        <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
+
+    <div class="nsbu-turbo-tokens">
+      <label>Turbo Token Tracker</label>
+      <div class="token-circles">
+        {{#each system.turboTokens}}
+        <input type="checkbox" name="system.turboTokens.{{@index}}" {{#if this}}checked{{/if}} />
+        {{/each}}
       </div>
-      {{/each}}
     </div>
 
-    <h2>Inventory</h2>
-    <ul class="inventory-list">
-      {{#each system.inventory}}
-      <li>{{this}}</li>
-      {{/each}}
-    </ul>
-  </section>
+    <div class="nsbu-group-abilities">
+      <label>Group Abilities</label>
+      <textarea name="system.groupAbilities">{{system.groupAbilities}}</textarea>
+    </div>
+
+    <div class="nsbu-skills">
+      <label>Skills</label>
+      <div class="skills-list">
+        {{#each system.skills as |value key|}}
+        <div class="skill">
+          <label>{{key}}</label>
+          <input name="system.skills.{{key}}" type="number" value="{{value}}" min="0"/>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+  </div>
 </form>
