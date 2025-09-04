@@ -1,25 +1,42 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="actor-sheet" autocomplete="off">
   <header class="sheet-header">
-    <h1><input name="name" type="text" value="{{actor.name}}" /></h1>
+    <h1><input name="name" type="text" value="{{actor.name}}" placeholder="Character Name"/></h1>
+    <div class="resource">
+      <label>HP</label>
+      <input name="system.hp" type="number" value="{{system.hp}}" min="0"/>
+    </div>
+    <div class="resource">
+      <label>Boom Level</label>
+      <input name="system.boomLevel" type="number" value="{{system.boomLevel}}" min="0"/>
+    </div>
   </header>
 
   <section class="sheet-body">
     <h2>Stats</h2>
-    {{#each system.stats as |value key|}}
-      <div class="field">
+    <div class="stats">
+      {{#each system.stats as |value key|}}
+      <div class="stat">
         <label>{{key}}</label>
-        <input type="number" name="system.stats.{{key}}" value="{{value}}" />
+        <input name="system.stats.{{key}}" type="number" value="{{value}}" min="0"/>
       </div>
-    {{/each}}
+      {{/each}}
+    </div>
 
-    <h2>HP & Boom Level</h2>
-    <div class="field">
-      <label>HP</label>
-      <input type="number" name="system.hp" value="{{system.hp}}" />
+    <h2>Skills</h2>
+    <div class="skills">
+      {{#each system.skills as |value key|}}
+      <div class="skill">
+        <label>{{key}}</label>
+        <input name="system.skills.{{key}}" type="number" value="{{value}}" min="0"/>
+      </div>
+      {{/each}}
     </div>
-    <div class="field">
-      <label>Boom Level</label>
-      <input type="number" name="system.boomLevel" value="{{system.boomLevel}}" />
-    </div>
+
+    <h2>Inventory</h2>
+    <ul class="inventory-list">
+      {{#each system.inventory}}
+      <li>{{this}}</li>
+      {{/each}}
+    </ul>
   </section>
 </form>

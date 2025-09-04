@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character"],
+    "types": ["character", "npc", "vehicle"],
     "character": {
       "system": {
         "stats": {
@@ -12,7 +12,52 @@
           "brawn": 1
         },
         "hp": 10,
-        "boomLevel": 1
+        "boomLevel": 1,
+        "inventory": [],
+        "skills": {
+          "explosives": 1,
+          "athletics": 1,
+          "mechanics": 1,
+          "perception": 1
+        }
+      }
+    },
+    "npc": {
+      "system": {
+        "stats": {
+          "threat": 1,
+          "brawn": 1
+        },
+        "hp": 8
+      }
+    },
+    "vehicle": {
+      "system": {
+        "durability": 15,
+        "speed": 5,
+        "passengerCapacity": 4
+      }
+    }
+  },
+  "Item": {
+    "types": ["explosive", "gear", "upgrade"],
+    "explosive": {
+      "system": {
+        "damage": 2,
+        "range": "short",
+        "special": ""
+      }
+    },
+    "gear": {
+      "system": {
+        "effect": "",
+        "uses": 1
+      }
+    },
+    "upgrade": {
+      "system": {
+        "bonus": "",
+        "appliesTo": ""
       }
     }
   }

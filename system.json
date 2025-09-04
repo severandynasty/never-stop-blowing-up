@@ -1,12 +1,37 @@
 {
   "id": "never-stop-blowing-up",
   "title": "Never Stop Blowing Up",
-  "description": "A custom system based on Kids on Bikes",
+  "description": "A custom tabletop RPG system inspired by Kids on Bikes, featuring explosive action and collaborative storytelling.",
   "version": "1.0.0",
+  "authors": ["Blake Keller"],
   "esmodules": ["scripts/nsbu.js"],
   "styles": ["styles/styles.css"],
+  "packs": [
+    {
+      "name": "characters",
+      "label": "Characters",
+      "system": "never-stop-blowing-up",
+      "entity": "Actor"
+    },
+    {
+      "name": "items",
+      "label": "Items",
+      "system": "never-stop-blowing-up",
+      "entity": "Item"
+    }
+  ],
   "compatibility": {
     "minimum": "12",
     "verified": "12"
-  }
+  },
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "manifest": "system.json",
+  "readme": "README.md",
+  "license": "LICENSE"
 }
