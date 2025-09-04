@@ -14,13 +14,23 @@ class NSBUActorSheet extends ActorSheet {
 
   activateListeners(html) {
     super.activateListeners(html);
-    // Auto-save on input change or blur
     html.find('input, select, textarea').on('change blur', async (event) => {
-      const form = html.find('form')[0];
-      if (!form) return;
-      const formData = new FormData(form);
-      const data = foundry.utils.expandObject(Object.fromEntries(formData.entries()));
-      await this._updateObject(event, data);
+      const input = event.currentTarget;
+      const name = input.name;
+      let value = input.value;
+      // Convert to number if type is number
+      if (input.type === 'number') value = Number(value);
+      // Build update data object
+      const updateData = {};
+      // Support nested property names (e.g., system.stats.grit)
+      const keys = name.split('.');
+      let ref = updateData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!ref[keys[i]]) ref[keys[i]] = {};
+        ref = ref[keys[i]];
+      }
+      ref[keys[keys.length - 1]] = value;
+      await this.actor.update(updateData);
     });
   }
 }
