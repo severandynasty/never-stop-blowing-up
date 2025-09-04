@@ -32,9 +32,9 @@
     <div class="nsbu-injuries">
       <label>Injuries</label>
       <div class="injury-circles">
-  <input type="checkbox" name="system.injuries.0" {{#if system.injuries[0]}}checked{{/if}} />
-  <input type="checkbox" name="system.injuries.1" {{#if system.injuries[1]}}checked{{/if}} />
-  <input type="checkbox" name="system.injuries.2" {{#if system.injuries[2]}}checked{{/if}} />
+        {{#each system.injuries as |injury idx|}}
+          <input type="checkbox" name="system.injuries.{{idx}}" {{#if injury}}checked{{/if}} />
+        {{/each}}
       </div>
     </div>
 
@@ -50,9 +50,9 @@
     <div class="nsbu-turbo-tokens">
       <label>Turbo Token Tracker</label>
       <div class="token-circles">
-  {{#each system.turboTokens}}
-  <input type="checkbox" name="system.turboTokens.{{@index}}" {{#if ../system.turboTokens[@index]}}checked{{/if}} />
-  {{/each}}
+        {{#each system.turboTokens as |token idx|}}
+          <input type="checkbox" name="system.turboTokens.{{idx}}" {{#if token}}checked{{/if}} />
+        {{/each}}
       </div>
     </div>
 
