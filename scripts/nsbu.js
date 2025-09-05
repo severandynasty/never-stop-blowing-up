@@ -354,39 +354,42 @@ Hooks.once('ready', async function() {
       { name: "Tactical Command (Unlocked at d12)", color: "#a1887f" },
       { name: "Bustin' Makes Me Feel Good (Unlocked at d20)", color: "#f06292" }
     ];
-    // Create folders if missing
-    for (const def of folderDefs) {
-      let folder = groupPack.folders.find(f => f.name === def.name);
-      if (!folder) {
-        try {
-          await Folder.create({
-            name: def.name,
-            type: "Item",
-            color: def.color,
-            parent: null,
-            sorting: "a",
-            folder: null,
-            pack: groupPack.collection
-          }, { pack: groupPack.collection });
-        } catch (e) {
-          console.error(`[NSBU] Failed to create folder '${def.name}':`, e);
+    // Only operate on world compendium folders
+    if (groupPack.metadata.package === "world") {
+      // Create folders if missing
+      for (const def of folderDefs) {
+        let folder = groupPack.folders.find(f => f.name === def.name);
+        if (!folder) {
+          try {
+            await Folder.create({
+              name: def.name,
+              type: "Item",
+              color: def.color,
+              parent: null,
+              sorting: "a",
+              folder: null,
+              pack: groupPack.collection
+            }, { pack: groupPack.collection });
+          } catch (e) {
+            console.error(`[NSBU] Failed to create folder '${def.name}':`, e);
+          }
         }
       }
-    }
-    // Map folder names to IDs
-    const folders = {};
-    for (const f of groupPack.folders) {
-      folders[f.name] = f.id;
-    }
-    // Assign items to folders
-    const items = await groupPack.getDocuments();
-    for (const item of items) {
-      const suite = item.system.groupSuite;
-      if (suite && folders[suite] && item.folder !== folders[suite]) {
-        try {
-          await item.update({ folder: folders[suite] });
-        } catch (e) {
-          console.error(`[NSBU] Failed to assign item '${item.name}' to folder '${suite}':`, e);
+      // Map folder names to IDs
+      const folders = {};
+      for (const f of groupPack.folders) {
+        folders[f.name] = f.id;
+      }
+      // Assign items to folders
+      const items = await groupPack.getDocuments();
+      for (const item of items) {
+        const suite = item.system.groupSuite;
+        if (suite && folders[suite] && item.folder !== folders[suite]) {
+          try {
+            await item.update({ folder: folders[suite] });
+          } catch (e) {
+            console.error(`[NSBU] Failed to assign item '${item.name}' to folder '${suite}':`, e);
+          }
         }
       }
     }
