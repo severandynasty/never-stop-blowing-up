@@ -206,7 +206,7 @@ Hooks.once("init", () => {
   });
 });
 
-Hooks.once('ready', async function() {
+Hooks.once('setup', async function() {
   // Log all compendium packs
   console.log("Compendium Packs Loaded:");
   for (let pack of game.packs) {
