@@ -26,6 +26,14 @@
   "type": "Item",
   "path": "packs/abilities.db"
     }
+    ,
+    {
+      "name": "group-abilities",
+      "label": "Group Abilities",
+      "system": "never-stop-blowing-up",
+      "type": "Item",
+      "path": "packs/group-abilities.db"
+    }
   ],
   "compatibility": {
     "minimum": "12",
