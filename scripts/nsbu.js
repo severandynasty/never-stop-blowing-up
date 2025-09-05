@@ -1,5 +1,8 @@
 // Register a Handlebars helper for JSON debug output
 Hooks.once('init', () => {
+  // Register 'upgrade' as a valid item type for Foundry
+  if (!CONFIG.Item.typeLabels) CONFIG.Item.typeLabels = {};
+  CONFIG.Item.typeLabels.upgrade = "Upgrade";
   Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context, null, 2);
   });
