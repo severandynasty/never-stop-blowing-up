@@ -83,26 +83,6 @@
       </div>
     </div>
 
-    <div class="nsbu-skills">
-      <label>Skills</label>
-      <div class="skills-list">
-        {{#if system.skills}}
-          {{#each system.skills as |value key|}}
-            <div class="skill">
-              <label>{{key}}</label>
-              <input name="system.skills.{{key}}" type="number" value="{{value}}" min="0"/>
-            </div>
-          {{/each}}
-        {{else}}
-          <div class="empty">No skills</div>
-        {{/if}}
-      </div>
-    </div>
-
-    <div class="nsbu-group-abilities">
-      <label>Group Abilities</label>
-      <textarea name="system.groupAbilities">{{system.groupAbilities}}</textarea>
-    </div>
 
     <div class="nsbu-abilities" style="margin-top: 1em;">
       <label>Abilities</label>
@@ -111,13 +91,18 @@
           {{#if (eq item.type "upgrade")}}
             <div class="ability-entry" data-item-id="{{item._id}}">
               <img src="{{item.img}}" height="32" width="32" />
-              <span>{{item.name}}</span>
+              <span style="font-weight:bold;">{{item.name}}</span>
               <span class="desc">{{item.system.description}}</span>
             </div>
           {{/if}}
         {{/each}}
         <div class="empty">Drag abilities here from the compendium.</div>
       </div>
+    </div>
+
+    <div class="nsbu-group-abilities">
+      <label>Group Abilities</label>
+      <textarea name="system.groupAbilities">{{system.groupAbilities}}</textarea>
     </div>
   </div>
 </form>
