@@ -1,74 +1,34 @@
-// Register a Handlebars helper for JSON debug output
-Hooks.once('init', () => {
-  // Register 'upgrade' as a valid item type for Foundry
-  if (!CONFIG.Item.typeLabels) CONFIG.Item.typeLabels = {};
-  CONFIG.Item.typeLabels.upgrade = "Upgrade";
-  Handlebars.registerHelper('json', function(context) {
-    return JSON.stringify(context, null, 2);
-  });
-});
-// Helper to get defaults for an actor type
-function getActorDefaults(type) {
-  const model = game.system.model?.Actor?.[type]?.system;
-  if (!model) return {};
-  // Recursively extract default values
-  function extractDefaults(obj) {
-    if (typeof obj !== 'object' || obj === null) return obj;
-    if (Array.isArray(obj)) return obj.slice();
-    const result = {};
-    for (const [key, value] of Object.entries(obj)) {
-      if (value && typeof value === 'object' && 'default' in value) {
-        result[key] = value.default;
-      } else {
-        result[key] = extractDefaults(value);
-      }
-    }
-    return result;
-  }
-  return extractDefaults(model);
-}
-
-// Initialize new actors with defaults
-Hooks.on('preCreateActor', (actor, data, options, userId) => {
-  const type = data.type;
-  const defaults = getActorDefaults(type);
-  console.log('[NSBU] preCreateActor type:', type);
-  console.log('[NSBU] Defaults:', defaults);
-  console.log('[NSBU] Incoming data.system:', data.system);
-  // If data.system has a nested 'system' property, flatten it
-  let incoming = data.system ?? {};
-  if (incoming.system && typeof incoming.system === 'object') {
-    incoming = Object.assign({}, incoming, incoming.system);
-    delete incoming.system;
-  }
-  // Merge defaults and incoming data
-  data.system = foundry.utils.mergeObject(defaults, incoming, { inplace: false });
-  // Ensure no nulls for hp, boomLevel, etc.
-  if (data.system.hp == null) data.system.hp = defaults.hp;
-  if (data.system.boomLevel == null) data.system.boomLevel = defaults.boomLevel;
-  console.log('[NSBU] Final merged data.system:', data.system);
-});
-
 class NSBUActorSheet extends ActorSheet {
-  getData(options) {
-    const data = super.getData(options);
-    data.system = this.actor.system ?? {};
-    data.items = this.actor.items ? this.actor.items.contents : [];
-    return data;
-  }
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["never-stop-blowing-up", "sheet", "actor"],
-      template: "systems/never-stop-blowing-up/templates/actor-sheet.html",
-      width: 600,
-      height: 600
-    });
-  }
-  async _updateObject(event, formData) {
-    await this.actor.update(formData);
-  }
   activateListeners(html) {
     super.activateListeners(html);
+    const dieSteps = [4, 6, 8, 10, 12, 20];
+    // Stat increase button
+    html.find('.stat-increase').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
+      if (idx < dieSteps.length - 1) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
+        this.render();
+      }
+    });
+    // Stat decrease button
+    html.find('.stat-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
+      if (idx > 0) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx - 1]});
+        this.render();
+      }
+    });
+    // Other listeners
     html.find('input, select, textarea').on('change blur', async (event) => {
       const input = event.currentTarget;
       const name = input.name;
@@ -102,21 +62,19 @@ class NSBUActorSheet extends ActorSheet {
     // Dice blow-up mechanic for stats
     html.find('.stat-roll').on('click', async (event) => {
       event.preventDefault();
-  const stat = event.currentTarget.dataset.stat;
-  const stats = this.actor.system.stats || {};
-  let statValue = Number(stats[stat]);
-  if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
-  // Map stat value to die type (now up to d20)
-  const dieSteps = [4, 6, 8, 10, 12, 20];
-  let dieIdx = dieSteps.indexOf(statValue);
-  if (dieIdx === -1) dieIdx = 0;
-  let currentDie = dieSteps[dieIdx];
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      let dieIdx = dieSteps.indexOf(statValue);
+      if (dieIdx === -1) dieIdx = 0;
+      let currentDie = dieSteps[dieIdx];
       let total = 0;
       let rolls = [];
       let blowUp = false;
       do {
         const roll = new Roll(`1d${currentDie}`);
-  await roll.evaluate();
+        await roll.evaluate();
         await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
         const value = roll.total;
         rolls.push(value);
@@ -155,6 +113,26 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
+  }
+
+  getData(options) {
+    const data = super.getData(options);
+    data.system = this.actor.system ?? {};
+    data.items = this.actor.items ? this.actor.items.contents : [];
+    return data;
+  }
+
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "actor"],
+      template: "systems/never-stop-blowing-up/templates/actor-sheet.html",
+      width: 600,
+      height: 600
+    });
+  }
+
+  async _updateObject(event, formData) {
+    await this.actor.update(formData);
   }
 }
 
