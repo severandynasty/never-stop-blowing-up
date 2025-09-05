@@ -237,4 +237,51 @@ Hooks.once('ready', async function() {
       console.warn(`[NSBU] Item '${doc.name}' has unexpected type: ${doc.type}`);
     }
   }
+
+  // Auto-create folders and assign items in Group Abilities compendium at world init
+  await pack.getDocuments(); // Ensure items are loaded
+
+  // Folder definitions
+  const folderDefs = [
+    { _id: "la-familia", name: "La Familia (Unlocked at d6)", color: "#e57373" },
+    { _id: "criminal-conspiracy", name: "Criminal Conspiracy (Unlocked at d6)", color: "#ba68c8" },
+    { _id: "diesel-circus", name: "Diesel Circus (Unlocked at d8)", color: "#64b5f6" },
+    { _id: "the-continentals", name: "The Continentals (Unlocked at d8)", color: "#ffd54f" },
+    { _id: "alpha-squad", name: "Alpha Squad (Unlocked at d10)", color: "#81c784" },
+    { _id: "marauders", name: "Marauders (Unlocked at d10)", color: "#ffb74d" },
+    { _id: "the-ones", name: "The Ones (Unlocked at d12)", color: "#4dd0e1" },
+    { _id: "tactical-command", name: "Tactical Command (Unlocked at d12)", color: "#a1887f" },
+    { _id: "bustin", name: "Bustin' Makes Me Feel Good (Unlocked at d20)", color: "#f06292" }
+  ];
+
+  // Create folders if missing
+  for (const def of folderDefs) {
+    let folder = pack.folders.find(f => f.name === def.name);
+    if (!folder) {
+      await Folder.create({
+        name: def.name,
+        type: "Item",
+        color: def.color,
+        parent: null,
+        sorting: "a",
+        folder: null,
+        pack: pack.collection
+      }, { pack: pack.collection });
+    }
+  }
+
+  // Map folder names to IDs
+  const folders = {};
+  for (const f of pack.folders) {
+    folders[f.name] = f.id;
+  }
+
+  // Assign items to folders
+  const items = await pack.getDocuments();
+  for (const item of items) {
+    const suite = item.system.groupSuite;
+    if (suite && folders[suite] && item.folder !== folders[suite]) {
+      await item.update({ folder: folders[suite] });
+    }
+  }
 });
