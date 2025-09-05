@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "npc", "vehicle"],
+    "types": ["character", "npc"],
     "character": {
       "system": {
         "realWorldCharacter": "",
@@ -49,13 +49,6 @@
         "abilities": [],
         "groupAbilities": [],
         "notes": ""
-      }
-    },
-    "vehicle": {
-      "system": {
-        "durability": 15,
-        "speed": 5,
-        "passengerCapacity": 4
       }
     }
   },

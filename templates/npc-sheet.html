@@ -16,19 +16,64 @@
   <div class="nsbu-main-grid">
     <div class="nsbu-stats-grid">
       <div class="stats-row">
-        <div><label>Weapons</label><input name="system.stats.weapons" type="number" value="{{system.stats.weapons}}" min="0"/></div>
-        <div><label>Brawl</label><input name="system.stats.brawl" type="number" value="{{system.stats.brawl}}" min="0"/></div>
-        <div><label>Hot</label><input name="system.stats.hot" type="number" value="{{system.stats.hot}}" min="0"/></div>
+        <div>
+          <label>Weapons</label>
+          <button type="button" class="stat-decrease" data-stat="weapons">-</button>
+          <button type="button" class="stat-roll" data-stat="weapons">d{{system.stats.weapons}}</button>
+          <button type="button" class="stat-increase" data-stat="weapons">+</button>
+        </div>
+        <div>
+          <label>Brawl</label>
+          <button type="button" class="stat-decrease" data-stat="brawl">-</button>
+          <button type="button" class="stat-roll" data-stat="brawl">d{{system.stats.brawl}}</button>
+          <button type="button" class="stat-increase" data-stat="brawl">+</button>
+        </div>
+        <div>
+          <label>Hot</label>
+          <button type="button" class="stat-decrease" data-stat="hot">-</button>
+          <button type="button" class="stat-roll" data-stat="hot">d{{system.stats.hot}}</button>
+          <button type="button" class="stat-increase" data-stat="hot">+</button>
+        </div>
       </div>
       <div class="stats-row">
-        <div><label>Drive</label><input name="system.stats.drive" type="number" value="{{system.stats.drive}}" min="0"/></div>
-        <div><label>Stunts</label><input name="system.stats.stunts" type="number" value="{{system.stats.stunts}}" min="0"/></div>
-        <div><label>Wits</label><input name="system.stats.wits" type="number" value="{{system.stats.wits}}" min="0"/></div>
+        <div>
+          <label>Drive</label>
+          <button type="button" class="stat-decrease" data-stat="drive">-</button>
+          <button type="button" class="stat-roll" data-stat="drive">d{{system.stats.drive}}</button>
+          <button type="button" class="stat-increase" data-stat="drive">+</button>
+        </div>
+        <div>
+          <label>Stunts</label>
+          <button type="button" class="stat-decrease" data-stat="stunts">-</button>
+          <button type="button" class="stat-roll" data-stat="stunts">d{{system.stats.stunts}}</button>
+          <button type="button" class="stat-increase" data-stat="stunts">+</button>
+        </div>
+        <div>
+          <label>Wits</label>
+          <button type="button" class="stat-decrease" data-stat="wits">-</button>
+          <button type="button" class="stat-roll" data-stat="wits">d{{system.stats.wits}}</button>
+          <button type="button" class="stat-increase" data-stat="wits">+</button>
+        </div>
       </div>
       <div class="stats-row">
-        <div><label>Tech</label><input name="system.stats.tech" type="number" value="{{system.stats.tech}}" min="0"/></div>
-        <div><label>Tough</label><input name="system.stats.tough" type="number" value="{{system.stats.tough}}" min="0"/></div>
-        <div><label>Sneak</label><input name="system.stats.sneak" type="number" value="{{system.stats.sneak}}" min="0"/></div>
+        <div>
+          <label>Tech</label>
+          <button type="button" class="stat-decrease" data-stat="tech">-</button>
+          <button type="button" class="stat-roll" data-stat="tech">d{{system.stats.tech}}</button>
+          <button type="button" class="stat-increase" data-stat="tech">+</button>
+        </div>
+        <div>
+          <label>Tough</label>
+          <button type="button" class="stat-decrease" data-stat="tough">-</button>
+          <button type="button" class="stat-roll" data-stat="tough">d{{system.stats.tough}}</button>
+          <button type="button" class="stat-increase" data-stat="tough">+</button>
+        </div>
+        <div>
+          <label>Sneak</label>
+          <button type="button" class="stat-decrease" data-stat="sneak">-</button>
+          <button type="button" class="stat-roll" data-stat="sneak">d{{system.stats.sneak}}</button>
+          <button type="button" class="stat-increase" data-stat="sneak">+</button>
+        </div>
       </div>
     </div>
 

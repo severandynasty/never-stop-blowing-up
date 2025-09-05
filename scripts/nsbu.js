@@ -156,6 +156,34 @@ class NSBUNPCSheet extends ActorSheet {
   }
   activateListeners(html) {
     super.activateListeners(html);
+    const dieSteps = [4, 6, 8, 10, 12, 20];
+    // Stat increase button
+    html.find('.stat-increase').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
+      if (idx < dieSteps.length - 1) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
+        this.render();
+      }
+    });
+    // Stat decrease button
+    html.find('.stat-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
+      if (idx > 0) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx - 1]});
+        this.render();
+      }
+    });
+    // Other listeners
     html.find('input, select').on('change blur', async (event) => {
       const input = event.currentTarget;
       const name = input.name;
@@ -180,6 +208,40 @@ class NSBUNPCSheet extends ActorSheet {
       await this.actor.update(updateData);
       this.render();
     });
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      let dieIdx = dieSteps.indexOf(statValue);
+      if (dieIdx === -1) dieIdx = 0;
+      let currentDie = dieSteps[dieIdx];
+      let total = 0;
+      let rolls = [];
+      let blowUp = false;
+      do {
+        const roll = new Roll(`1d${currentDie}`);
+        await roll.evaluate();
+        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
+        const value = roll.total;
+        rolls.push(value);
+        total += value;
+        blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
+        if (blowUp) {
+          dieIdx++;
+          currentDie = dieSteps[dieIdx];
+        }
+      } while (blowUp);
+      // If the die blew up, update the stat to the new die
+      if (dieIdx > dieSteps.indexOf(statValue)) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
+        ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
+      }
+    });
+
     html.find('.remove-ability').on('click', async (event) => {
       event.preventDefault();
       const itemId = event.currentTarget.dataset.itemId;
@@ -272,13 +334,6 @@ Hooks.once("init", () => {
           groupAbilities: { type: Array, default: [] },
           notes: { type: String, default: "" }
         }
-      },
-      vehicle: {
-        system: {
-          durability: { type: Number, default: 15 },
-          speed: { type: Number, default: 5 },
-          passengerCapacity: { type: Number, default: 4 }
-        }
       }
     },
     Item: {
@@ -307,7 +362,7 @@ Hooks.once("init", () => {
   // Register the custom actor sheets
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("never-stop-blowing-up", NSBUActorSheet, {
-    types: ["character", "vehicle"],
+    types: ["character"],
     makeDefault: true
   });
   Actors.registerSheet("never-stop-blowing-up", NSBUNPCSheet, {
