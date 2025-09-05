@@ -1,9 +1,0 @@
-{"_id":"la-familia","name":"La Familia (Unlocked at d6)","type":"Item","sorting":1,"color":"#e57373","parent":null}
-{"_id":"criminal-conspiracy","name":"Criminal Conspiracy (Unlocked at d6)","type":"Item","sorting":2,"color":"#ba68c8","parent":null}
-{"_id":"diesel-circus","name":"Diesel Circus (Unlocked at d8)","type":"Item","sorting":3,"color":"#64b5f6","parent":null}
-{"_id":"the-continentals","name":"The Continentals (Unlocked at d8)","type":"Item","sorting":4,"color":"#ffd54f","parent":null}
-{"_id":"alpha-squad","name":"Alpha Squad (Unlocked at d10)","type":"Item","sorting":5,"color":"#81c784","parent":null}
-{"_id":"marauders","name":"Marauders (Unlocked at d10)","type":"Item","sorting":6,"color":"#ffb74d","parent":null}
-{"_id":"the-ones","name":"The Ones (Unlocked at d12)","type":"Item","sorting":7,"color":"#4dd0e1","parent":null}
-{"_id":"tactical-command","name":"Tactical Command (Unlocked at d12)","type":"Item","sorting":8,"color":"#a1887f","parent":null}
-{"_id":"bustin","name":"Bustin' Makes Me Feel Good (Unlocked at d20)","type":"Item","sorting":9,"color":"#f06292","parent":null}
