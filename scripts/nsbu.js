@@ -6,6 +6,10 @@ Hooks.once('init', () => {
   Handlebars.registerHelper('json', function(context) {
     return JSON.stringify(context, null, 2);
   });
+  Handlebars.registerHelper('join', function(arr, sep) {
+    if (Array.isArray(arr)) return arr.join(sep);
+    return arr || '';
+  });
 });
 // Helper to get defaults for an actor type
 function getActorDefaults(type) {
@@ -84,6 +88,10 @@ class NSBUActorSheet extends ActorSheet {
         value = true;
       } else if (value === 'false') {
         value = false;
+      }
+      // Special handling for inventory textarea (convert string to array)
+      if (name === 'system.inventory') {
+        value = value.split('\n').map(s => s.trim()).filter(Boolean);
       }
       // Build update data object
       const updateData = {};

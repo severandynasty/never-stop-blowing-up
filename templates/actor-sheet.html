@@ -1,26 +1,42 @@
 
 <form class="actor-sheet nsbu-sheet" autocomplete="off">
-  <div class="nsbu-header">
-    <div class="nsbu-title">
-      <h1>Never Stop <span>Blowing Up</span></h1>
-    </div>
-    <div class="nsbu-player-info">
-  <label>Player</label>
-  <input name="system.player" type="text" value="{{system.player}}" placeholder="Player Name"/>
-  <label>Character Name</label>
-  <input name="system.realWorldCharacter" type="text" value="{{system.realWorldCharacter}}"/>
-  <label>Catchphrase</label>
-  <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase"/>
-  <div style="margin-bottom: 1em;"></div>
-    </div>
-  </div>
 
-  <div class="nsbu-main-grid">
-    <div class="nsbu-stats-grid">
-      <div class="stats-row">
-        <div><label>Weapons</label><input name="system.stats.weapons" type="number" value="{{system.stats.weapons}}" min="0"/></div>
-        <div><label>Brawl</label><input name="system.stats.brawl" type="number" value="{{system.stats.brawl}}" min="0"/></div>
-        <div><label>Hot</label><input name="system.stats.hot" type="number" value="{{system.stats.hot}}" min="0"/></div>
+    <div style="display: flex; align-items: flex-end; gap: 2em;">
+      <div class="nsbu-injuries">
+        <label>Injuries</label>
+        <div class="injury-radio-group">
+          <div class="injury-circles">
+            {{#if system.injuries}}
+              {{#each system.injuries as |injury idx|}}
+                <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
+              {{/each}}
+            {{else}}
+              <input type="checkbox" name="system.injuries.0" value="true" />
+              <input type="checkbox" name="system.injuries.1" value="true" />
+              <input type="checkbox" name="system.injuries.2" value="true" />
+            {{/if}}
+          </div>
+        </div>
+      </div>
+      <div class="nsbu-turbo-tokens">
+        <label>Turbo Tokens</label>
+        <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
+          <button type="button" class="token-decrease" style="width:2em;">-</button>
+          <input name="system.turboTokens" type="number" value="{{system.turboTokens}}" min="0" style="width:3em; text-align:center;"/>
+          <button type="button" class="token-increase" style="width:2em;">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nsbu-inventory">
+      <label>Inventory</label>
+      <textarea name="system.inventory" rows="5" placeholder="Inventory" style="width:100%;">{{join system.inventory '\n'}}</textarea>
+    </div>
+
+    <div class="nsbu-bio">
+      <label>Character Bio</label>
+      <textarea name="system.bio" rows="5" placeholder="Character Bio" style="width:100%;">{{system.bio}}</textarea>
+    </div>
       </div>
       <div class="stats-row">
         <div><label>Drive</label><input name="system.stats.drive" type="number" value="{{system.stats.drive}}" min="0"/></div>
