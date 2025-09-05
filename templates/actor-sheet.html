@@ -34,7 +34,22 @@
       </div>
     </div>
 
-  <!-- Removed duplicate old Injuries section -->
+    <div class="nsbu-injuries">
+      <label>Injuries</label>
+      <div class="injury-radio-group">
+        <div class="injury-circles">
+          {{#if system.injuries}}
+            {{#each system.injuries as |injury idx|}}
+              <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
+            {{/each}}
+          {{else}}
+            <input type="checkbox" name="system.injuries.0" value="true" />
+            <input type="checkbox" name="system.injuries.1" value="true" />
+            <input type="checkbox" name="system.injuries.2" value="true" />
+          {{/if}}
+        </div>
+      </div>
+    </div>
 
 
 
@@ -48,32 +63,32 @@
     </div>
 
 
-            <div class="nsbu-injuries-tokens-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2em; margin-bottom: 2em;">
-              <div class="nsbu-injuries">
-                <label>Injuries</label>
-                <div class="injury-radio-group">
-                  <div class="injury-circles">
-                    {{#if system.injuries}}
-                      {{#each system.injuries as |injury idx|}}
-                        <input type="checkbox" name="system.injuries.{{idx}}" value="false" {{#if injury}}checked{{/if}} />
-                      {{/each}}
-                    {{else}}
-                      <input type="checkbox" name="system.injuries.0" value="false" />
-                      <input type="checkbox" name="system.injuries.1" value="false" />
-                      <input type="checkbox" name="system.injuries.2" value="false" />
-                    {{/if}}
-                  </div>
+    <div class="nsbu-abilities" style="margin-top: 1em;">
+      <label>Abilities</label>
+      <div class="abilities-list" data-drop="abilities">
+        {{#each items as |item|}}
+          {{#if (eq item.type "upgrade")}}
+            {{#unless item.system.groupSuite}}
+              <div class="ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="flex: 1 1 auto;">
+                  <span style="font-weight:bold;">{{item.name}}</span>
+                  <span class="desc">{{item.system.description}}</span>
                 </div>
+                <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Ability" style="flex: 0 0 auto; width: 24px; height: 24px; min-width: 0; min-height: 0; padding: 0; font-size: 18px; line-height: 1; text-align: center;">&times;</button>
               </div>
-              <div class="nsbu-turbo-tokens">
-                <label>Turbo Tokens</label>
-                <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
-                  <button type="button" class="token-decrease" style="width:2em;">-</button>
-                  <input name="system.turboTokens" type="number" value="{{system.turboTokens}}" min="0" style="width:3em; text-align:center;"/>
-                  <button type="button" class="token-increase" style="width:2em;">+</button>
-                </div>
-              </div>
-            </div>
+            {{/unless}}
+          {{/if}}
+        {{/each}}
+        <div class="empty"><em>Drag abilities here from the compendium.</em></div>
+      </div>
+    </div>
+    <div style="margin-bottom: 2em;"></div>
+
+    <div class="nsbu-group-abilities">
+      <label>Group Abilities</label>
+      <div class="group-abilities-list" data-drop="group-abilities">
+        {{#each items as |item|}}
+          {{#if (eq item.type "upgrade")}}
             {{#if item.system.groupSuite}}
               <div class="group-ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1 1 auto;">
@@ -87,11 +102,12 @@
         {{/each}}
         <div class="empty"><em>Drag group abilities here from the compendium.</em></div>
       </div>
-    </div>
-    <div style="margin-bottom: 2em;"></div>
-    <div style="margin-bottom: 2em;"></div>
+  </div>
 
-    <div class="nsbu-inventory">
+  <div style="margin-bottom: 2em;"></div>
+  <div style="margin-bottom: 2em;"></div>
+
+  <div class="nsbu-inventory">
       <label>Inventory</label>
       <textarea name="system.inventory" rows="5" placeholder="Inventory" style="width:100%;">{{system.inventory}}</textarea>
     </div>
