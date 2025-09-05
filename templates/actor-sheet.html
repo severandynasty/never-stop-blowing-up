@@ -34,22 +34,7 @@
       </div>
     </div>
 
-    <div class="nsbu-injuries">
-      <label>Injuries</label>
-      <div class="injury-radio-group">
-        <div class="injury-circles">
-          {{#if system.injuries}}
-            {{#each system.injuries as |injury idx|}}
-              <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
-            {{/each}}
-          {{else}}
-              <input type="checkbox" name="system.injuries.0" value="false" />
-              <input type="checkbox" name="system.injuries.1" value="false" />
-              <input type="checkbox" name="system.injuries.2" value="false" />
-          {{/if}}
-        </div>
-      </div>
-    </div>
+  <!-- Removed duplicate old Injuries section -->
 
 
 
@@ -70,12 +55,12 @@
                   <div class="injury-circles">
                     {{#if system.injuries}}
                       {{#each system.injuries as |injury idx|}}
-                        <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
+                        <input type="checkbox" name="system.injuries.{{idx}}" value="false" {{#if injury}}checked{{/if}} />
                       {{/each}}
                     {{else}}
-                      <input type="checkbox" name="system.injuries.0" value="true" />
-                      <input type="checkbox" name="system.injuries.1" value="true" />
-                      <input type="checkbox" name="system.injuries.2" value="true" />
+                      <input type="checkbox" name="system.injuries.0" value="false" />
+                      <input type="checkbox" name="system.injuries.1" value="false" />
+                      <input type="checkbox" name="system.injuries.2" value="false" />
                     {{/if}}
                   </div>
                 </div>
