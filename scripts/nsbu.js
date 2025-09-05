@@ -289,8 +289,8 @@ Hooks.once('ready', async function() {
 // Macro/script to clone system compendiums into world-level compendiums and organize folders
 Hooks.once('ready', async function() {
   if (!game.user.isGM) return;
-  // Wait for system to be fully initialized
-  await new Promise(r => setTimeout(r, 1000));
+  // Wait for system and compendiums to be fully initialized
+  await new Promise(r => setTimeout(r, 4000));
   // List of system compendiums to clone
   const packsToClone = [
     { sys: "never-stop-blowing-up.abilities", world: "abilities" },
@@ -303,20 +303,20 @@ Hooks.once('ready', async function() {
       console.warn(`[NSBU] System compendium not found: ${sys}`);
       continue;
     }
-    // Wait for system compendium to be unlocked and loaded
+    // Wait for system compendium to be unlocked and loaded, with robust debug
     let sysIndex;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       sysIndex = await sysPack.getIndex();
+      console.log(`[NSBU] [${i}] System compendium '${sys}' index size:`, sysIndex.size);
       if (sysIndex.size > 0) break;
-      console.log(`[NSBU] Waiting for system compendium '${sys}' to populate...`);
       await new Promise(r => setTimeout(r, 500));
     }
     if (!sysIndex || sysIndex.size === 0) {
-      console.error(`[NSBU] System compendium '${sys}' is empty or not loaded!`);
+      console.error(`[NSBU] System compendium '${sys}' is empty or not loaded after waiting!`);
       continue;
     }
     console.log(`[NSBU] System compendium '${sys}' index:`, Array.from(sysIndex.values()));
-  console.log(`[NSBU] System compendium metadata:`, sysPack.metadata);
+    console.log(`[NSBU] System compendium metadata:`, sysPack.metadata);
     // Check if world compendium already exists
     let worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     if (!worldPack) {
