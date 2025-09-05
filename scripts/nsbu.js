@@ -319,22 +319,28 @@ Hooks.once('ready', async function() {
     // Check if world compendium already exists
     let worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     if (!worldPack) {
-      // Create world compendium
-      await CompendiumCollection.createCompendium({
-        label: sysPack.metadata.label.replace(/^SYSTEM - /, ""),
-        name: world,
-        type: sysPack.metadata.type,
-        package: "world"
-      });
-      // Wait for compendium to be available
-      for (let i = 0; i < 10; i++) {
-        await new Promise(r => setTimeout(r, 200));
+      // Create world compendium only if it does not exist
+      try {
+        await CompendiumCollection.createCompendium({
+          label: sysPack.metadata.label.replace(/^SYSTEM - /, ""),
+          name: world,
+          type: sysPack.metadata.type,
+          package: "world"
+        });
+        // Wait for compendium to be available
+        for (let i = 0; i < 10; i++) {
+          await new Promise(r => setTimeout(r, 200));
+          worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
+          if (worldPack) break;
+        }
+      } catch (e) {
+        console.error(`[NSBU] Failed to create world compendium: ${world} (may already exist)`, e);
+        // Try to get the pack again in case it was created concurrently
         worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
-        if (worldPack) break;
       }
     }
     if (!worldPack) {
-      console.error(`[NSBU] Failed to create world compendium: ${world}`);
+      console.error(`[NSBU] World compendium '${world}' not found after creation attempt.`);
       continue;
     }
     // Import all entries if world compendium is empty
