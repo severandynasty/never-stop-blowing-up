@@ -3,7 +3,6 @@
     "types": ["character", "npc", "vehicle"],
     "character": {
       "system": {
-        "player": "",
         "realWorldCharacter": "",
         "catchphrase": "",
         "stats": {
