@@ -11,6 +11,7 @@
   <input name="system.realWorldCharacter" type="text" value="{{system.realWorldCharacter}}"/>
   <label>Catchphrase</label>
   <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase"/>
+  <div style="margin-bottom: 1em;"></div>
     </div>
   </div>
 
@@ -90,7 +91,6 @@
         {{#each items as |item|}}
           {{#if (eq item.type "upgrade")}}
             <div class="ability-entry" data-item-id="{{item._id}}">
-              <img src="{{item.img}}" height="32" width="32" />
               <span style="font-weight:bold;">{{item.name}}</span>
               <span class="desc">{{item.system.description}}</span>
             </div>
@@ -99,6 +99,7 @@
         <div class="empty">Drag abilities here from the compendium.</div>
       </div>
     </div>
+    <div style="margin-bottom: 2em;"></div>
 
     <div class="nsbu-group-abilities">
       <label>Group Abilities</label>
