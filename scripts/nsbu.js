@@ -297,7 +297,10 @@ Hooks.once('ready', async function() {
 
   for (const { sys, world } of packsToClone) {
     const sysPack = game.packs.get(sys);
-    if (!sysPack) continue;
+    if (!sysPack) {
+      console.warn(`[NSBU] System compendium not found: ${sys}`);
+      continue;
+    }
     // Check if world compendium already exists
     let worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     if (!worldPack) {
@@ -308,14 +311,29 @@ Hooks.once('ready', async function() {
         type: sysPack.metadata.type,
         package: "world"
       });
-      worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
+      // Wait for compendium to be available
+      for (let i = 0; i < 10; i++) {
+        await new Promise(r => setTimeout(r, 200));
+        worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
+        if (worldPack) break;
+      }
+    }
+    if (!worldPack) {
+      console.error(`[NSBU] Failed to create world compendium: ${world}`);
+      continue;
     }
     // Import all entries if world compendium is empty
     const sysIndex = await sysPack.getIndex();
     const worldIndex = await worldPack.getIndex();
+    console.log(`[NSBU] System compendium '${sys}' has ${sysIndex.size} entries. World compendium '${world}' has ${worldIndex.size} entries.`);
     if (worldIndex.size === 0 && sysIndex.size > 0) {
-      await worldPack.importAll();
-      ui.notifications.info(`Imported all entries from ${sysPack.metadata.label} to world compendium.`);
+      try {
+        await worldPack.importAll();
+        ui.notifications.info(`Imported all entries from ${sysPack.metadata.label} to world compendium.`);
+        console.log(`[NSBU] Imported all entries from ${sysPack.metadata.label} to world compendium.`);
+      } catch (e) {
+        console.error(`[NSBU] importAll failed for ${world}:`, e);
+      }
     }
   }
 
@@ -338,15 +356,19 @@ Hooks.once('ready', async function() {
     for (const def of folderDefs) {
       let folder = groupPack.folders.find(f => f.name === def.name);
       if (!folder) {
-        await Folder.create({
-          name: def.name,
-          type: "Item",
-          color: def.color,
-          parent: null,
-          sorting: "a",
-          folder: null,
-          pack: groupPack.collection
-        }, { pack: groupPack.collection });
+        try {
+          await Folder.create({
+            name: def.name,
+            type: "Item",
+            color: def.color,
+            parent: null,
+            sorting: "a",
+            folder: null,
+            pack: groupPack.collection
+          }, { pack: groupPack.collection });
+        } catch (e) {
+          console.error(`[NSBU] Failed to create folder '${def.name}':`, e);
+        }
       }
     }
     // Map folder names to IDs
@@ -359,8 +381,14 @@ Hooks.once('ready', async function() {
     for (const item of items) {
       const suite = item.system.groupSuite;
       if (suite && folders[suite] && item.folder !== folders[suite]) {
-        await item.update({ folder: folders[suite] });
+        try {
+          await item.update({ folder: folders[suite] });
+        } catch (e) {
+          console.error(`[NSBU] Failed to assign item '${item.name}' to folder '${suite}':`, e);
+        }
       }
     }
+  } else {
+    console.warn("[NSBU] World compendium 'group-abilities' not found for folder organization.");
   }
 });
