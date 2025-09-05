@@ -19,63 +19,63 @@
       "name": "la-familia",
       "label": "La Familia Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/la-familia.db"
     },
     {
       "name": "criminal-conspiracy",
       "label": "Criminal Conspiracy Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/criminal-conspiracy.db"
     },
     {
       "name": "diesel-circus",
       "label": "Diesel Circus Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/diesel-circus.db"
     },
     {
       "name": "the-continentals",
       "label": "The Continentals Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/the-continentals.db"
     },
     {
       "name": "alpha-squad",
       "label": "Alpha Squad Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/alpha-squad.db"
     },
     {
       "name": "marauders",
       "label": "Marauders Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/marauders.db"
     },
     {
       "name": "the-ones",
       "label": "The Ones Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/the-ones.db"
     },
     {
       "name": "tactical-command",
       "label": "Tactical Command Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/tactical-command.db"
     },
     {
       "name": "bustin",
       "label": "Bustin' Makes Me Feel Good Abilities",
       "system": "never-stop-blowing-up",
-      "type": "upgrade",
+      "type": "Item",
       "path": "packs/bustin.db"
     }
   ],
