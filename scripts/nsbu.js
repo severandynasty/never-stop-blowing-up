@@ -198,7 +198,7 @@ Hooks.once("init", () => {
   // Register the custom item sheet for all item types
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
-    types: ["explosive", "gear", "upgrade", "Item"],
+  types: ["explosive", "gear", "Item"],
     makeDefault: true
   });
 });
@@ -233,7 +233,7 @@ Hooks.once('ready', async function() {
   const docs = await pack.getDocuments();
   for (const doc of docs) {
     console.log(`[NSBU] Item: ${doc.name} | Type: ${doc.type} | Folder: ${doc.folder}`);
-    if (doc.type !== "upgrade") {
+    if (doc.type !== "Item") {
       console.warn(`[NSBU] Item '${doc.name}' has unexpected type: ${doc.type}`);
     }
   }

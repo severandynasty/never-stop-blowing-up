@@ -8,18 +8,6 @@
   "styles": ["styles/styles.css"],
   "packs": [
     {
-  "name": "characters",
-  "label": "Characters",
-  "system": "never-stop-blowing-up",
-  "type": "Actor"
-    },
-    {
-  "name": "items",
-  "label": "Items",
-  "system": "never-stop-blowing-up",
-  "type": "Item"
-    },
-    {
   "name": "abilities",
   "label": "SYSTEM - Abilities",
   "system": "never-stop-blowing-up",
