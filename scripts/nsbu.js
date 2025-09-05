@@ -299,7 +299,7 @@ Hooks.once('ready', async function() {
     const sysPack = game.packs.get(sys);
     if (!sysPack) continue;
     // Check if world compendium already exists
-    let worldPack = game.packs.find(p => p.metadata.name === world && !p.metadata.package);
+    let worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     if (!worldPack) {
       // Create world compendium
       await CompendiumCollection.createCompendium({
@@ -308,7 +308,7 @@ Hooks.once('ready', async function() {
         type: sysPack.metadata.type,
         package: "world"
       });
-      worldPack = game.packs.find(p => p.metadata.name === world && !p.metadata.package);
+      worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     }
     // Import all entries if world compendium is empty
     const sysIndex = await sysPack.getIndex();
@@ -319,8 +319,8 @@ Hooks.once('ready', async function() {
     }
   }
 
-  // Folder organization for group-abilities
-  const groupPack = game.packs.find(p => p.metadata.name === "group-abilities" && !p.metadata.package);
+  // Folder organization for group-abilities (world compendium only)
+  const groupPack = game.packs.find(p => p.metadata.name === "group-abilities" && p.metadata.package === "world");
   if (groupPack) {
     await groupPack.getDocuments();
     const folderDefs = [
