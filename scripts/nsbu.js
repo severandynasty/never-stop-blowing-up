@@ -303,6 +303,19 @@ Hooks.once('ready', async function() {
       console.warn(`[NSBU] System compendium not found: ${sys}`);
       continue;
     }
+    // Wait for system compendium to be unlocked and loaded
+    let sysIndex;
+    for (let i = 0; i < 10; i++) {
+      sysIndex = await sysPack.getIndex();
+      if (sysIndex.size > 0) break;
+      console.log(`[NSBU] Waiting for system compendium '${sys}' to populate...`);
+      await new Promise(r => setTimeout(r, 500));
+    }
+    if (!sysIndex || sysIndex.size === 0) {
+      console.error(`[NSBU] System compendium '${sys}' is empty or not loaded!`);
+      continue;
+    }
+    console.log(`[NSBU] System compendium '${sys}' index:`, Array.from(sysIndex.values()));
     // Check if world compendium already exists
     let worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     if (!worldPack) {
@@ -325,7 +338,6 @@ Hooks.once('ready', async function() {
       continue;
     }
     // Import all entries if world compendium is empty
-    const sysIndex = await sysPack.getIndex();
     const worldIndex = await worldPack.getIndex();
     console.log(`[NSBU] System compendium '${sys}' has ${sysIndex.size} entries. World compendium '${world}' has ${worldIndex.size} entries.`);
     if (worldIndex.size === 0 && sysIndex.size > 0) {
