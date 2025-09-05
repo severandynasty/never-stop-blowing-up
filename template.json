@@ -3,32 +3,52 @@
     "types": ["character", "npc", "vehicle"],
     "character": {
       "system": {
+        "player": "",
+        "realWorldCharacter": "",
+        "catchphrase": "",
         "stats": {
-          "grit": 1,
-          "fight": 1,
-          "flight": 1,
-          "brains": 1,
-          "charm": 1,
-          "brawn": 1
+          "weapons": 0,
+          "brawl": 0,
+          "hot": 0,
+          "drive": 0,
+          "stunts": 0,
+          "wits": 0,
+          "tech": 0,
+          "tough": 0,
+          "sneak": 0
         },
         "hp": 10,
         "boomLevel": 1,
-        "inventory": [],
-        "skills": {
-          "explosives": 1,
-          "athletics": 1,
-          "mechanics": 1,
-          "perception": 1
-        }
+        "injuries": [false, false, false],
+        "turboTokens": 0,
+        "abilities": [],
+        "groupAbilities": [],
+        "inventory": "",
+        "bio": ""
       }
     },
     "npc": {
       "system": {
+        "player": "",
+        "realWorldCharacter": "",
+        "catchphrase": "",
         "stats": {
-          "threat": 1,
-          "brawn": 1
+          "weapons": 0,
+          "brawl": 0,
+          "hot": 0,
+          "drive": 0,
+          "stunts": 0,
+          "wits": 0,
+          "tech": 0,
+          "tough": 0,
+          "sneak": 0
         },
-        "hp": 8
+        "hp": 8,
+        "boomLevel": 1,
+        "injuries": [false, false, false],
+        "turboTokens": 0,
+        "abilities": [],
+        "groupAbilities": []
       }
     },
     "vehicle": {
@@ -40,20 +60,7 @@
     }
   },
   "Item": {
-    "types": ["explosive", "gear", "upgrade"],
-    "explosive": {
-      "system": {
-        "damage": 2,
-        "range": "short",
-        "special": ""
-      }
-    },
-    "gear": {
-      "system": {
-        "effect": "",
-        "uses": 1
-      }
-    },
+    "types": ["upgrade"],
     "upgrade": {
       "system": {
         "bonus": "",
