@@ -107,6 +107,22 @@ class NSBUActorSheet extends ActorSheet {
         await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
       }
     });
+
+    // Turbo Token increase/decrease buttons
+    html.find('.token-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      await this.actor.update({ 'system.turboTokens': current + 1 });
+      this.render();
+    });
+    html.find('.token-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.turboTokens': current - 1 });
+        this.render();
+      }
+    });
   }
 }
 

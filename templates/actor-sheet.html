@@ -51,36 +51,14 @@
       </div>
     </div>
 
-    <div class="nsbu-inventory">
-      <label>Inventory</label>
-      <ul class="inventory-list">
-        {{#if system.inventory}}
-          {{#each system.inventory}}
-            <li>{{this}}</li>
-          {{/each}}
-        {{else}}
-          <li class="empty">No items</li>
-        {{/if}}
-      </ul>
-    </div>
+
 
     <div class="nsbu-turbo-tokens">
-      <label>Turbo Token Tracker</label>
-      <div class="token-circles">
-        {{#if system.turboTokens}}
-          {{#each system.turboTokens as |token idx|}}
-            <input type="checkbox" name="system.turboTokens.{{idx}}" value="true" {{#if token}}checked{{/if}} />
-          {{/each}}
-        {{else}}
-          <input type="checkbox" name="system.turboTokens.0" value="true" />
-          <input type="checkbox" name="system.turboTokens.1" value="true" />
-          <input type="checkbox" name="system.turboTokens.2" value="true" />
-          <input type="checkbox" name="system.turboTokens.3" value="true" />
-          <input type="checkbox" name="system.turboTokens.4" value="true" />
-          <input type="checkbox" name="system.turboTokens.5" value="true" />
-          <input type="checkbox" name="system.turboTokens.6" value="true" />
-          <input type="checkbox" name="system.turboTokens.7" value="true" />
-        {{/if}}
+      <label>Turbo Tokens</label>
+      <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
+        <button type="button" class="token-decrease" style="width:2em;">-</button>
+        <input name="system.turboTokens" type="number" value="{{system.turboTokens}}" min="0" style="width:3em; text-align:center;"/>
+        <button type="button" class="token-increase" style="width:2em;">+</button>
       </div>
     </div>
 
@@ -106,7 +84,25 @@
 
     <div class="nsbu-group-abilities">
       <label>Group Abilities</label>
-      <textarea name="system.groupAbilities">{{system.groupAbilities}}</textarea>
+      <div class="group-abilities-list" data-drop="group-abilities">
+        {{#each items as |item|}}
+          {{#if (and (eq item.type "upgrade") (item.system.groupSuite))}}
+            <div class="group-ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+              <div style="flex: 1 1 auto;">
+                <span style="font-weight:bold;">{{item.name}}</span>
+                <span class="desc">{{item.system.description}}</span>
+              </div>
+              <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Group Ability" style="flex: 0 0 auto; width: 24px; height: 24px; min-width: 0; min-height: 0; padding: 0; font-size: 18px; line-height: 1; text-align: center;">&times;</button>
+            </div>
+          {{/if}}
+        {{/each}}
+        <div class="empty"><em>Drag group abilities here from the compendium.</em></div>
+      </div>
+    </div>
+
+    <div class="nsbu-inventory">
+      <label>Inventory</label>
+      <input name="system.inventory" type="text" value="{{system.inventory}}" placeholder="Inventory" style="width:100%;"/>
     </div>
   </div>
 </form>
