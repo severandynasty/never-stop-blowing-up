@@ -75,6 +75,12 @@ class NSBUActorSheet extends ActorSheet {
       const input = event.currentTarget;
       const name = input.name;
       let value = input.value;
+      // Only treat inventory as a plain string
+      if (name === 'system.inventory') {
+        await this.actor.update({ 'system.inventory': value });
+        this.render();
+        return;
+      }
       // Handle checkboxes: unchecked boxes are not submitted, so use hidden fields
       if (input.type === 'checkbox') {
         value = input.checked ? true : false;
