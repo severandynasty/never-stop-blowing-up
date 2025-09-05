@@ -4,8 +4,8 @@ A custom tabletop RPG system for Foundry Virtual Tabletop, inspired by Kids on B
 
 ## Features
 
-- Custom character sheets with stats, HP, and Boom Level
-- Item support for explosives, gear, and upgrades
+- Custom character sheets for PCs and NPCs, each with unique layouts and fields
+- Individual Player and Group Ability compendiums for easy drag-and-drop character building
 - Dice macros for fast gameplay
 - Designed for Foundry VTT v12+
 
@@ -17,8 +17,8 @@ A custom tabletop RPG system for Foundry Virtual Tabletop, inspired by Kids on B
 
 ## Usage
 
-- Create actors using the provided character sheet template.
-- Add items to actors for gear and explosives.
+- Create actors using the character or NPC sheet templates.
+- Drag and drop abilities from the appropriate compendium onto actor sheets.
 - Use macros for dice rolls and actions.
 
 ## Credits

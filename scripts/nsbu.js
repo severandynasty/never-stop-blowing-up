@@ -98,6 +98,39 @@ class NSBUActorSheet extends ActorSheet {
       await this.actor.update(updateData);
       this.render();
     });
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const statValue = Number(this.actor.system.stats[stat]);
+      // Map stat value to die type
+      const dieSteps = [4, 6, 8, 10, 12];
+      let dieIdx = dieSteps.indexOf(statValue);
+      if (dieIdx === -1) dieIdx = 0;
+      let currentDie = dieSteps[dieIdx];
+      let total = 0;
+      let rolls = [];
+      let blowUp = false;
+      do {
+        const roll = new Roll(`1d${currentDie}`).roll({async: false});
+        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
+        const value = roll.total;
+        rolls.push(value);
+        total += value;
+        blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
+        if (blowUp) {
+          dieIdx++;
+          currentDie = dieSteps[dieIdx];
+        }
+      } while (blowUp);
+      // If the die blew up, update the stat to the new die
+      if (dieIdx > dieSteps.indexOf(statValue)) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
+        ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
+      }
+    });
+
     html.find('.remove-ability').on('click', async (event) => {
       event.preventDefault();
       const itemId = event.currentTarget.dataset.itemId;
