@@ -114,7 +114,7 @@ class NSBUActorSheet extends ActorSheet {
       let blowUp = false;
       do {
         const roll = new Roll(`1d${currentDie}`);
-        roll.evaluateSync();
+        await roll.evaluate({async: true});
         await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
         const value = roll.total;
         rolls.push(value);
