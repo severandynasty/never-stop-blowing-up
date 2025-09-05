@@ -90,10 +90,12 @@
       <div class="abilities-list" data-drop="abilities">
         {{#each items as |item|}}
           {{#if (eq item.type "upgrade")}}
-            <div class="ability-entry" data-item-id="{{item._id}}">
-              <span style="font-weight:bold;">{{item.name}}</span>
-              <span class="desc">{{item.system.description}}</span>
-              <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Ability" style="margin-left:8px;">&times;</button>
+            <div class="ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between;">
+              <div>
+                <span style="font-weight:bold;">{{item.name}}</span>
+                <span class="desc">{{item.system.description}}</span>
+              </div>
+              <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Ability" style="width: 24px; height: 24px; min-width: 0; min-height: 0; padding: 0; margin-left: 12px; font-size: 18px; line-height: 1; text-align: center;">&times;</button>
             </div>
           {{/if}}
         {{/each}}
