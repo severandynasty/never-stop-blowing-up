@@ -217,20 +217,20 @@ Hooks.once('ready', async function() {
     }
   }
 
-  // Debug logging for Group Abilities compendium folders and item types
-  const pack = game.packs.get("never-stop-blowing-up.group-abilities");
-  if (!pack) {
-    console.warn("[NSBU] Group Abilities compendium not found.");
+  // Folder and item assignment for Group Abilities: only operate on world compendium
+  const worldPack = game.packs.find(p => p.metadata.name === "group-abilities" && p.metadata.package === "world");
+  if (!worldPack) {
+    console.warn("[NSBU] World compendium 'group-abilities' not found.");
     return;
   }
-  // Log folders in the compendium
-  if (pack.folders) {
-    console.log("[NSBU] Group Abilities Folders:", pack.folders);
+  // Log folders in the world compendium
+  if (worldPack.folders) {
+    console.log("[NSBU] World Group Abilities Folders:", worldPack.folders);
   } else {
-    console.warn("[NSBU] No folders found in Group Abilities compendium.");
+    console.warn("[NSBU] No folders found in world Group Abilities compendium.");
   }
   // Log all items and their folder/type
-  const docs = await pack.getDocuments();
+  const docs = await worldPack.getDocuments();
   for (const doc of docs) {
     console.log(`[NSBU] Item: ${doc.name} | Type: ${doc.type} | Folder: ${doc.folder}`);
     if (doc.type !== "Item") {
@@ -238,8 +238,8 @@ Hooks.once('ready', async function() {
     }
   }
 
-  // Auto-create folders and assign items in Group Abilities compendium at world init
-  await pack.getDocuments(); // Ensure items are loaded
+  // Auto-create folders and assign items in world Group Abilities compendium at world init
+  await worldPack.getDocuments(); // Ensure items are loaded
 
   // Folder definitions
   const folderDefs = [
@@ -256,7 +256,7 @@ Hooks.once('ready', async function() {
 
   // Create folders if missing
   for (const def of folderDefs) {
-    let folder = pack.folders.find(f => f.name === def.name);
+    let folder = worldPack.folders.find(f => f.name === def.name);
     if (!folder) {
       await Folder.create({
         name: def.name,
@@ -265,19 +265,19 @@ Hooks.once('ready', async function() {
         parent: null,
         sorting: "a",
         folder: null,
-        pack: pack.collection
-      }, { pack: pack.collection });
+        pack: worldPack.collection
+      }, { pack: worldPack.collection });
     }
   }
 
   // Map folder names to IDs
   const folders = {};
-  for (const f of pack.folders) {
+  for (const f of worldPack.folders) {
     folders[f.name] = f.id;
   }
 
   // Assign items to folders
-  const items = await pack.getDocuments();
+  const items = await worldPack.getDocuments();
   for (const item of items) {
     const suite = item.system.groupSuite;
     if (suite && folders[suite] && item.folder !== folders[suite]) {
