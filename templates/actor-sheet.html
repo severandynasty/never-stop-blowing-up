@@ -93,10 +93,11 @@
             <div class="ability-entry" data-item-id="{{item._id}}">
               <span style="font-weight:bold;">{{item.name}}</span>
               <span class="desc">{{item.system.description}}</span>
+              <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Ability" style="margin-left:8px;">&times;</button>
             </div>
           {{/if}}
         {{/each}}
-        <div class="empty">Drag abilities here from the compendium.</div>
+  <div class="empty"><em>Drag abilities here from the compendium.</em></div>
       </div>
     </div>
     <div style="margin-bottom: 2em;"></div>

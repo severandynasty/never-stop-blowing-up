@@ -95,6 +95,15 @@ class NSBUActorSheet extends ActorSheet {
       await this.actor.update(updateData);
       this.render();
     });
+
+    // Remove ability button
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      if (itemId) {
+        await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
+      }
+    });
   }
 }
 
