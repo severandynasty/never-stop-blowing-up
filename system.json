@@ -11,7 +11,7 @@
   "name": "abilities",
   "label": "SYSTEM - Abilities",
   "system": "never-stop-blowing-up",
-  "type": "upgrade",
+  "type": "Item",
   "path": "packs/abilities.db"
     }
     ,
