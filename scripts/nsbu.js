@@ -106,8 +106,8 @@ class NSBUActorSheet extends ActorSheet {
   const stats = this.actor.system.stats || {};
   let statValue = Number(stats[stat]);
   if (!statValue || ![4,6,8,10,12].includes(statValue)) statValue = 4;
-  // Map stat value to die type
-  const dieSteps = [4, 6, 8, 10, 12];
+  // Map stat value to die type (now up to d20)
+  const dieSteps = [4, 6, 8, 10, 12, 20];
   let dieIdx = dieSteps.indexOf(statValue);
   if (dieIdx === -1) dieIdx = 0;
   let currentDie = dieSteps[dieIdx];
