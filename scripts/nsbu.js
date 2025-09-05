@@ -216,4 +216,25 @@ Hooks.once('ready', async function() {
       console.log("Abilities Compendium Documents:", docs);
     }
   }
+
+  // Debug logging for Group Abilities compendium folders and item types
+  const pack = game.packs.get("never-stop-blowing-up.group-abilities");
+  if (!pack) {
+    console.warn("[NSBU] Group Abilities compendium not found.");
+    return;
+  }
+  // Log folders in the compendium
+  if (pack.folders) {
+    console.log("[NSBU] Group Abilities Folders:", pack.folders);
+  } else {
+    console.warn("[NSBU] No folders found in Group Abilities compendium.");
+  }
+  // Log all items and their folder/type
+  const docs = await pack.getDocuments();
+  for (const doc of docs) {
+    console.log(`[NSBU] Item: ${doc.name} | Type: ${doc.type} | Folder: ${doc.folder}`);
+    if (doc.type !== "upgrade") {
+      console.warn(`[NSBU] Item '${doc.name}' has unexpected type: ${doc.type}`);
+    }
+  }
 });
