@@ -9,7 +9,7 @@
   "packs": [
     {
   "name": "abilities",
-  "label": "SYSTEM - Abilities",
+  "label": "Player Abilities",
   "system": "never-stop-blowing-up",
   "type": "Item",
   "path": "packs/abilities.db"
@@ -17,63 +17,63 @@
     ,
     {
       "name": "la-familia",
-      "label": "La Familia Abilities",
+  "label": "Group Abilities - La Familia",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/la-familia.db"
     },
     {
       "name": "criminal-conspiracy",
-      "label": "Criminal Conspiracy Abilities",
+  "label": "Group Abilities - Criminal Conspiracy",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/criminal-conspiracy.db"
     },
     {
       "name": "diesel-circus",
-      "label": "Diesel Circus Abilities",
+  "label": "Group Abilities - Diesel Circus",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/diesel-circus.db"
     },
     {
       "name": "the-continentals",
-      "label": "The Continentals Abilities",
+  "label": "Group Abilities - The Continentals",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/the-continentals.db"
     },
     {
       "name": "alpha-squad",
-      "label": "Alpha Squad Abilities",
+  "label": "Group Abilities - Alpha Squad",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/alpha-squad.db"
     },
     {
       "name": "marauders",
-      "label": "Marauders Abilities",
+  "label": "Group Abilities - Marauders",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/marauders.db"
     },
     {
       "name": "the-ones",
-      "label": "The Ones Abilities",
+  "label": "Group Abilities - The Ones",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/the-ones.db"
     },
     {
       "name": "tactical-command",
-      "label": "Tactical Command Abilities",
+  "label": "Group Abilities - Tactical Command",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/tactical-command.db"
     },
     {
       "name": "bustin",
-      "label": "Bustin' Makes Me Feel Good Abilities",
+  "label": "Group Abilities - Bustin' Makes Me Feel Good",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/bustin.db"
