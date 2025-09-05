@@ -289,6 +289,8 @@ Hooks.once('ready', async function() {
 // Macro/script to clone system compendiums into world-level compendiums and organize folders
 Hooks.once('ready', async function() {
   if (!game.user.isGM) return;
+  // Wait for system to be fully initialized
+  await new Promise(r => setTimeout(r, 1000));
   // List of system compendiums to clone
   const packsToClone = [
     { sys: "never-stop-blowing-up.abilities", world: "abilities" },
