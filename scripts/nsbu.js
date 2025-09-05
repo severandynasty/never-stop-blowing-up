@@ -316,6 +316,7 @@ Hooks.once('ready', async function() {
       continue;
     }
     console.log(`[NSBU] System compendium '${sys}' index:`, Array.from(sysIndex.values()));
+  console.log(`[NSBU] System compendium metadata:`, sysPack.metadata);
     // Check if world compendium already exists
     let worldPack = game.packs.find(p => p.metadata.name === world && p.metadata.package === "world");
     if (!worldPack) {
@@ -343,6 +344,7 @@ Hooks.once('ready', async function() {
       console.error(`[NSBU] World compendium '${world}' not found after creation attempt.`);
       continue;
     }
+  console.log(`[NSBU] World compendium metadata:`, worldPack.metadata);
     // Import all entries if world compendium is empty
     const worldIndex = await worldPack.getIndex();
     console.log(`[NSBU] System compendium '${sys}' has ${sysIndex.size} entries. World compendium '${world}' has ${worldIndex.size} entries.`);
