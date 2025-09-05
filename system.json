@@ -17,63 +17,63 @@
     ,
     {
       "name": "la-familia",
-  "label": "Group Abilities - La Familia",
+  "label": "Group Abilities - La Familia [d6]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/la-familia.db"
     },
     {
       "name": "criminal-conspiracy",
-  "label": "Group Abilities - Criminal Conspiracy",
+  "label": "Group Abilities - Criminal Conspiracy [d6]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/criminal-conspiracy.db"
     },
     {
       "name": "diesel-circus",
-  "label": "Group Abilities - Diesel Circus",
+  "label": "Group Abilities - Diesel Circus [d8]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/diesel-circus.db"
     },
     {
       "name": "the-continentals",
-  "label": "Group Abilities - The Continentals",
+  "label": "Group Abilities - The Continentals [d8]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/the-continentals.db"
     },
     {
       "name": "alpha-squad",
-  "label": "Group Abilities - Alpha Squad",
+  "label": "Group Abilities - Alpha Squad [d10]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/alpha-squad.db"
     },
     {
       "name": "marauders",
-  "label": "Group Abilities - Marauders",
+  "label": "Group Abilities - Marauders [d10]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/marauders.db"
     },
     {
       "name": "the-ones",
-  "label": "Group Abilities - The Ones",
+  "label": "Group Abilities - The Ones [d12]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/the-ones.db"
     },
     {
       "name": "tactical-command",
-  "label": "Group Abilities - Tactical Command",
+  "label": "Group Abilities - Tactical Command [d12]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/tactical-command.db"
     },
     {
       "name": "bustin",
-  "label": "Group Abilities - Bustin' Makes Me Feel Good",
+  "label": "Group Abilities - Bustin' Makes Me Feel Good [d20]",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/bustin.db"
