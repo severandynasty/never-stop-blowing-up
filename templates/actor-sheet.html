@@ -108,7 +108,7 @@
       <label>Abilities</label>
       <div class="abilities-list" data-drop="abilities">
         {{#each items as |item|}}
-          {{#if (eq item.type "Item")}}
+          {{#if (eq item.type "upgrade")}}
             <div class="ability-entry" data-item-id="{{item._id}}">
               <img src="{{item.img}}" height="32" width="32" />
               <span>{{item.name}}</span>
