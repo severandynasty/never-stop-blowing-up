@@ -20,16 +20,16 @@
   "type": "Item"
     },
     {
-      "name": "abilities",
-      "label": "Abilities",
-      "system": "never-stop-blowing-up",
+  "name": "abilities",
+  "label": "SYSTEM - Abilities",
+  "system": "never-stop-blowing-up",
   "type": "Item",
   "path": "packs/abilities.db"
     }
     ,
     {
       "name": "group-abilities",
-      "label": "Group Abilities",
+      "label": "SYSTEM - Group Abilities",
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/group-abilities.db"

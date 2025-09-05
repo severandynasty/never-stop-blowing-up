@@ -285,3 +285,82 @@ Hooks.once('ready', async function() {
     }
   }
 });
+
+// Macro/script to clone system compendiums into world-level compendiums and organize folders
+Hooks.once('ready', async function() {
+  if (!game.user.isGM) return;
+  // List of system compendiums to clone
+  const packsToClone = [
+    { sys: "never-stop-blowing-up.abilities", world: "abilities" },
+    { sys: "never-stop-blowing-up.group-abilities", world: "group-abilities" }
+  ];
+
+  for (const { sys, world } of packsToClone) {
+    const sysPack = game.packs.get(sys);
+    if (!sysPack) continue;
+    // Check if world compendium already exists
+    let worldPack = game.packs.find(p => p.metadata.name === world && !p.metadata.package);
+    if (!worldPack) {
+      // Create world compendium
+      await CompendiumCollection.createCompendium({
+        label: sysPack.metadata.label.replace(/^SYSTEM - /, ""),
+        name: world,
+        type: sysPack.metadata.type,
+        package: "world"
+      });
+      worldPack = game.packs.find(p => p.metadata.name === world && !p.metadata.package);
+    }
+    // Import all entries if world compendium is empty
+    const sysIndex = await sysPack.getIndex();
+    const worldIndex = await worldPack.getIndex();
+    if (worldIndex.size === 0 && sysIndex.size > 0) {
+      await worldPack.importAll();
+      ui.notifications.info(`Imported all entries from ${sysPack.metadata.label} to world compendium.`);
+    }
+  }
+
+  // Folder organization for group-abilities
+  const groupPack = game.packs.find(p => p.metadata.name === "group-abilities" && !p.metadata.package);
+  if (groupPack) {
+    await groupPack.getDocuments();
+    const folderDefs = [
+      { name: "La Familia (Unlocked at d6)", color: "#e57373" },
+      { name: "Criminal Conspiracy (Unlocked at d6)", color: "#ba68c8" },
+      { name: "Diesel Circus (Unlocked at d8)", color: "#64b5f6" },
+      { name: "The Continentals (Unlocked at d8)", color: "#ffd54f" },
+      { name: "Alpha Squad (Unlocked at d10)", color: "#81c784" },
+      { name: "Marauders (Unlocked at d10)", color: "#ffb74d" },
+      { name: "The Ones (Unlocked at d12)", color: "#4dd0e1" },
+      { name: "Tactical Command (Unlocked at d12)", color: "#a1887f" },
+      { name: "Bustin' Makes Me Feel Good (Unlocked at d20)", color: "#f06292" }
+    ];
+    // Create folders if missing
+    for (const def of folderDefs) {
+      let folder = groupPack.folders.find(f => f.name === def.name);
+      if (!folder) {
+        await Folder.create({
+          name: def.name,
+          type: "Item",
+          color: def.color,
+          parent: null,
+          sorting: "a",
+          folder: null,
+          pack: groupPack.collection
+        }, { pack: groupPack.collection });
+      }
+    }
+    // Map folder names to IDs
+    const folders = {};
+    for (const f of groupPack.folders) {
+      folders[f.name] = f.id;
+    }
+    // Assign items to folders
+    const items = await groupPack.getDocuments();
+    for (const item of items) {
+      const suite = item.system.groupSuite;
+      if (suite && folders[suite] && item.folder !== folders[suite]) {
+        await item.update({ folder: folders[suite] });
+      }
+    }
+  }
+});
