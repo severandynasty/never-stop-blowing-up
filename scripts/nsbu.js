@@ -246,32 +246,51 @@ Hooks.once("init", () => {
     Actor: {
       character: {
         system: {
+          realWorldCharacter: { type: String, default: "" },
+          catchphrase: { type: String, default: "" },
           stats: {
-            grit: { type: Number, default: 1 },
-            fight: { type: Number, default: 1 },
-            flight: { type: Number, default: 1 },
-            brains: { type: Number, default: 1 },
-            charm: { type: Number, default: 1 },
-            brawn: { type: Number, default: 1 }
+            weapons: { type: Number, default: 4 },
+            brawl: { type: Number, default: 4 },
+            hot: { type: Number, default: 4 },
+            drive: { type: Number, default: 4 },
+            stunts: { type: Number, default: 4 },
+            wits: { type: Number, default: 4 },
+            tech: { type: Number, default: 4 },
+            tough: { type: Number, default: 4 },
+            sneak: { type: Number, default: 4 }
           },
           hp: { type: Number, default: 10 },
           boomLevel: { type: Number, default: 1 },
-          inventory: { type: Array, default: [] },
-          skills: {
-            explosives: { type: Number, default: 1 },
-            athletics: { type: Number, default: 1 },
-            mechanics: { type: Number, default: 1 },
-            perception: { type: Number, default: 1 }
-          }
+          injuries: { type: Array, default: [false, false, false] },
+          turboTokens: { type: Number, default: 0 },
+          abilities: { type: Array, default: [] },
+          groupAbilities: { type: Array, default: [] },
+          inventory: { type: String, default: "" },
+          bio: { type: String, default: "" }
         }
       },
       npc: {
         system: {
+          realWorldCharacter: { type: String, default: "" },
+          catchphrase: { type: String, default: "" },
           stats: {
-            threat: { type: Number, default: 1 },
-            brawn: { type: Number, default: 1 }
+            weapons: { type: Number, default: 4 },
+            brawl: { type: Number, default: 4 },
+            hot: { type: Number, default: 4 },
+            drive: { type: Number, default: 4 },
+            stunts: { type: Number, default: 4 },
+            wits: { type: Number, default: 4 },
+            tech: { type: Number, default: 4 },
+            tough: { type: Number, default: 4 },
+            sneak: { type: Number, default: 4 }
           },
-          hp: { type: Number, default: 8 }
+          hp: { type: Number, default: 8 },
+          boomLevel: { type: Number, default: 1 },
+          injuries: { type: Array, default: [false, false, false] },
+          turboTokens: { type: Number, default: 0 },
+          abilities: { type: Array, default: [] },
+          groupAbilities: { type: Array, default: [] },
+          notes: { type: String, default: "" }
         }
       },
       vehicle: {
