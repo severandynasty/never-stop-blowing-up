@@ -48,11 +48,11 @@ Hooks.on('preCreateActor', (actor, data, options, userId) => {
   if (data.system.boomLevel == null) data.system.boomLevel = defaults.boomLevel;
   console.log('[NSBU] Final merged data.system:', data.system);
 });
+
 class NSBUActorSheet extends ActorSheet {
   getData(options) {
     const data = super.getData(options);
     data.system = this.actor.system ?? {};
-    // Include owned items for abilities display
     data.items = this.actor.items ? this.actor.items.contents : [];
     return data;
   }
@@ -64,24 +64,20 @@ class NSBUActorSheet extends ActorSheet {
       height: 600
     });
   }
-
   async _updateObject(event, formData) {
     await this.actor.update(formData);
   }
-
   activateListeners(html) {
     super.activateListeners(html);
     html.find('input, select, textarea').on('change blur', async (event) => {
       const input = event.currentTarget;
       const name = input.name;
       let value = input.value;
-      // Only treat inventory as a plain string
       if (name === 'system.inventory') {
         await this.actor.update({ 'system.inventory': value });
         this.render();
         return;
       }
-      // Handle checkboxes: unchecked boxes are not submitted, so use hidden fields
       if (input.type === 'checkbox') {
         value = input.checked ? true : false;
       } else if (input.type === 'number') {
@@ -91,7 +87,6 @@ class NSBUActorSheet extends ActorSheet {
       } else if (value === 'false') {
         value = false;
       }
-      // Build update data object
       const updateData = {};
       const keys = name.split('.');
       let ref = updateData;
@@ -100,12 +95,9 @@ class NSBUActorSheet extends ActorSheet {
         ref = ref[keys[i]];
       }
       ref[keys[keys.length - 1]] = value;
-      console.log('[NSBU] Auto-save field:', name, 'Value:', value, 'UpdateData:', updateData);
       await this.actor.update(updateData);
       this.render();
     });
-
-    // Remove ability button
     html.find('.remove-ability').on('click', async (event) => {
       event.preventDefault();
       const itemId = event.currentTarget.dataset.itemId;
@@ -113,8 +105,74 @@ class NSBUActorSheet extends ActorSheet {
         await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
       }
     });
+    html.find('.token-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      await this.actor.update({ 'system.turboTokens': current + 1 });
+      this.render();
+    });
+    html.find('.token-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.turboTokens': current - 1 });
+        this.render();
+      }
+    });
+  }
+}
 
-    // Turbo Token increase/decrease buttons
+class NSBUNPCSheet extends ActorSheet {
+  getData(options) {
+    const data = super.getData(options);
+    data.system = this.actor.system ?? {};
+    data.items = this.actor.items ? this.actor.items.contents : [];
+    return data;
+  }
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "npc"],
+      template: "systems/never-stop-blowing-up/templates/npc-sheet.html",
+      width: 600,
+      height: 600
+    });
+  }
+  async _updateObject(event, formData) {
+    await this.actor.update(formData);
+  }
+  activateListeners(html) {
+    super.activateListeners(html);
+    html.find('input, select').on('change blur', async (event) => {
+      const input = event.currentTarget;
+      const name = input.name;
+      let value = input.value;
+      if (input.type === 'checkbox') {
+        value = input.checked ? true : false;
+      } else if (input.type === 'number') {
+        value = Number(value);
+      } else if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
+      const updateData = {};
+      const keys = name.split('.');
+      let ref = updateData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!ref[keys[i]]) ref[keys[i]] = {};
+        ref = ref[keys[i]];
+      }
+      ref[keys[keys.length - 1]] = value;
+      await this.actor.update(updateData);
+      this.render();
+    });
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      if (itemId) {
+        await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
+      }
+    });
     html.find('.token-increase').on('click', async (event) => {
       event.preventDefault();
       const current = Number(this.actor.system.turboTokens) || 0;
@@ -213,10 +271,14 @@ Hooks.once("init", () => {
     }
   };
 
-  // Register the custom actor sheet for all actor types
+  // Register the custom actor sheets
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("never-stop-blowing-up", NSBUActorSheet, {
-    types: ["character", "npc", "vehicle"],
+    types: ["character", "vehicle"],
+    makeDefault: true
+  });
+  Actors.registerSheet("never-stop-blowing-up", NSBUNPCSheet, {
+    types: ["npc"],
     makeDefault: true
   });
 

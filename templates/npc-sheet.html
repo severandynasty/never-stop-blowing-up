@@ -1,0 +1,107 @@
+
+<form class="actor-sheet nsbu-sheet" autocomplete="off">
+  <div class="nsbu-header">
+    <div class="nsbu-title">
+      <h1>Never Stop <span>Blowing Up</span> (NPC)</h1>
+    </div>
+    <div class="nsbu-player-info">
+  <label>Player</label>
+  <input name="system.player" type="text" value="{{system.player}}" placeholder="Player Name"/>
+  <label>Character Name</label>
+  <input name="system.realWorldCharacter" type="text" value="{{system.realWorldCharacter}}"/>
+  <label>Catchphrase</label>
+  <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase"/>
+  <div style="margin-bottom: 1em;"></div>
+    </div>
+  </div>
+
+  <div class="nsbu-main-grid">
+    <div class="nsbu-stats-grid">
+      <div class="stats-row">
+        <div><label>Weapons</label><input name="system.stats.weapons" type="number" value="{{system.stats.weapons}}" min="0"/></div>
+        <div><label>Brawl</label><input name="system.stats.brawl" type="number" value="{{system.stats.brawl}}" min="0"/></div>
+        <div><label>Hot</label><input name="system.stats.hot" type="number" value="{{system.stats.hot}}" min="0"/></div>
+      </div>
+      <div class="stats-row">
+        <div><label>Drive</label><input name="system.stats.drive" type="number" value="{{system.stats.drive}}" min="0"/></div>
+        <div><label>Stunts</label><input name="system.stats.stunts" type="number" value="{{system.stats.stunts}}" min="0"/></div>
+        <div><label>Wits</label><input name="system.stats.wits" type="number" value="{{system.stats.wits}}" min="0"/></div>
+      </div>
+      <div class="stats-row">
+        <div><label>Tech</label><input name="system.stats.tech" type="number" value="{{system.stats.tech}}" min="0"/></div>
+        <div><label>Tough</label><input name="system.stats.tough" type="number" value="{{system.stats.tough}}" min="0"/></div>
+        <div><label>Sneak</label><input name="system.stats.sneak" type="number" value="{{system.stats.sneak}}" min="0"/></div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 2em; align-items: flex-end;">
+      <div class="nsbu-injuries">
+        <label>Injuries</label>
+        <div class="injury-radio-group">
+          <div class="injury-circles">
+            {{#if system.injuries}}
+              {{#each system.injuries as |injury idx|}}
+                <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
+              {{/each}}
+            {{else}}
+              <input type="checkbox" name="system.injuries.0" />
+              <input type="checkbox" name="system.injuries.1" />
+              <input type="checkbox" name="system.injuries.2" />
+            {{/if}}
+          </div>
+        </div>
+      </div>
+      <div class="nsbu-turbo-tokens">
+        <label>Turbo Tokens</label>
+        <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
+          <button type="button" class="token-decrease" style="width:2em;">-</button>
+          <input name="system.turboTokens" type="number" value="{{system.turboTokens}}" min="0" style="width:3em; text-align:center;"/>
+          <button type="button" class="token-increase" style="width:2em;">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="nsbu-abilities" style="margin-top: 1em;">
+      <label>Abilities</label>
+      <div class="abilities-list" data-drop="abilities">
+        {{#each items as |item|}}
+          {{#if (eq item.type "upgrade")}}
+            {{#unless item.system.groupSuite}}
+              <div class="ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="flex: 1 1 auto;">
+                  <span style="font-weight:bold;">{{item.name}}</span>
+                  <span class="desc">{{item.system.description}}</span>
+                </div>
+                <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Ability" style="flex: 0 0 auto; width: 24px; height: 24px; min-width: 0; min-height: 0; padding: 0; font-size: 18px; line-height: 1; text-align: center;">&times;</button>
+              </div>
+            {{/unless}}
+          {{/if}}
+        {{/each}}
+        <div class="empty"><em>Drag abilities here from the compendium.</em></div>
+      </div>
+    </div>
+    <div style="margin-bottom: 2em;"></div>
+
+    <div class="nsbu-group-abilities">
+      <label>Group Abilities</label>
+      <div class="group-abilities-list" data-drop="group-abilities">
+        {{#each items as |item|}}
+          {{#if (eq item.type "upgrade")}}
+            {{#if item.system.groupSuite}}
+              <div class="group-ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                <div style="flex: 1 1 auto;">
+                  <span style="font-weight:bold;">{{item.name}}</span>
+                  <span class="desc">{{item.system.description}}</span>
+                </div>
+                <button type="button" class="remove-ability" data-item-id="{{item._id}}" title="Remove Group Ability" style="flex: 0 0 auto; width: 24px; height: 24px; min-width: 0; min-height: 0; padding: 0; font-size: 18px; line-height: 1; text-align: center;">&times;</button>
+              </div>
+            {{/if}}
+          {{/if}}
+        {{/each}}
+        <div class="empty"><em>Drag group abilities here from the compendium.</em></div>
+      </div>
+  </div>
+
+  <div style="margin-bottom: 2em;"></div>
+  <div style="margin-bottom: 2em;"></div>
+</form>
