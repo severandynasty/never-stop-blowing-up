@@ -11,16 +11,16 @@
   "name": "abilities",
   "label": "SYSTEM - Abilities",
   "system": "never-stop-blowing-up",
-  "type": "Item",
+  "type": "upgrade",
   "path": "packs/abilities.db"
     }
     ,
     {
-      "name": "group-abilities",
-      "label": "SYSTEM - Group Abilities",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/group-abilities.db"
+  "name": "group-abilities",
+  "label": "SYSTEM - Group Abilities",
+  "system": "never-stop-blowing-up",
+  "type": "upgrade",
+  "path": "packs/group-abilities.db"
     }
   ],
   "compatibility": {
