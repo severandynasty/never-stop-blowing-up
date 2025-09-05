@@ -48,7 +48,8 @@
         "injuries": [false, false, false],
         "turboTokens": 0,
         "abilities": [],
-        "groupAbilities": []
+        "groupAbilities": [],
+        "notes": ""
       }
     },
     "vehicle": {
