@@ -20,43 +20,43 @@
       <div class="stats-row">
         <div>
           <label class="stat-roll" data-stat="weapons" style="cursor:pointer; text-decoration:underline;">Weapons</label>
-          <span class="stat-die">d{{system.stats.weapons}}</span>
+          <span class="stat-die">d{{#if system.stats.weapons}}{{system.stats.weapons}}{{else}}4{{/if}}</span>
         </div>
         <div>
           <label class="stat-roll" data-stat="brawl" style="cursor:pointer; text-decoration:underline;">Brawl</label>
-          <span class="stat-die">d{{system.stats.brawl}}</span>
+          <span class="stat-die">d{{#if system.stats.brawl}}{{system.stats.brawl}}{{else}}4{{/if}}</span>
         </div>
         <div>
           <label class="stat-roll" data-stat="hot" style="cursor:pointer; text-decoration:underline;">Hot</label>
-          <span class="stat-die">d{{system.stats.hot}}</span>
+          <span class="stat-die">d{{#if system.stats.hot}}{{system.stats.hot}}{{else}}4{{/if}}</span>
         </div>
       </div>
       <div class="stats-row">
         <div>
           <label class="stat-roll" data-stat="drive" style="cursor:pointer; text-decoration:underline;">Drive</label>
-          <span class="stat-die">d{{system.stats.drive}}</span>
+          <span class="stat-die">d{{#if system.stats.drive}}{{system.stats.drive}}{{else}}4{{/if}}</span>
         </div>
         <div>
           <label class="stat-roll" data-stat="stunts" style="cursor:pointer; text-decoration:underline;">Stunts</label>
-          <span class="stat-die">d{{system.stats.stunts}}</span>
+          <span class="stat-die">d{{#if system.stats.stunts}}{{system.stats.stunts}}{{else}}4{{/if}}</span>
         </div>
         <div>
           <label class="stat-roll" data-stat="wits" style="cursor:pointer; text-decoration:underline;">Wits</label>
-          <span class="stat-die">d{{system.stats.wits}}</span>
+          <span class="stat-die">d{{#if system.stats.wits}}{{system.stats.wits}}{{else}}4{{/if}}</span>
         </div>
       </div>
       <div class="stats-row">
         <div>
           <label class="stat-roll" data-stat="tech" style="cursor:pointer; text-decoration:underline;">Tech</label>
-          <span class="stat-die">d{{system.stats.tech}}</span>
+          <span class="stat-die">d{{#if system.stats.tech}}{{system.stats.tech}}{{else}}4{{/if}}</span>
         </div>
         <div>
           <label class="stat-roll" data-stat="tough" style="cursor:pointer; text-decoration:underline;">Tough</label>
-          <span class="stat-die">d{{system.stats.tough}}</span>
+          <span class="stat-die">d{{#if system.stats.tough}}{{system.stats.tough}}{{else}}4{{/if}}</span>
         </div>
         <div>
           <label class="stat-roll" data-stat="sneak" style="cursor:pointer; text-decoration:underline;">Sneak</label>
-          <span class="stat-die">d{{system.stats.sneak}}</span>
+          <span class="stat-die">d{{#if system.stats.sneak}}{{system.stats.sneak}}{{else}}4{{/if}}</span>
         </div>
       </div>
     </div>

@@ -102,13 +102,15 @@ class NSBUActorSheet extends ActorSheet {
     // Dice blow-up mechanic for stats
     html.find('.stat-roll').on('click', async (event) => {
       event.preventDefault();
-      const stat = event.currentTarget.dataset.stat;
-      const statValue = Number(this.actor.system.stats[stat]);
-      // Map stat value to die type
-      const dieSteps = [4, 6, 8, 10, 12];
-      let dieIdx = dieSteps.indexOf(statValue);
-      if (dieIdx === -1) dieIdx = 0;
-      let currentDie = dieSteps[dieIdx];
+  const stat = event.currentTarget.dataset.stat;
+  const stats = this.actor.system.stats || {};
+  let statValue = Number(stats[stat]);
+  if (!statValue || ![4,6,8,10,12].includes(statValue)) statValue = 4;
+  // Map stat value to die type
+  const dieSteps = [4, 6, 8, 10, 12];
+  let dieIdx = dieSteps.indexOf(statValue);
+  if (dieIdx === -1) dieIdx = 0;
+  let currentDie = dieSteps[dieIdx];
       let total = 0;
       let rolls = [];
       let blowUp = false;
