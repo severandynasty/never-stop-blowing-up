@@ -18,63 +18,81 @@
   <div class="nsbu-main-grid">
     <div class="nsbu-stats-grid">
       <div class="stats-row">
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Weapons</label>
-          <button type="button" class="stat-decrease" data-stat="weapons" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="weapons" style="min-width:2.5em;">d{{#if system.stats.weapons}}{{system.stats.weapons}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="weapons" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="weapons" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="weapons" style="min-width:2.5em;">d{{#if system.stats.weapons}}{{system.stats.weapons}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="weapons" style="width:1.5em;">+</button>
+          </div>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Brawl</label>
-          <button type="button" class="stat-decrease" data-stat="brawl" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="brawl" style="min-width:2.5em;">d{{#if system.stats.brawl}}{{system.stats.brawl}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="brawl" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="brawl" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="brawl" style="min-width:2.5em;">d{{#if system.stats.brawl}}{{system.stats.brawl}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="brawl" style="width:1.5em;">+</button>
+          </div>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Hot</label>
-          <button type="button" class="stat-decrease" data-stat="hot" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="hot" style="min-width:2.5em;">d{{#if system.stats.hot}}{{system.stats.hot}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="hot" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="hot" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="hot" style="min-width:2.5em;">d{{#if system.stats.hot}}{{system.stats.hot}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="hot" style="width:1.5em;">+</button>
+          </div>
         </div>
       </div>
       <div class="stats-row">
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Drive</label>
-          <button type="button" class="stat-decrease" data-stat="drive" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="drive" style="min-width:2.5em;">d{{#if system.stats.drive}}{{system.stats.drive}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="drive" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="drive" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="drive" style="min-width:2.5em;">d{{#if system.stats.drive}}{{system.stats.drive}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="drive" style="width:1.5em;">+</button>
+          </div>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Stunts</label>
-          <button type="button" class="stat-decrease" data-stat="stunts" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="stunts" style="min-width:2.5em;">d{{#if system.stats.stunts}}{{system.stats.stunts}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="stunts" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="stunts" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="stunts" style="min-width:2.5em;">d{{#if system.stats.stunts}}{{system.stats.stunts}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="stunts" style="width:1.5em;">+</button>
+          </div>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Wits</label>
-          <button type="button" class="stat-decrease" data-stat="wits" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="wits" style="min-width:2.5em;">d{{#if system.stats.wits}}{{system.stats.wits}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="wits" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="wits" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="wits" style="min-width:2.5em;">d{{#if system.stats.wits}}{{system.stats.wits}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="wits" style="width:1.5em;">+</button>
+          </div>
         </div>
       </div>
       <div class="stats-row">
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Tech</label>
-          <button type="button" class="stat-decrease" data-stat="tech" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="tech" style="min-width:2.5em;">d{{#if system.stats.tech}}{{system.stats.tech}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="tech" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="tech" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="tech" style="min-width:2.5em;">d{{#if system.stats.tech}}{{system.stats.tech}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="tech" style="width:1.5em;">+</button>
+          </div>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Tough</label>
-          <button type="button" class="stat-decrease" data-stat="tough" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="tough" style="min-width:2.5em;">d{{#if system.stats.tough}}{{system.stats.tough}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="tough" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="tough" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="tough" style="min-width:2.5em;">d{{#if system.stats.tough}}{{system.stats.tough}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="tough" style="width:1.5em;">+</button>
+          </div>
         </div>
-        <div>
+        <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Sneak</label>
-          <button type="button" class="stat-decrease" data-stat="sneak" style="width:1.5em;">-</button>
-          <button type="button" class="stat-roll" data-stat="sneak" style="min-width:2.5em;">d{{#if system.stats.sneak}}{{system.stats.sneak}}{{else}}4{{/if}}</button>
-          <button type="button" class="stat-increase" data-stat="sneak" style="width:1.5em;">+</button>
+          <div style="display: flex; flex-direction: row; align-items: center; gap: 0.25em;">
+            <button type="button" class="stat-decrease" data-stat="sneak" style="width:1.5em;">-</button>
+            <button type="button" class="stat-roll" data-stat="sneak" style="min-width:2.5em;">d{{#if system.stats.sneak}}{{system.stats.sneak}}{{else}}4{{/if}}</button>
+            <button type="button" class="stat-increase" data-stat="sneak" style="width:1.5em;">+</button>
+          </div>
         </div>
       </div>
     </div>
