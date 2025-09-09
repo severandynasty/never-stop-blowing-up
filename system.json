@@ -19,7 +19,7 @@
       "label": "Group Abilities",
       "system": "never-stop-blowing-up",
       "type": "Item",
-      "path": "packs/group-abilities.json"
+      "path": "packs/group-abilities.db"
     }
   ],
   "compatibility": {

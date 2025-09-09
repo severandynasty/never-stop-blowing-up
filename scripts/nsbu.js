@@ -355,6 +355,15 @@ Hooks.once("init", () => {
           bonus: { type: String, default: "" },
           appliesTo: { type: String, default: "" }
         }
+      },
+      "group-ability": {
+        system: {
+          groupSuite: { type: String, default: "" },
+          dieRequirement: { type: String, default: "" },
+          effect: { type: String, default: "" },
+          frequency: { type: String, default: "" },
+          folder: { type: String, default: "" }
+        }
       }
     }
   };
@@ -373,7 +382,7 @@ Hooks.once("init", () => {
   // Register the custom item sheet for all item types
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
-  types: ["explosive", "gear", "upgrade"],
+  types: ["explosive", "gear", "upgrade", "group-ability"],
     makeDefault: true
   });
 });
@@ -392,6 +401,4 @@ Hooks.once('setup', async function() {
     }
   }
 
-  // All world compendium and folder logic removed. Now using only system compendiums per group suite.
-  // No further action needed here.
 });
