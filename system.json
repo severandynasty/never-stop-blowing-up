@@ -20,6 +20,13 @@
       "system": "never-stop-blowing-up",
       "type": "Item",
       "path": "packs/group-abilities.db"
+    },
+    {
+      "name": "rules-reference",
+      "label": "Rules Reference",
+      "system": "never-stop-blowing-up",
+      "type": "JournalEntry",
+      "path": "packs/rules-reference.db"
     }
   ],
   "compatibility": {
