@@ -301,6 +301,14 @@ class NSBUGroupAbilitySheet extends ItemSheet {
 }
 
 Hooks.once("init", () => {
+  // Register Handlebars helper to strip numeric prefixes from names
+  Handlebars.registerHelper('stripSortPrefix', function(name) {
+    if (typeof name === 'string') {
+      return name.replace(/^\d+\s/, '');
+    }
+    return name;
+  });
+
   // Define the system model to match template.json
   game.system.model = {
     Actor: {
