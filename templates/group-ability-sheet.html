@@ -3,24 +3,33 @@
   <header class="sheet-header">
     <img src="{{img}}" title="{{name}}" height="64" width="64" />
     <div>
-      <h1>{{name}}</h1>
-      {{#if system.groupSuite}}<h3>{{system.groupSuite}}</h3>{{/if}}
+      <h1>{{#if system.originalName}}{{system.originalName}}{{else}}{{name}}{{/if}}</h1>
+      {{#if system.groupSuite}}<h3 style="color: #444; font-style: italic;">{{system.groupSuite}}</h3>{{/if}}
+      {{#if system.folder}}<h4 style="color: #666; margin-top: 0.25em;">Group: {{system.folder}}</h4>{{/if}}
     </div>
   </header>
   
   <section class="sheet-body">
     {{#if system.effect}}
       <h2>Effect</h2>
-      <div class="effect-text">{{system.effect}}</div>
+      <div class="effect-text" style="background: #f5f5f5; padding: 0.75em; border-radius: 4px; margin-bottom: 1em;">{{system.effect}}</div>
     {{/if}}
     
-    {{#if system.frequency}}
-      <h3>Frequency: {{system.frequency}}</h3>
-    {{/if}}
-    
-    {{#if system.dieRequirement}}
-      <h3>Requires: {{system.dieRequirement}}</h3>
-    {{/if}}
+    <div style="display: flex; gap: 1em; margin-bottom: 1em;">
+      {{#if system.frequency}}
+        <div>
+          <strong>Frequency:</strong> 
+          <span style="background: #e3f2fd; padding: 0.25em 0.5em; border-radius: 3px; font-size: 0.9em;">{{system.frequency}}</span>
+        </div>
+      {{/if}}
+      
+      {{#if system.dieRequirement}}
+        <div>
+          <strong>Requires:</strong> 
+          <span style="background: #f3e5f5; padding: 0.25em 0.5em; border-radius: 3px; font-size: 0.9em;">{{system.dieRequirement}}</span>
+        </div>
+      {{/if}}
+    </div>
     
     {{#unless system.effect}}
       <h2>Description</h2>

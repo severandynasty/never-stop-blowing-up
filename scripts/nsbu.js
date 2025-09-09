@@ -479,6 +479,37 @@ Hooks.once('setup', async function() {
           console.warn("Orphaned items (invalid folder references):", orphanedItems.map(i => i.name));
         }
         
+        // CREATE MISSING FOLDERS DYNAMICALLY
+        if (folders.length === 0 && items.length > 0) {
+          console.log("=== CREATING MISSING FOLDERS ===");
+          
+          // Get unique folder names from items
+          const folderMap = new Map();
+          items.forEach(item => {
+            if (item.system?.folder) {
+              folderMap.set(item.system.folder, []);
+            }
+          });
+          
+          console.log("Folders to create:", Array.from(folderMap.keys()));
+          
+          // This would need to be done differently since we can't modify compendium content at runtime
+          // Instead, let's organize items by their system.folder for display purposes
+          const itemsByFolder = new Map();
+          items.forEach(item => {
+            const folderName = item.system?.folder || "Uncategorized";
+            if (!itemsByFolder.has(folderName)) {
+              itemsByFolder.set(folderName, []);
+            }
+            itemsByFolder.get(folderName).push(item);
+          });
+          
+          console.log("Items organized by folder:");
+          itemsByFolder.forEach((folderItems, folderName) => {
+            console.log(`  ${folderName}: ${folderItems.length} items`);
+          });
+        }
+        
       } catch (error) {
         console.error("Error loading group abilities compendium:", error);
       }

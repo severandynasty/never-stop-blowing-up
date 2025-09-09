@@ -1,0 +1,152 @@
+foundry-esm.js:66702 Foundry VTT | Foundry Virtual Tabletop ESModule loaded
+foundry.js:95945 _______________________________________________________________
+ _____ ___  _   _ _   _ ____  ______   __ __     _______ _____ 
+|  ___/ _ \| | | | \ | |  _ \|  _ \ \ / / \ \   / |_   _|_   _|
+| |_ | | | | | | |  \| | | | | |_) \ V /   \ \ / /  | |   | |  
+|  _|| |_| | |_| | |\  | |_| |  _ < | |     \ V /   | |   | |  
+|_|   \___/ \___/|_| \_|____/|_| \_\|_|      \_/    |_|   |_|  
+===============================================================
+foundry.js:95968 Foundry VTT | Reestablishing existing session bb676eeddf01c56114111640
+game:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+foundry.js:8824 Foundry VTT | Connected to server socket using session bb676eeddf01c56114111640
+foundry.js:8978 Foundry VTT | Initializing Foundry Virtual Tabletop Game
+foundry.js:3699 Foundry VTT | Synchronized official game time in 22ms
+foundry.js:7699 Foundry VTT | Loaded localization file lang/en.json
+foundry.js:7699 Foundry VTT | Loaded localization file systems/never-stop-blowing-up/lang/en.json
+nsbu.js:416 === NSBU COMPENDIUM DEBUG ===
+nsbu.js:417 Compendium Packs Loaded:
+nsbu.js:419 Pack: never-stop-blowing-up.abilities | Label: Player Abilities | Type: Item
+foundry.js:5827 Foundry VTT | Rendering SceneNavigation
+foundry.js:5827 Foundry VTT | Rendering Notifications
+foundry.js:5827 Foundry VTT | Rendering Sidebar
+foundry.js:5827 Foundry VTT | Rendering PlayerList
+foundry.js:5827 Foundry VTT | Rendering Hotbar
+foundry.js:5827 Foundry VTT | Rendering Pause
+foundry.js:5827 Foundry VTT | Rendering SceneControls
+nsbu.js:491 Player Abilities Compendium Index: Collection(37) {'burglar' => {…}, 'by-the-book' => {…}, 'connected' => {…}, 'demolitions' => {…}, 'duelist' => {…}, …}
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/toolclip.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/navigation.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/sidebar.html
+foundry.js:5827 Foundry VTT | Rendering ChatLog
+foundry.js:5827 Foundry VTT | Rendering CombatTracker
+foundry.js:5827 Foundry VTT | Rendering Settings
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/user/players.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/hotbar.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/pause.html
+nsbu.js:493 Player Abilities Documents: (37) [Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item, Item]
+nsbu.js:419 Pack: never-stop-blowing-up.group-abilities | Label: Group Abilities | Type: Item
+nsbu.js:423 === GROUP ABILITIES COMPENDIUM DEBUG ===
+nsbu.js:428 Group Abilities Index: Collection(27) {'2aocakej1h9imozm' => {…}, '32uurmne4grujgjj' => {…}, '37uppcb0vs68o6lh' => {…}, '4lngo6zzmhmx2ts4' => {…}, '519x4gk7xd5ci2ff' => {…}, …}
+nsbu.js:429 Index contains 27 entries
+nsbu.js:433 Index Entry [undefined]: {name: 'Token Gain', type: 'group-ability', folder: 'g48cukqp0v198ic9', sort: 72300}
+nsbu.js:433 Index Entry [undefined]: {name: 'Suit Up', type: 'group-ability', folder: 'sgg5qw8opk6akd8a', sort: 41400}
+nsbu.js:433 Index Entry [undefined]: {name: 'Tech', type: 'group-ability', folder: 'nnlf952w9vbzp84c', sort: 10400}
+nsbu.js:433 Index Entry [undefined]: {name: 'Destroyer', type: 'group-ability', folder: 'r7ez6amqlq16ehgr', sort: 51600}
+nsbu.js:433 Index Entry [undefined]: {name: '+10', type: 'group-ability', folder: 'r7ez6amqlq16ehgr', sort: 51500}
+nsbu.js:433 Index Entry [undefined]: {name: 'Reroll', type: 'group-ability', folder: 'sywzv8ruz0upx2c3', sort: 61900}
+nsbu.js:433 Index Entry [undefined]: {name: 'Wits', type: 'group-ability', folder: 'grxb2ynixxxuwooe', sort: 30900}
+nsbu.js:433 Index Entry [undefined]: {name: 'Track Restart', type: 'group-ability', folder: 'q2mbbxbhjzg11wnl', sort: 82400}
+nsbu.js:433 Index Entry [undefined]: {name: 'Hot Checks', type: 'group-ability', folder: 'grxb2ynixxxuwooe', sort: 31000}
+nsbu.js:433 Index Entry [undefined]: {name: 'Drive Check', type: 'group-ability', folder: '1glltrsfrj20fauz', sort: 20800}
+nsbu.js:433 Index Entry [undefined]: {name: 'Group Explosion', type: 'group-ability', folder: 'q2mbbxbhjzg11wnl', sort: 82500}
+nsbu.js:433 Index Entry [undefined]: {name: 'Reroll', type: 'group-ability', folder: 'g48cukqp0v198ic9', sort: 72200}
+nsbu.js:433 Index Entry [undefined]: {name: 'Shared Tokens', type: 'group-ability', folder: 'g48cukqp0v198ic9', sort: 72100}
+nsbu.js:433 Index Entry [undefined]: {name: 'Melee', type: 'group-ability', folder: 'grxb2ynixxxuwooe', sort: 31100}
+nsbu.js:433 Index Entry [undefined]: {name: 'Max Roll', type: 'group-ability', folder: 'sywzv8ruz0upx2c3', sort: 61800}
+nsbu.js:433 Index Entry [undefined]: {name: 'Group Explosion', type: 'group-ability', folder: 'sgg5qw8opk6akd8a', sort: 41200}
+nsbu.js:433 Index Entry [undefined]: {name: 'Injury Advantage', type: 'group-ability', folder: '1glltrsfrj20fauz', sort: 20600}
+nsbu.js:433 Index Entry [undefined]: {name: 'Firestarter', type: 'group-ability', folder: 'r7ez6amqlq16ehgr', sort: 51700}
+nsbu.js:433 Index Entry [undefined]: {name: 'Item', type: 'group-ability', folder: 'nnlf952w9vbzp84c', sort: 10300}
+nsbu.js:433 Index Entry [undefined]: {name: 'Tokens', type: 'group-ability', folder: 'gs057s9cyi33mj51', sort: 100}
+nsbu.js:433 Index Entry [undefined]: {name: 'Skill Die', type: 'group-ability', folder: 'gs057s9cyi33mj51', sort: 200}
+nsbu.js:433 Index Entry [undefined]: {name: 'Hot', type: 'group-ability', folder: 'nnlf952w9vbzp84c', sort: 10500}
+nsbu.js:433 Index Entry [undefined]: {name: 'Skill Add', type: 'group-ability', folder: 'sgg5qw8opk6akd8a', sort: 41300}
+nsbu.js:433 Index Entry [undefined]: {name: 'GM', type: 'group-ability', folder: 'q2mbbxbhjzg11wnl', sort: 82600}
+nsbu.js:433 Index Entry [undefined]: {name: 'Turbo Tokens', type: 'group-ability', folder: 'sywzv8ruz0upx2c3', sort: 62000}
+nsbu.js:433 Index Entry [undefined]: {name: 'Double Explosion', type: 'group-ability', folder: '1glltrsfrj20fauz', sort: 20700}
+nsbu.js:433 Index Entry [undefined]: {name: 'Tough', type: 'group-ability', folder: 'gs057s9cyi33mj51', sort: 0}
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/controls.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/document-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering ActorDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/document-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering CardsDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/pack-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering CompendiumDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/document-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering ItemDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/document-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering JournalDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/playlist-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering PlaylistDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/scene-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering SceneDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/document-partial.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/folder-partial.html
+foundry.js:5827 Foundry VTT | Rendering RollTableDirectory
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/chat-log.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/combat-tracker.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/settings.html
+nsbu.js:443 Loaded 27 documents from compendium
+nsbu.js:449 Found 0 folders and 27 items
+nsbu.js:452 === FOLDERS ===
+nsbu.js:463 === ITEMS ===
+nsbu.js:465 Item [2aocakej1h9imozm]: {name: 'Token Gain', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [32uurmne4grujgjj]: {name: 'Suit Up', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [37uppcb0vs68o6lh]: {name: 'Tech', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [4lngo6zzmhmx2ts4]: {name: 'Destroyer', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [519x4gk7xd5ci2ff]: {name: '+10', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [7hehiap9og7xgm0q]: {name: 'Reroll', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [7sotfauqaytlbrjr]: {name: 'Wits', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [8lzdpc3ptht4i1a4]: {name: 'Track Restart', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [9jj2zfhxhs2i0rqu]: {name: 'Hot Checks', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [9yte8h54o9rpo8g2]: {name: 'Drive Check', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [av64rs6y4o4lw5k8]: {name: 'Group Explosion', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [brv02bkca1fj15yy]: {name: 'Reroll', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [ej9w3zaplog6mabj]: {name: 'Shared Tokens', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [fvf4fu6heyysy4cl]: {name: 'Melee', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [ii1vf4hg76rhzgyf]: {name: 'Max Roll', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [l1fgrbr0bpf6rzap]: {name: 'Group Explosion', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [nohcedvje8nw0d1k]: {name: 'Injury Advantage', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [pat7y1njxqyjv9ps]: {name: 'Firestarter', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [q1llh944fpnbmnvb]: {name: 'Item', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [q6owsgbo1zn36c4z]: {name: 'Tokens', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [r5whrrpzdk0br69f]: {name: 'Skill Die', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [ui3jwb111k5qc38n]: {name: 'Hot', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [vd6i2wc8pg2jvnhp]: {name: 'Skill Add', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [vrrz4v0kigen608h]: {name: 'GM', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [x3fr8m83pz92fdiu]: {name: 'Turbo Tokens', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [yzwg112qeeigz0wy]: {name: 'Double Explosion', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:465 Item [zdu437c0jlktu5vn]: {name: 'Tough', type: 'group-ability', documentName: 'Item', folder: null, system: {…}, …}
+nsbu.js:500 === END COMPENDIUM DEBUG ===
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/document-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/document-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/compendium-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/document-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/document-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/playlists-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/document-directory.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/document-directory.html
+foundry.js:76874 Foundry VTT | Fonts loaded and ready.
+foundry.js:25199 Foundry VTT | Skipping game canvas - no active scene.
+foundry.js:8886 Applying buffered socket event: userActivity
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/chat-message.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/compendium-index-partial.html
+foundry.js:5827 Foundry VTT | Rendering Compendium
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/apps/compendium.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/app-window.html
+foundry.js:5827 Foundry VTT | Rendering NSBUGroupAbilitySheet
+nsbu.js:289 Group Ability Sheet Data: {cssClass: 'locked', editable: false, document: Item, data: {…}, limited: false, …}
+foundry.js:7846 Foundry VTT | Retrieved and compiled template systems/never-stop-blowing-up/templates/group-ability-sheet.html
+foundry.js:5827 Foundry VTT | Rendering NSBUGroupAbilitySheet
+nsbu.js:289 Group Ability Sheet Data: {cssClass: 'locked', editable: false, document: Item, data: {…}, limited: false, …}
+foundry.js:5827 Foundry VTT | Rendering NSBUGroupAbilitySheet
+nsbu.js:289 Group Ability Sheet Data: {cssClass: 'locked', editable: false, document: Item, data: {…}, limited: false, …}
+foundry.js:5827 Foundry VTT | Rendering NSBUGroupAbilitySheet
+nsbu.js:289 Group Ability Sheet Data: {cssClass: 'locked', editable: false, document: Item, data: {…}, limited: false, …}
