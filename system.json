@@ -8,75 +8,18 @@
   "styles": ["styles/styles.css"],
   "packs": [
     {
-  "name": "abilities",
-  "label": "Player Abilities",
-  "system": "never-stop-blowing-up",
-  "type": "Item",
-  "path": "packs/abilities.db"
-    }
-    ,
-    {
-      "name": "la-familia",
-  "label": "Group [d6] - La Familia",
+      "name": "abilities",
+      "label": "Player Abilities",
       "system": "never-stop-blowing-up",
       "type": "Item",
-      "path": "packs/la-familia.db"
+      "path": "packs/abilities.db"
     },
     {
-      "name": "criminal-conspiracy",
-  "label": "Group [d6] - Criminal Conspiracy",
+      "name": "group-abilities",
+      "label": "Group Abilities",
       "system": "never-stop-blowing-up",
       "type": "Item",
-      "path": "packs/criminal-conspiracy.db"
-    },
-    {
-      "name": "diesel-circus",
-  "label": "Group [d8] - Diesel Circus",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/diesel-circus.db"
-    },
-    {
-      "name": "the-continentals",
-  "label": "Group [d8] - The Continentals",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/the-continentals.db"
-    },
-    {
-      "name": "alpha-squad",
-  "label": "Group [d10] - Alpha Squad",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/alpha-squad.db"
-    },
-    {
-      "name": "marauders",
-  "label": "Group [d10] - Marauders",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/marauders.db"
-    },
-    {
-      "name": "the-ones",
-  "label": "Group [d12] - The Ones",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/the-ones.db"
-    },
-    {
-      "name": "tactical-command",
-  "label": "Group [d12] - Tactical Command",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/tactical-command.db"
-    },
-    {
-      "name": "bustin",
-  "label": "Group [d20] - Bustin' Makes Me Feel Good",
-      "system": "never-stop-blowing-up",
-      "type": "Item",
-      "path": "packs/bustin.db"
+      "path": "packs/group-abilities.json"
     }
   ],
   "compatibility": {

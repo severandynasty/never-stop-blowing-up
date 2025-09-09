@@ -53,11 +53,20 @@
     }
   },
   "Item": {
-    "types": ["upgrade"],
+    "types": ["upgrade", "group-ability"],
     "upgrade": {
       "system": {
         "bonus": "",
         "appliesTo": ""
+      }
+    },
+    "group-ability": {
+      "system": {
+        "groupSuite": "",
+        "dieRequirement": "",
+        "effect": "",
+        "frequency": "",
+        "folder": ""
       }
     }
   }
