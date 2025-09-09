@@ -156,7 +156,7 @@
             {{#if (or item.system.groupSuite (eq item.type "group-ability"))}}
               <div class="group-ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1 1 auto;">
-                  <span style="font-weight:bold;">{{#if item.system.originalName}}{{item.system.originalName}}{{else}}{{stripSortPrefix item.name}}{{/if}}</span>
+                  <span style="font-weight:bold;">{{#if item.system.originalName}}{{item.system.originalName}}{{else}}{{item.name}}{{/if}}</span>
                   {{#if item.system.dieRequirement}}<span style="color: #666; font-size: 0.85em;">[{{item.system.dieRequirement}}]</span>{{/if}}
                   {{#if item.system.groupSuite}}<span style="color: #888; font-size: 0.85em;">{{item.system.groupSuite}}</span>{{/if}}
                   <span class="desc">{{item.system.description}}</span>

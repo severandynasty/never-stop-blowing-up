@@ -3,7 +3,7 @@
   <header class="sheet-header">
     <img src="{{img}}" title="{{name}}" height="64" width="64" />
     <div>
-      <h1>{{#if system.originalName}}{{system.originalName}}{{else}}{{stripSortPrefix name}}{{/if}}</h1>
+      <h1>{{#if system.originalName}}{{system.originalName}}{{else}}{{name}}{{/if}}</h1>
       {{#if system.groupSuite}}<h3 style="color: #444; font-style: italic;">{{system.groupSuite}}</h3>{{/if}}
       {{#if system.folder}}<h4 style="color: #666; margin-top: 0.25em;">Group: {{system.folder}}</h4>{{/if}}
     </div>
