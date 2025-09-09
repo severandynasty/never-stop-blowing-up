@@ -412,121 +412,39 @@ Hooks.once("init", () => {
 });
 
 Hooks.once('setup', async function() {
-  // Log all compendium packs
-  console.log("=== NSBU COMPENDIUM DEBUG ===");
-  console.log("Compendium Packs Loaded:");
+  // Basic compendium verification
+  console.log("=== NSBU SYSTEM LOADED ===");
+  console.log("Compendium Packs Available:");
   for (let pack of game.packs) {
-    console.log(`Pack: ${pack.collection} | Label: ${pack.metadata.label} | Type: ${pack.metadata.type}`);
-    
-    // Debug the group abilities compendium specifically
-    if (pack.collection === "never-stop-blowing-up.group-abilities") {
-      console.log("=== GROUP ABILITIES COMPENDIUM DEBUG ===");
+    if (pack.collection.startsWith("never-stop-blowing-up")) {
+      console.log(`✓ ${pack.metadata.label} (${pack.collection})`);
       
-      try {
-        // Get the index first
-        const index = await pack.getIndex();
-        console.log("Group Abilities Index:", index);
-        console.log(`Index contains ${index.size} entries`);
-        
-        // Log each index entry
-        index.forEach((entry, id) => {
-          console.log(`Index Entry [${id}]:`, {
-            name: entry.name,
-            type: entry.type,
-            folder: entry.folder,
-            sort: entry.sort
+      // Quick verification for group abilities
+      if (pack.collection === "never-stop-blowing-up.group-abilities") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} group abilities organized by die size`);
+          
+          // Sample a few entries to verify the new naming
+          const sampleEntries = Array.from(index.values()).slice(0, 3);
+          console.log("  - Sample entries:");
+          sampleEntries.forEach(entry => {
+            console.log(`    • ${entry.name}`);
           });
-        });
-        
-        // Get all documents
-        const docs = await pack.getDocuments();
-        console.log(`Loaded ${docs.length} documents from compendium`);
-        
-        // Separate folders and items
-        const folders = docs.filter(doc => doc.type === "Folder" || doc.documentName === "Folder");
-        const items = docs.filter(doc => doc.type === "group-ability" || doc.documentName === "Item");
-        
-        console.log(`Found ${folders.length} folders and ${items.length} items`);
-        
-        // Log folder details
-        console.log("=== FOLDERS ===");
-        folders.forEach(folder => {
-          console.log(`Folder [${folder.id}]:`, {
-            name: folder.name,
-            type: folder.type,
-            documentName: folder.documentName,
-            sort: folder.sort
-          });
-        });
-        
-        // Log item details
-        console.log("=== ITEMS ===");
-        items.forEach(item => {
-          console.log(`Item [${item.id}]:`, {
-            name: item.name,
-            type: item.type,
-            documentName: item.documentName,
-            folder: item.folder,
-            system: item.system,
-            sort: item.sort
-          });
-        });
-        
-        // Check for orphaned items (items without valid folder references)
-        const folderIds = new Set(folders.map(f => f.id));
-        const orphanedItems = items.filter(item => item.folder && !folderIds.has(item.folder));
-        if (orphanedItems.length > 0) {
-          console.warn("Orphaned items (invalid folder references):", orphanedItems.map(i => i.name));
+        } catch (error) {
+          console.error("  - Error loading group abilities:", error);
         }
-        
-        // CREATE MISSING FOLDERS DYNAMICALLY
-        if (folders.length === 0 && items.length > 0) {
-          console.log("=== CREATING MISSING FOLDERS ===");
-          
-          // Get unique folder names from items
-          const folderMap = new Map();
-          items.forEach(item => {
-            if (item.system?.folder) {
-              folderMap.set(item.system.folder, []);
-            }
-          });
-          
-          console.log("Folders to create:", Array.from(folderMap.keys()));
-          
-          // This would need to be done differently since we can't modify compendium content at runtime
-          // Instead, let's organize items by their system.folder for display purposes
-          const itemsByFolder = new Map();
-          items.forEach(item => {
-            const folderName = item.system?.folder || "Uncategorized";
-            if (!itemsByFolder.has(folderName)) {
-              itemsByFolder.set(folderName, []);
-            }
-            itemsByFolder.get(folderName).push(item);
-          });
-          
-          console.log("Items organized by folder:");
-          itemsByFolder.forEach((folderItems, folderName) => {
-            console.log(`  ${folderName}: ${folderItems.length} items`);
-          });
-        }
-        
-      } catch (error) {
-        console.error("Error loading group abilities compendium:", error);
       }
-    }
-    
-    // Also debug the regular abilities compendium
-    if (pack.collection === "never-stop-blowing-up.abilities") {
-      try {
-        const index = await pack.getIndex();
-        console.log("Player Abilities Compendium Index:", index);
-        const docs = await pack.getDocuments();
-        console.log("Player Abilities Documents:", docs);
-      } catch (error) {
-        console.error("Error loading abilities compendium:", error);
+      
+      if (pack.collection === "never-stop-blowing-up.abilities") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} player abilities`);
+        } catch (error) {
+          console.error("  - Error loading player abilities:", error);
+        }
       }
     }
   }
-  
-  console.log("=== END COMPENDIUM DEBUG ===");
+  console.log("=== SYSTEM READY ===");
 });
