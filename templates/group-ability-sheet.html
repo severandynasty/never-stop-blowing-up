@@ -1,0 +1,30 @@
+<!-- Group Ability Item Sheet Template -->
+<form class="item-sheet">
+  <header class="sheet-header">
+    <img src="{{img}}" title="{{name}}" height="64" width="64" />
+    <div>
+      <h1>{{name}}</h1>
+      {{#if system.groupSuite}}<h3>{{system.groupSuite}}</h3>{{/if}}
+    </div>
+  </header>
+  
+  <section class="sheet-body">
+    {{#if system.effect}}
+      <h2>Effect</h2>
+      <div class="effect-text">{{system.effect}}</div>
+    {{/if}}
+    
+    {{#if system.frequency}}
+      <h3>Frequency: {{system.frequency}}</h3>
+    {{/if}}
+    
+    {{#if system.dieRequirement}}
+      <h3>Requires: {{system.dieRequirement}}</h3>
+    {{/if}}
+    
+    {{#unless system.effect}}
+      <h2>Description</h2>
+      <div>{{system.description}}</div>
+    {{/unless}}
+  </section>
+</form>

@@ -282,6 +282,24 @@ class NSBUItemSheet extends ItemSheet {
   }
 }
 
+class NSBUGroupAbilitySheet extends ItemSheet {
+  getData(options) {
+    const data = super.getData(options);
+    data.system = this.item.system ?? {};
+    console.log("Group Ability Sheet Data:", data);
+    return data;
+  }
+  
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "group-ability"],
+      template: "systems/never-stop-blowing-up/templates/group-ability-sheet.html",
+      width: 450,
+      height: 400
+    });
+  }
+}
+
 Hooks.once("init", () => {
   // Define the system model to match template.json
   game.system.model = {
@@ -382,23 +400,102 @@ Hooks.once("init", () => {
   // Register the custom item sheet for all item types
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
-  types: ["explosive", "gear", "upgrade", "group-ability"],
+    types: ["explosive", "gear", "upgrade"],
+    makeDefault: true
+  });
+  
+  // Register the custom group ability sheet
+  Items.registerSheet("never-stop-blowing-up", NSBUGroupAbilitySheet, {
+    types: ["group-ability"],
     makeDefault: true
   });
 });
 
 Hooks.once('setup', async function() {
   // Log all compendium packs
+  console.log("=== NSBU COMPENDIUM DEBUG ===");
   console.log("Compendium Packs Loaded:");
   for (let pack of game.packs) {
     console.log(`Pack: ${pack.collection} | Label: ${pack.metadata.label} | Type: ${pack.metadata.type}`);
+    
+    // Debug the group abilities compendium specifically
+    if (pack.collection === "never-stop-blowing-up.group-abilities") {
+      console.log("=== GROUP ABILITIES COMPENDIUM DEBUG ===");
+      
+      try {
+        // Get the index first
+        const index = await pack.getIndex();
+        console.log("Group Abilities Index:", index);
+        console.log(`Index contains ${index.size} entries`);
+        
+        // Log each index entry
+        index.forEach((entry, id) => {
+          console.log(`Index Entry [${id}]:`, {
+            name: entry.name,
+            type: entry.type,
+            folder: entry.folder,
+            sort: entry.sort
+          });
+        });
+        
+        // Get all documents
+        const docs = await pack.getDocuments();
+        console.log(`Loaded ${docs.length} documents from compendium`);
+        
+        // Separate folders and items
+        const folders = docs.filter(doc => doc.type === "Folder" || doc.documentName === "Folder");
+        const items = docs.filter(doc => doc.type === "group-ability" || doc.documentName === "Item");
+        
+        console.log(`Found ${folders.length} folders and ${items.length} items`);
+        
+        // Log folder details
+        console.log("=== FOLDERS ===");
+        folders.forEach(folder => {
+          console.log(`Folder [${folder.id}]:`, {
+            name: folder.name,
+            type: folder.type,
+            documentName: folder.documentName,
+            sort: folder.sort
+          });
+        });
+        
+        // Log item details
+        console.log("=== ITEMS ===");
+        items.forEach(item => {
+          console.log(`Item [${item.id}]:`, {
+            name: item.name,
+            type: item.type,
+            documentName: item.documentName,
+            folder: item.folder,
+            system: item.system,
+            sort: item.sort
+          });
+        });
+        
+        // Check for orphaned items (items without valid folder references)
+        const folderIds = new Set(folders.map(f => f.id));
+        const orphanedItems = items.filter(item => item.folder && !folderIds.has(item.folder));
+        if (orphanedItems.length > 0) {
+          console.warn("Orphaned items (invalid folder references):", orphanedItems.map(i => i.name));
+        }
+        
+      } catch (error) {
+        console.error("Error loading group abilities compendium:", error);
+      }
+    }
+    
+    // Also debug the regular abilities compendium
     if (pack.collection === "never-stop-blowing-up.abilities") {
-      // Try to get all documents in the abilities compendium
-      const index = await pack.getIndex();
-      console.log("Abilities Compendium Index:", index);
-      const docs = await pack.getDocuments();
-      console.log("Abilities Compendium Documents:", docs);
+      try {
+        const index = await pack.getIndex();
+        console.log("Player Abilities Compendium Index:", index);
+        const docs = await pack.getDocuments();
+        console.log("Player Abilities Documents:", docs);
+      } catch (error) {
+        console.error("Error loading abilities compendium:", error);
+      }
     }
   }
-
+  
+  console.log("=== END COMPENDIUM DEBUG ===");
 });
