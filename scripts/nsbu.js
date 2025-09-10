@@ -422,21 +422,29 @@ Hooks.once("init", () => {
 // Add early initialization hook to catch pack loading issues
 Hooks.once('init', function() {
   console.log("=== NSBU SYSTEM INIT ===");
-  console.log("System packs from config:", game.system.data.packs);
   
-  // Check if packs directory exists and files are readable
-  console.log("Checking pack files:");
-  const packPaths = [
-    "packs/abilities.db",
-    "packs/group-abilities.db", 
-    "packs/rules-reference.db"
-  ];
+  // Check system information that's available at init
+  if (game.system) {
+    console.log("System ID:", game.system.id);
+    console.log("System title:", game.system.title);
+    
+    // Check if packs property exists
+    if (game.system.packs) {
+      console.log("System packs from config:", game.system.packs);
+    } else {
+      console.log("System packs not yet available at init");
+    }
+  }
   
-  // We can't directly check file system from browser, but we can see what Foundry loaded
-  console.log("Game packs collection size:", game.packs.size);
-  console.log("Available pack collections:");
-  for (let pack of game.packs) {
-    console.log(`  - ${pack.collection} (${pack.metadata.label}) - Type: ${pack.metadata.type}`);
+  // Check game packs collection
+  if (game.packs) {
+    console.log("Game packs collection size:", game.packs.size);
+    console.log("Available pack collections:");
+    for (let pack of game.packs) {
+      console.log(`  - ${pack.collection} (${pack.metadata?.label || 'Unknown'}) - Type: ${pack.metadata?.type || 'Unknown'}`);
+    }
+  } else {
+    console.log("Game packs collection not yet available");
   }
 });
 
@@ -446,13 +454,17 @@ Hooks.once('setup', async function() {
   console.log("Total packs available:", game.packs.size);
   console.log("System packs registered in system.json:");
   
-  // Log all system-defined packs
-  console.log("Packs from system.json:", game.system.packs);
+  // Log all system-defined packs (safely)
+  if (game.system?.packs) {
+    console.log("Packs from system.json:", game.system.packs);
+  } else {
+    console.log("System packs not available or undefined");
+  }
   
   console.log("Compendium Packs Available:");
   for (let pack of game.packs) {
     if (pack.collection.startsWith("never-stop-blowing-up")) {
-      console.log(`✓ ${pack.metadata.label} (${pack.collection})`);
+      console.log(`✓ ${pack.metadata?.label || 'Unknown'} (${pack.collection})`);
       
       // Quick verification for group abilities
       if (pack.collection === "never-stop-blowing-up.group-abilities") {
@@ -480,6 +492,24 @@ Hooks.once('setup', async function() {
         }
       }
       
+      if (pack.collection === "never-stop-blowing-up.test-rules") {
+        try {
+          console.log("  - Test rules compendium found! Attempting to load...");
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Test rules compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading test rules:", error);
+          console.error("  - Error details:", error.stack);
+        }
+      }
+      
       if (pack.collection === "never-stop-blowing-up.rules-reference") {
         try {
           console.log("  - Rules reference compendium found! Attempting to load...");
@@ -500,14 +530,18 @@ Hooks.once('setup', async function() {
     }
   }
   
-  // Also check if the rules-reference pack exists in the system definition
+  // Also check if the packs exist in the system definition
   console.log("Checking system-defined packs:");
-  const systemPacks = Array.from(game.system.packs);
-  systemPacks.forEach(pack => {
-    console.log(`  - System pack: ${pack.name} (${pack.label}) - Type: ${pack.type}`);
-    if (pack.name === "rules-reference") {
-      console.log("    → Rules reference pack is defined in system.json");
-    }
-  });
+  if (game.system?.packs) {
+    const systemPacks = Array.from(game.system.packs);
+    systemPacks.forEach(pack => {
+      console.log(`  - System pack: ${pack.name} (${pack.label || 'Unknown'}) - Type: ${pack.type || 'Unknown'}`);
+      if (pack.name === "test-rules" || pack.name === "rules-reference") {
+        console.log("    → Rules reference pack is defined in system.json");
+      }
+    });
+  } else {
+    console.log("System packs definition not available");
+  }
   console.log("=== SYSTEM READY ===");
 });
