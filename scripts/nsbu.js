@@ -422,6 +422,12 @@ Hooks.once("init", () => {
 Hooks.once('setup', async function() {
   // Basic compendium verification
   console.log("=== NSBU SYSTEM LOADED ===");
+  console.log("Total packs available:", game.packs.size);
+  console.log("System packs registered in system.json:");
+  
+  // Log all system-defined packs
+  console.log("Packs from system.json:", game.system.packs);
+  
   console.log("Compendium Packs Available:");
   for (let pack of game.packs) {
     if (pack.collection.startsWith("never-stop-blowing-up")) {
@@ -450,6 +456,22 @@ Hooks.once('setup', async function() {
           console.log(`  - Contains ${index.size} player abilities`);
         } catch (error) {
           console.error("  - Error loading player abilities:", error);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.rules-reference") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Rules reference compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading rules reference:", error);
         }
       }
     }
