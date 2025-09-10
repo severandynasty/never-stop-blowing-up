@@ -419,6 +419,27 @@ Hooks.once("init", () => {
   });
 });
 
+// Add early initialization hook to catch pack loading issues
+Hooks.once('init', function() {
+  console.log("=== NSBU SYSTEM INIT ===");
+  console.log("System packs from config:", game.system.data.packs);
+  
+  // Check if packs directory exists and files are readable
+  console.log("Checking pack files:");
+  const packPaths = [
+    "packs/abilities.db",
+    "packs/group-abilities.db", 
+    "packs/rules-reference.db"
+  ];
+  
+  // We can't directly check file system from browser, but we can see what Foundry loaded
+  console.log("Game packs collection size:", game.packs.size);
+  console.log("Available pack collections:");
+  for (let pack of game.packs) {
+    console.log(`  - ${pack.collection} (${pack.metadata.label}) - Type: ${pack.metadata.type}`);
+  }
+});
+
 Hooks.once('setup', async function() {
   // Basic compendium verification
   console.log("=== NSBU SYSTEM LOADED ===");

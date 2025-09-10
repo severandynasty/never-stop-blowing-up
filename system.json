@@ -22,8 +22,8 @@
       "path": "packs/group-abilities.db"
     },
     {
-      "name": "rules-reference",
-      "label": "Rules Reference",
+      "name": "test-rules",
+      "label": "Test Rules",
       "system": "never-stop-blowing-up",
       "type": "JournalEntry",
       "path": "packs/rules-reference.db"
