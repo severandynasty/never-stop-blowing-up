@@ -461,6 +461,7 @@ Hooks.once('setup', async function() {
       
       if (pack.collection === "never-stop-blowing-up.rules-reference") {
         try {
+          console.log("  - Rules reference compendium found! Attempting to load...");
           const index = await pack.getIndex();
           console.log(`  - Contains ${index.size} rules reference entries`);
           console.log("  - Rules reference compendium loaded successfully");
@@ -472,9 +473,20 @@ Hooks.once('setup', async function() {
           });
         } catch (error) {
           console.error("  - Error loading rules reference:", error);
+          console.error("  - Error details:", error.stack);
         }
       }
     }
   }
+  
+  // Also check if the rules-reference pack exists in the system definition
+  console.log("Checking system-defined packs:");
+  const systemPacks = Array.from(game.system.packs);
+  systemPacks.forEach(pack => {
+    console.log(`  - System pack: ${pack.name} (${pack.label}) - Type: ${pack.type}`);
+    if (pack.name === "rules-reference") {
+      console.log("    → Rules reference pack is defined in system.json");
+    }
+  });
   console.log("=== SYSTEM READY ===");
 });
