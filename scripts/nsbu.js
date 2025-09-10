@@ -492,24 +492,6 @@ Hooks.once('setup', async function() {
         }
       }
       
-      if (pack.collection === "never-stop-blowing-up.test-rules") {
-        try {
-          console.log("  - Test rules compendium found! Attempting to load...");
-          const index = await pack.getIndex();
-          console.log(`  - Contains ${index.size} rules reference entries`);
-          console.log("  - Test rules compendium loaded successfully");
-          
-          // Log the entries
-          const entries = Array.from(index.values());
-          entries.forEach(entry => {
-            console.log(`    • ${entry.name} (${entry.type})`);
-          });
-        } catch (error) {
-          console.error("  - Error loading test rules:", error);
-          console.error("  - Error details:", error.stack);
-        }
-      }
-      
       if (pack.collection === "never-stop-blowing-up.rules-reference") {
         try {
           console.log("  - Rules reference compendium found! Attempting to load...");
@@ -527,6 +509,24 @@ Hooks.once('setup', async function() {
           console.error("  - Error details:", error.stack);
         }
       }
+      
+      if (pack.collection === "never-stop-blowing-up.test-rules") {
+        try {
+          console.log("  - Test rules compendium found! Attempting to load...");
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Test rules compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading test rules:", error);
+          console.error("  - Error details:", error.stack);
+        }
+      }
     }
   }
   
@@ -536,7 +536,7 @@ Hooks.once('setup', async function() {
     const systemPacks = Array.from(game.system.packs);
     systemPacks.forEach(pack => {
       console.log(`  - System pack: ${pack.name} (${pack.label || 'Unknown'}) - Type: ${pack.type || 'Unknown'}`);
-      if (pack.name === "test-rules" || pack.name === "rules-reference") {
+      if (pack.name === "rules-reference") {
         console.log("    → Rules reference pack is defined in system.json");
       }
     });

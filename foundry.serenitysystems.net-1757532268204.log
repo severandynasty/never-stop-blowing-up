@@ -6,19 +6,25 @@ foundry.js:95945 _______________________________________________________________
 |  _|| |_| | |_| | |\  | |_| |  _ < | |     \ V /   | |   | |  
 |_|   \___/ \___/|_| \_|____/|_| \_\|_|      \_/    |_|   |_|  
 ===============================================================
-foundry.js:95968 Foundry VTT | Reestablishing existing session fd6a225c2c1a686784790359
+foundry.js:95968 Foundry VTT | Reestablishing existing session c999525e07daf9bc9a08f9bd
 game:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
-foundry.js:8824 Foundry VTT | Connected to server socket using session fd6a225c2c1a686784790359
+foundry.js:8824 Foundry VTT | Connected to server socket using session c999525e07daf9bc9a08f9bd
 foundry.js:8978 Foundry VTT | Initializing Foundry Virtual Tabletop Game
-foundry.js:3699 Foundry VTT | Synchronized official game time in 22ms
+nsbu.js:424 === NSBU SYSTEM INIT ===
+nsbu.js:428 System ID: never-stop-blowing-up
+nsbu.js:429 System title: Never Stop Blowing Up
+nsbu.js:433 System packs from config: Set(3) {{…}, {…}, {…}}
+nsbu.js:441 Game packs collection size: 0
+nsbu.js:442 Available pack collections:
+foundry.js:3699 Foundry VTT | Synchronized official game time in 24ms
 foundry.js:7699 Foundry VTT | Loaded localization file lang/en.json
 foundry.js:7699 Foundry VTT | Loaded localization file systems/never-stop-blowing-up/lang/en.json
-nsbu.js:424 === NSBU SYSTEM LOADED ===
-nsbu.js:425 Total packs available: 2
-nsbu.js:426 System packs registered in system.json:
-nsbu.js:429 Packs from system.json: Set(3) {{…}, {…}, {…}}[[Entries]]0: Object1: Object2: Objectsize: 3[[Prototype]]: Set
-nsbu.js:431 Compendium Packs Available:
-nsbu.js:434 ✓ Player Abilities (never-stop-blowing-up.abilities)
+nsbu.js:453 === NSBU SYSTEM LOADED ===
+nsbu.js:454 Total packs available: 3
+nsbu.js:455 System packs registered in system.json:
+nsbu.js:459 Packs from system.json: Set(3) {{…}, {…}, {…}}
+nsbu.js:464 Compendium Packs Available:
+nsbu.js:467 ✓ Player Abilities (never-stop-blowing-up.abilities)
 foundry.js:5827 Foundry VTT | Rendering SceneNavigation
 foundry.js:5827 Foundry VTT | Rendering Notifications
 foundry.js:5827 Foundry VTT | Rendering Sidebar
@@ -26,14 +32,23 @@ foundry.js:5827 Foundry VTT | Rendering PlayerList
 foundry.js:5827 Foundry VTT | Rendering Hotbar
 foundry.js:5827 Foundry VTT | Rendering Pause
 foundry.js:5827 Foundry VTT | Rendering SceneControls
-nsbu.js:456   - Contains 36 player abilities
-nsbu.js:434 ✓ Group Abilities (never-stop-blowing-up.group-abilities)
-nsbu.js:440   - Contains 27 group abilities organized by die size
-nsbu.js:444   - Sample entries:
-nsbu.js:446     • 3 Alpha Squad (d10) - Skill Add
-nsbu.js:446     • 1 Criminal Conspiracy (d6) - Tech
-nsbu.js:446     • 1 Criminal Conspiracy (d6) - Item
-nsbu.js:479 === SYSTEM READY ===
+nsbu.js:489   - Contains 36 player abilities
+nsbu.js:467 ✓ Group Abilities (never-stop-blowing-up.group-abilities)
+nsbu.js:473   - Contains 27 group abilities organized by die size
+nsbu.js:477   - Sample entries:
+nsbu.js:479     • 3 Alpha Squad (d10) - Skill Add
+nsbu.js:479     • 1 Criminal Conspiracy (d6) - Tech
+nsbu.js:479     • 1 Criminal Conspiracy (d6) - Item
+nsbu.js:467 ✓ Test Rules (never-stop-blowing-up.test-rules)
+nsbu.js:497   - Test rules compendium found! Attempting to load...
+nsbu.js:499   - Contains 0 rules reference entries
+nsbu.js:500   - Test rules compendium loaded successfully
+nsbu.js:534 Checking system-defined packs:
+nsbu.js:538   - System pack: abilities (Player Abilities) - Type: Item
+nsbu.js:538   - System pack: group-abilities (Group Abilities) - Type: Item
+nsbu.js:538   - System pack: test-rules (Test Rules) - Type: JournalEntry
+nsbu.js:540     → Rules reference pack is defined in system.json
+nsbu.js:546 === SYSTEM READY ===
 foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/toolclip.html
 foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/hud/navigation.html
 foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/sidebar.html
@@ -83,3 +98,7 @@ foundry.js:76874 Foundry VTT | Fonts loaded and ready.
 foundry.js:25199 Foundry VTT | Skipping game canvas - no active scene.
 foundry.js:8886 Applying buffered socket event: userActivity
 foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/chat-message.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/sidebar/partials/compendium-index-partial.html
+foundry.js:5827 Foundry VTT | Rendering Compendium
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/apps/compendium.html
+foundry.js:7846 Foundry VTT | Retrieved and compiled template templates/app-window.html
