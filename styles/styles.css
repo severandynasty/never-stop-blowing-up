@@ -43,3 +43,198 @@ label {
   display: block;
   font-weight: bold;
 }
+
+/* Interactive Dice Roll Styling */
+.nsbu-roll-result {
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 5px 0;
+}
+
+.roll-details {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+}
+
+.roll-total {
+  font-size: 1.2em;
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+.blow-up-notice {
+  background: linear-gradient(45deg, #ff6b6b, #ffa726);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+.turbo-tokens-section {
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.turbo-tokens-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.turbo-tokens-controls label {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.token-input {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.add-tokens-btn {
+  background: #2196f3;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-tokens-btn:hover {
+  background: #1976d2;
+}
+
+.add-tokens-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.natural-max-notice {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.roll-controls {
+  margin-top: 10px;
+}
+
+.pass-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  width: 100%;
+}
+
+.pass-btn:hover {
+  background: #218838;
+}
+
+.pass-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.accept-roll-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+  display: block;
+  width: 100%;
+}
+
+.accept-roll-btn:hover {
+  background: #218838;
+}
+
+.accept-roll-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.add-tokens-to-die-btn {
+  background: #2196f3;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-tokens-to-die-btn:hover {
+  background: #1976d2;
+}
+
+.add-tokens-to-die-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.final-result {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1.2em;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.blow-up-complete {
+  background: linear-gradient(45deg, #28a745, #20c997);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.subsequent-tokens-section {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 10px;
+}
