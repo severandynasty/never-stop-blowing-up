@@ -98,19 +98,21 @@
     </div>
 
 
-    <div style="display: flex; gap: 2em; align-items: flex-end;">
+    <div style="display: flex; gap: 2em; align-items: flex-end; justify-content: space-between;">
       <div class="nsbu-injuries">
         <label>Injuries</label>
-        <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
-          <button type="button" class="injury-decrease" style="width:2em;">-</button>
-          <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
-          <button type="button" class="injury-increase" style="width:2em;">+</button>
-        </div>
-        <div class="injury-status" style="margin-top: 0.25em; font-style: italic; color: #666; font-size: 0.9em;">
-          {{#if (eq system.injuries 0)}}Feelin' Fine{{/if}}
-          {{#if (eq system.injuries 1)}}Superficial{{/if}}
-          {{#if (eq system.injuries 2)}}Severe{{/if}}
-          {{#if (eq system.injuries 3)}}Adrenalized{{/if}}
+        <div style="display: flex; align-items: center; gap: 0.5em;">
+          <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
+            <button type="button" class="injury-decrease" style="width:2em;">-</button>
+            <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
+            <button type="button" class="injury-increase" style="width:2em;">+</button>
+          </div>
+          <div class="injury-status" style="font-weight: bold; color: #333; font-size: 0.9em;">
+            {{#if (eq system.injuries 0)}}Feelin' Fine{{/if}}
+            {{#if (eq system.injuries 1)}}Superficial{{/if}}
+            {{#if (eq system.injuries 2)}}Severe{{/if}}
+            {{#if (eq system.injuries 3)}}Adrenalized{{/if}}
+          </div>
         </div>
       </div>
       <div class="nsbu-turbo-tokens">
