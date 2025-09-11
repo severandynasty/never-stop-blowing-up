@@ -77,6 +77,16 @@ $(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {
   $button.addClass('processing').prop('disabled', true);
   
   const finalTotal = parseInt($(this).data('final-total'));
+  const actorId = $(this).data('actor-id');
+  const stat = $(this).data('stat');
+  const rollSequenceId = $(this).data('sequence-id');
+  
+  // Clear the active roll sequence
+  if (rollSequenceId && actorId && stat) {
+    const sequenceKey = `${actorId}-${stat}`;
+    activeRollSequences.delete(sequenceKey);
+    console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (accepted)`);
+  }
   
   // Update the chat message display
   const rollElement = $(this).closest('.nsbu-roll-result');
@@ -115,6 +125,9 @@ $(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(eve
   const currentDie = parseInt($(this).data('current-die'));
   const currentDieIdx = parseInt($(this).data('current-die-idx'));
   const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
+  const rollSequenceId = $(this).data('sequence-id');
+  
+  console.log(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
   
   const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
   
@@ -180,23 +193,52 @@ $(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(eve
       // Add blow-up notice
       rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
       
-      console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}`);
+      console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
       
       // Create a completely new roll for the next die instead of continuing in same message
-      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal);
+      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
     } else {
       // Already at maximum die (d20)
       rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+      
+      // Clear the roll sequence as it's complete
+      const sequenceKey = `${actor.id}-${stat}`;
+      activeRollSequences.delete(sequenceKey);
+      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (max die reached)`);
     }
   } else {
     // No blow-up, just final result
     rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
+    
+    // Clear the roll sequence as it's complete
+    const sequenceKey = `${actor.id}-${stat}`;
+    activeRollSequences.delete(sequenceKey);
+    console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (no blow-up)`);
   }
 });
 
+// Track active roll sequences to prevent race conditions
+const activeRollSequences = new Map();
+
 // Helper function to create interactive dice roll
-async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0) {
-  console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}, cumulativeTotal: ${cumulativeTotal}`);
+async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
+  // Generate a unique sequence ID for this roll chain if not provided
+  if (!rollSequenceId) {
+    rollSequenceId = foundry.utils.randomID();
+    
+    // Check if there's already an active sequence for this actor+stat
+    const sequenceKey = `${actor.id}-${stat}`;
+    if (activeRollSequences.has(sequenceKey)) {
+      console.log(`🚫 DEBUG: Roll sequence already active for ${actor.name} ${stat}, ignoring new roll`);
+      return;
+    }
+    
+    // Mark this sequence as active
+    activeRollSequences.set(sequenceKey, rollSequenceId);
+    console.log(`🔒 DEBUG: Started new roll sequence ${rollSequenceId} for ${actor.name} ${stat}`);
+  }
+  
+  console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}, cumulativeTotal: ${cumulativeTotal}, sequenceId: ${rollSequenceId}`);
   
   const dieSteps = [4, 6, 8, 10, 12, 20];
   let dieIdx = dieSteps.indexOf(statValue);
@@ -261,10 +303,10 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       // Update actor's stat
       await actor.update({[`system.stats.${stat}`]: newDie});
       
-      console.log(`🎯 DEBUG: Stat upgraded, calling createInteractiveDiceRoll recursively for d${newDie}`);
+      console.log(`🎯 DEBUG: Stat upgraded, calling createInteractiveDiceRoll recursively for d${newDie}, sequenceId: ${rollSequenceId}`);
       
       // Create a new roll for the upgraded stat (recursive call)
-      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal);
+      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
     } else {
       console.log(`🎯 DEBUG: Maximum die reached (d20), creating final message`);
       // Already at maximum die (d20) - create final message
@@ -284,6 +326,11 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       };
       
       await ChatMessage.create(finalChatData);
+      
+      // Clear the roll sequence as it's complete
+      const sequenceKey = `${actor.id}-${stat}`;
+      activeRollSequences.delete(sequenceKey);
+      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (natural max die reached)`);
     }
     
   } else {
@@ -301,7 +348,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
             data-actor-id="${actor.id}"
             data-stat="${stat}"
             data-final-total="${newCumulativeTotal}"
-            data-current-die-idx="${dieIdx}">Accept Roll (Total: ${newCumulativeTotal})</button>
+            data-current-die-idx="${dieIdx}"
+            data-sequence-id="${rollSequenceId}">Accept Roll (Total: ${newCumulativeTotal})</button>
           ${currentTokens > 0 ? `
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
@@ -314,7 +362,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                 data-die-value="${rollValue}"
                 data-current-die="${currentDie}"
                 data-current-die-idx="${dieIdx}"
-                data-cumulative-total="${newCumulativeTotal}">Add Tokens to d${currentDie}</button>
+                data-cumulative-total="${newCumulativeTotal}"
+                data-sequence-id="${rollSequenceId}">Add Tokens to d${currentDie}</button>
             </div>
           </div>
           ` : ''}
