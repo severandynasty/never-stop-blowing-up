@@ -98,21 +98,22 @@
     </div>
 
 
-    <div style="display: flex; gap: 2em; align-items: flex-end; justify-content: space-between;">
+    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 1em;">
       <div class="nsbu-injuries">
         <label style="display: block; text-align: center;">Injuries</label>
-        <div style="display: flex; align-items: center; gap: 0.5em;">
-          <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
-            <button type="button" class="injury-decrease" style="width:2em;">-</button>
-            <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
-            <button type="button" class="injury-increase" style="width:2em;">+</button>
-          </div>
-          <div class="injury-status" style="font-weight: bold; color: #333; font-size: 1.1em;">
-            {{#if (eq system.injuries 0)}}Feelin' Fine{{/if}}
-            {{#if (eq system.injuries 1)}}Superficial{{/if}}
-            {{#if (eq system.injuries 2)}}Severe{{/if}}
-            {{#if (eq system.injuries 3)}}Adrenalized{{/if}}
-          </div>
+        <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
+          <button type="button" class="injury-decrease" style="width:2em;">-</button>
+          <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
+          <button type="button" class="injury-increase" style="width:2em;">+</button>
+        </div>
+      </div>
+      <div class="nsbu-injury-status" style="flex: 1; text-align: center;">
+        <label style="display: block; text-align: center;">Status</label>
+        <div class="injury-status" style="font-weight: bold; font-size: 1.1em;">
+          {{#if (eq system.injuries 0)}}<span style="color: #333;">Feelin' Fine</span>{{/if}}
+          {{#if (eq system.injuries 1)}}<span style="color: #333;">Superficial</span>{{/if}}
+          {{#if (eq system.injuries 2)}}<span style="color: orange;">Severe</span>{{/if}}
+          {{#if (eq system.injuries 3)}}<span style="color: red;">Adrenalized</span>{{/if}}
         </div>
       </div>
       <div class="nsbu-turbo-tokens">
