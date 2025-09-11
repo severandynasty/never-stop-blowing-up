@@ -170,26 +170,54 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
   let total = 0;
   let lastDie = currentDie;
   let lastValue = 0;
+  let rolls = [];
   
   // Roll the initial die
   const roll = new Roll(`1d${currentDie}`);
   await roll.evaluate();
   lastValue = roll.total;
   total = lastValue;
+  rolls.push(`d${currentDie}: ${lastValue}`);
   
-  // Create the interactive chat message with turbo token controls
-  const rollId = randomID();
+  // Check if natural maximum - trigger automatic blow-up chain
+  let naturalMax = (lastValue === currentDie);
+  let currentDieIdx = dieIdx;
+  
+  if (naturalMax) {
+    // Continue blow-up chain for natural maximum
+    do {
+      if (currentDieIdx >= dieSteps.length - 1) break;
+      currentDieIdx++;
+      currentDie = dieSteps[currentDieIdx];
+      const blowUpRoll = new Roll(`1d${currentDie}`);
+      await blowUpRoll.evaluate();
+      const value = blowUpRoll.total;
+      rolls.push(`d${currentDie}: ${value}`);
+      total += value;
+      
+      if (value < currentDie) break;
+    } while (true);
+    
+    // Update actor's stat if it blew up
+    if (currentDieIdx > dieIdx) {
+      await actor.update({[`system.stats.${stat}`]: dieSteps[currentDieIdx]});
+    }
+  }
+  
+  // Create the chat message
+  const rollId = foundry.utils.randomID();
   const currentTokens = Number(actor.system.turboTokens) || 0;
   
   const chatData = {
     user: game.user.id,
     speaker: ChatMessage.getSpeaker({ actor }),
-    flavor: `${stat.toUpperCase()} Roll`,
+    flavor: `${stat.toUpperCase()} Roll${naturalMax ? ' - BLOW UP!' : ''}`,
     content: `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">d${currentDie}: ${lastValue}</div>
+        <div class="roll-details">${rolls.join(' + ')}</div>
         <div class="roll-total">Total: <span class="current-total">${total}</span></div>
-        ${currentTokens > 0 ? `
+        ${naturalMax ? `<div class="blow-up-notice">🎯 Natural ${lastValue} triggered blow-up chain!${currentDieIdx > dieIdx ? ` ${stat.toUpperCase()} upgraded to d${dieSteps[currentDieIdx]}!` : ''}</div>` : ''}
+        ${!naturalMax && currentTokens > 0 ? `
         <div class="turbo-tokens-section">
           <div class="turbo-tokens-controls">
             <label>Add Turbo Tokens (${currentTokens} available):</label>
@@ -207,8 +235,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
         ` : ''}
       </div>
     `,
-    type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-    roll: roll,
+    rolls: [roll],
     rollMode: game.settings.get("core", "rollMode")
   };
   
