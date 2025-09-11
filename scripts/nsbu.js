@@ -61,6 +61,10 @@ class NSBUActorSheet extends ActorSheet {
 
 // Global handler for turbo token buttons in chat messages
 $(document).on('click', '.add-tokens-btn', async function(event) {
+  // Prevent multiple rapid clicks
+  if ($(this).prop('disabled')) return;
+  $(this).prop('disabled', true);
+  
   const rollId = $(this).data('roll-id');
   const actorId = $(this).data('actor-id');
   const stat = $(this).data('stat');
@@ -97,8 +101,11 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   
   // Check if tokens trigger a blow-up
   let blowUpTriggered = false;
+  let finalNotification = `Added ${tokensToAdd} Turbo Tokens to roll!`;
+  
   if (newLastValue >= lastDie && dieIdx < dieSteps.length - 1) {
     blowUpTriggered = true;
+    const originalDieIdx = dieIdx;
     
     // Continue blow-up chain
     let blowUpTotal = newTotal;
@@ -120,10 +127,12 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
     rollElement.find('.roll-details').html(rolls.join(' + '));
     rollElement.find('.current-total').text(blowUpTotal);
     
-    // Update actor's stat if it blew up
-    if (dieIdx > currentDieIdx) {
+    // Update actor's stat if it blew up (only once)
+    if (dieIdx > originalDieIdx) {
       await actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
-      ui.notifications.info(`${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx]} from blow-up!`);
+      finalNotification += ` Blow-up triggered! ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx]}!`;
+    } else {
+      finalNotification += ` Blow-up triggered!`;
     }
   } else {
     // Just update the display with added tokens
@@ -139,10 +148,22 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   // Remove the turbo token controls
   $(this).closest('.turbo-tokens-section').remove();
   
-  ui.notifications.info(`Added ${tokensToAdd} Turbo Tokens to roll! ${blowUpTriggered ? 'Blow-up triggered!' : ''}`);
+  // Show consolidated notification
+  ui.notifications.info(finalNotification);
 });
 
-Hooks.once('ready', async function() {x = 0;
+class NSBUActorSheet extends ActorSheet {
+  activateListeners(html) {
+    super.activateListeners(html);
+    const dieSteps = [4, 6, 8, 10, 12, 20];
+    // Stat increase button
+    html.find('.stat-increase').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
       if (idx < dieSteps.length - 1) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
         this.render();
