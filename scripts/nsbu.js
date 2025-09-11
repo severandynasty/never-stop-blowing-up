@@ -113,6 +113,24 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
+    // Injury increase button
+    html.find('.injury-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current < 3) {
+        await this.actor.update({ 'system.injuries': current + 1 });
+        this.render();
+      }
+    });
+    // Injury decrease button
+    html.find('.injury-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.injuries': current - 1 });
+        this.render();
+      }
+    });
   }
 
   getData(options) {
@@ -263,6 +281,24 @@ class NSBUNPCSheet extends ActorSheet {
         this.render();
       }
     });
+    // Injury increase button
+    html.find('.injury-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current < 3) {
+        await this.actor.update({ 'system.injuries': current + 1 });
+        this.render();
+      }
+    });
+    // Injury decrease button
+    html.find('.injury-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.injuries': current - 1 });
+        this.render();
+      }
+    });
   }
 }
 
@@ -329,7 +365,7 @@ Hooks.once("init", () => {
           },
           hp: { type: Number, default: 10 },
           boomLevel: { type: Number, default: 1 },
-          injuries: { type: Array, default: [false, false, false] },
+          injuries: { type: Number, default: 0 },
           turboTokens: { type: Number, default: 0 },
           abilities: { type: Array, default: [] },
           groupAbilities: { type: Array, default: [] },

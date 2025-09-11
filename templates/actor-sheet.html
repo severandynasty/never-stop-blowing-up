@@ -101,18 +101,10 @@
     <div style="display: flex; gap: 2em; align-items: flex-end;">
       <div class="nsbu-injuries">
         <label>Injuries</label>
-        <div class="injury-radio-group">
-          <div class="injury-circles">
-            {{#if system.injuries}}
-              {{#each system.injuries as |injury idx|}}
-                <input type="checkbox" name="system.injuries.{{idx}}" value="true" {{#if injury}}checked{{/if}} />
-              {{/each}}
-            {{else}}
-              <input type="checkbox" name="system.injuries.0" />
-              <input type="checkbox" name="system.injuries.1" />
-              <input type="checkbox" name="system.injuries.2" />
-            {{/if}}
-          </div>
+        <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
+          <button type="button" class="injury-decrease" style="width:2em;">-</button>
+          <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
+          <button type="button" class="injury-increase" style="width:2em;">+</button>
         </div>
       </div>
       <div class="nsbu-turbo-tokens">
