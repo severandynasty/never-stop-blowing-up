@@ -147,9 +147,6 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   
   // Remove the turbo token controls
   $(this).closest('.turbo-tokens-section').remove();
-  
-  // Show consolidated notification
-  ui.notifications.info(finalNotification);
 });
 
 class NSBUActorSheet extends ActorSheet {
@@ -222,6 +219,7 @@ class NSBUActorSheet extends ActorSheet {
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
       let dieIdx = dieSteps.indexOf(statValue);
       if (dieIdx === -1) dieIdx = 0;
+      const originalDieIdx = dieIdx;
       let currentDie = dieSteps[dieIdx];
       let total = 0;
       let rolls = [];
@@ -229,9 +227,8 @@ class NSBUActorSheet extends ActorSheet {
       do {
         const roll = new Roll(`1d${currentDie}`);
         await roll.evaluate();
-        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
         const value = roll.total;
-        rolls.push(value);
+        rolls.push({value: value, die: currentDie});
         total += value;
         blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
         if (blowUp) {
@@ -239,8 +236,12 @@ class NSBUActorSheet extends ActorSheet {
           currentDie = dieSteps[dieIdx];
         }
       } while (blowUp);
+      
+      // Create interactive dice roll message
+      await createInteractiveDiceRoll(this.actor, stat, rolls, total, dieIdx, originalDieIdx);
+      
       // If the die blew up, update the stat to the new die
-      if (dieIdx > dieSteps.indexOf(statValue)) {
+      if (dieIdx > originalDieIdx) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
         ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
       }
@@ -400,6 +401,7 @@ class NSBUNPCSheet extends ActorSheet {
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
       let dieIdx = dieSteps.indexOf(statValue);
       if (dieIdx === -1) dieIdx = 0;
+      const originalDieIdx = dieIdx;
       let currentDie = dieSteps[dieIdx];
       let total = 0;
       let rolls = [];
@@ -407,9 +409,8 @@ class NSBUNPCSheet extends ActorSheet {
       do {
         const roll = new Roll(`1d${currentDie}`);
         await roll.evaluate();
-        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
         const value = roll.total;
-        rolls.push(value);
+        rolls.push({value: value, die: currentDie});
         total += value;
         blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
         if (blowUp) {
@@ -417,8 +418,12 @@ class NSBUNPCSheet extends ActorSheet {
           currentDie = dieSteps[dieIdx];
         }
       } while (blowUp);
+      
+      // Create interactive dice roll message
+      await createInteractiveDiceRoll(this.actor, stat, rolls, total, dieIdx, originalDieIdx);
+      
       // If the die blew up, update the stat to the new die
-      if (dieIdx > dieSteps.indexOf(statValue)) {
+      if (dieIdx > originalDieIdx) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
         ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
       }
@@ -745,5 +750,54 @@ Hooks.once('setup', async function() {
   }
   console.log("=== SYSTEM READY ===");
 });
+
+// Helper function to create interactive dice roll chat messages
+async function createInteractiveDiceRoll(actor, stat, rolls, total, dieIdx, originalDieIdx) {
+  const rollId = foundry.utils.randomID();
+  const turboTokens = Number(actor.system.turboTokens) || 0;
+  const lastRoll = rolls[rolls.length - 1];
+  
+  const chatContent = `
+    <div class="nsbu-roll-result" data-roll-id="${rollId}" style="border: 1px solid #ddd; padding: 10px; margin: 5px 0;">
+      <div class="roll-header" style="font-weight: bold; margin-bottom: 5px;">
+        ${stat.toUpperCase()} Roll
+      </div>
+      <div class="roll-details" style="margin-bottom: 5px;">
+        ${rolls.map(r => `<span class="die-roll" style="background: #f0f0f0; padding: 2px 6px; margin: 2px; border-radius: 3px;">d${r.die}: ${r.value}</span>`).join(' + ')}
+      </div>
+      <div class="roll-total" style="font-weight: bold; font-size: 1.2em; margin-bottom: 10px;">
+        Total: <span class="current-total">${total}</span>
+      </div>
+      ${turboTokens > 0 ? `
+        <div class="turbo-tokens-section" style="background: #f9f9f9; padding: 8px; border-radius: 5px;">
+          <label style="font-weight: bold;">Add Turbo Tokens:</label>
+          <div class="token-controls" style="margin: 5px 0;">
+            <input type="number" class="token-input" min="0" max="${turboTokens}" value="0" style="width: 4em; margin-right: 5px;">
+            <button type="button" class="add-tokens-btn" 
+                    data-roll-id="${rollId}" 
+                    data-actor-id="${actor.id}" 
+                    data-stat="${stat}" 
+                    data-original-total="${total}" 
+                    data-last-die="${lastRoll.die}" 
+                    data-last-value="${lastRoll.value}" 
+                    data-die-idx="${dieIdx}"
+                    data-original-die-idx="${originalDieIdx}"
+                    style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
+              Add Tokens
+            </button>
+          </div>
+          <div class="tokens-available" style="font-size: 0.9em; color: #666;">Available: ${turboTokens} tokens</div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+  
+  await ChatMessage.create({
+    user: game.user.id,
+    speaker: ChatMessage.getSpeaker({actor}),
+    content: chatContent,
+    flavor: `${stat.toUpperCase()} roll result`
+  });
+}
 }
 }
