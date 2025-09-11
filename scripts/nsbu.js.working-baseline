@@ -137,7 +137,7 @@ Hooks.once('ready', function() {
         await actor.update({[`system.stats.${stat}`]: newDie});
         
         // Add blow-up notice
-        rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
+        rollElement.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
         
         console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
         
@@ -229,7 +229,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
-        <div class="natural-max-notice">🎯 Natural Maximum! Automatic blow-up!</div>
+        <div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
       </div>
     `;
     
@@ -305,7 +305,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           ${currentTokens > 0 ? `
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens to this d${currentDie} roll (${currentTokens} available):</label>
+              <label>Add Turbo Tokens (${currentTokens} Available):</label>
               <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
               <button type="button" class="add-tokens-to-die-btn" 
                 data-roll-id="${rollId}"
@@ -538,6 +538,54 @@ class NSBUNPCSheet extends ActorSheet {
       if (idx === -1) idx = 0;
       if (idx > 0) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx - 1]});
+        this.render();
+      }
+    });
+    
+    // Turbo token increase button
+    html.find('.token-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      await this.actor.update({ 'system.turboTokens': current + 1 });
+      this.render();
+    });
+    
+    // Turbo token decrease button
+    html.find('.token-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.turboTokens': current - 1 });
+        this.render();
+      }
+    });
+    
+    // Injury increase button
+    html.find('.injury-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current < 3) {
+        const newInjuries = current + 1;
+        const updateData = { 'system.injuries': newInjuries };
+        
+        // If reaching "Adrenalized" (3), add 10 turbo tokens
+        if (newInjuries === 3) {
+          const currentTokens = Number(this.actor.system.turboTokens) || 0;
+          updateData['system.turboTokens'] = currentTokens + 10;
+          ui.notifications.info("Adrenalized! Gained 10 Turbo Tokens!");
+        }
+        
+        await this.actor.update(updateData);
+        this.render();
+      }
+    });
+    
+    // Injury decrease button
+    html.find('.injury-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.injuries': current - 1 });
         this.render();
       }
     });
