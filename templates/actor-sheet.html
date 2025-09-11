@@ -103,7 +103,7 @@
         <label style="display: block; text-align: center;">Injuries</label>
         <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
           <button type="button" class="injury-decrease" style="width:2em;">-</button>
-          <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
+          <input name="system.injuries" type="number" value="{{#if system.injuries}}{{system.injuries}}{{else}}0{{/if}}" min="0" max="3" style="width:3em; text-align:center;"/>
           <button type="button" class="injury-increase" style="width:2em;">+</button>
         </div>
       </div>
@@ -120,7 +120,7 @@
         <label style="display: block; text-align: center;">Turbo Tokens</label>
         <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
           <button type="button" class="token-decrease" style="width:2em;">-</button>
-          <input name="system.turboTokens" type="number" value="{{system.turboTokens}}" min="0" style="width:3em; text-align:center;"/>
+          <input name="system.turboTokens" type="number" value="{{#if system.turboTokens}}{{system.turboTokens}}{{else}}0{{/if}}" min="0" style="width:3em; text-align:center;"/>
           <button type="button" class="token-increase" style="width:2em;">+</button>
         </div>
       </div>
