@@ -59,10 +59,22 @@ class NSBUActorSheet extends ActorSheet {
       this.render();
     });
 
-// Global handler for accept roll button
-$(document).on('click', '.accept-roll-btn', async function(event) {
+// Global handler for accept roll button - using namespace to prevent duplicates
+$(document).off('click.nsbu-accept', '.accept-roll-btn');
+$(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  
   const $button = $(this);
-  $button.prop('disabled', true);
+  
+  // Check if already processing
+  if ($button.prop('disabled') || $button.hasClass('processing')) {
+    console.log('🚫 Accept roll button already processing, ignoring click');
+    return;
+  }
+  
+  // Mark as processing immediately
+  $button.addClass('processing').prop('disabled', true);
   
   const finalTotal = parseInt($(this).data('final-total'));
   
@@ -77,10 +89,24 @@ $(document).on('click', '.accept-roll-btn', async function(event) {
   rollElement.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
 });
 
-// Global handler for adding tokens to current die
-$(document).on('click', '.add-tokens-to-die-btn', async function(event) {
+// Global handler for adding tokens to current die - using namespace to prevent duplicates
+$(document).off('click.nsbu-tokens', '.add-tokens-to-die-btn');
+$(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  
   const $button = $(this);
-  $button.prop('disabled', true);
+  
+  // Check if already processing
+  if ($button.prop('disabled') || $button.hasClass('processing')) {
+    console.log('🚫 Add tokens button already processing, ignoring click');
+    return;
+  }
+  
+  // Mark as processing immediately
+  $button.addClass('processing').prop('disabled', true);
+  
+  console.log('💰 Add tokens button clicked - processing...');
   
   const rollId = $(this).data('roll-id');
   const actorId = $(this).data('actor-id');
@@ -122,8 +148,14 @@ $(document).on('click', '.add-tokens-to-die-btn', async function(event) {
   rollElement.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
   rollElement.find('.current-total').text(newDieResult);
   
-  // Remove current controls immediately to prevent multiple clicks
-  $(this).closest('.roll-controls').remove();
+  // Remove current controls immediately to prevent multiple clicks - but only if they still exist
+  const controlsElement = $(this).closest('.roll-controls');
+  if (controlsElement.length > 0) {
+    controlsElement.remove();
+    console.log('🗑️ DEBUG: Roll controls removed');
+  } else {
+    console.log('⚠️ DEBUG: Roll controls already removed!');
+  }
   
   // Check if we hit the die maximum (blow-up)
   if (newDieResult >= currentDie) {
