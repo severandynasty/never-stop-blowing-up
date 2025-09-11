@@ -114,6 +114,7 @@ $(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(eve
   const dieValue = parseInt($(this).data('die-value'));
   const currentDie = parseInt($(this).data('current-die'));
   const currentDieIdx = parseInt($(this).data('current-die-idx'));
+  const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
   
   const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
   
@@ -138,7 +139,12 @@ $(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(eve
   const newDieResult = dieValue + tokensToAdd;
   const dieSteps = [4, 6, 8, 10, 12, 20];
   
+  // Calculate new cumulative total including these tokens
+  const tokensOnlyTotal = cumulativeTotal - dieValue; // Remove the current die from cumulative
+  const newCumulativeTotal = tokensOnlyTotal + newDieResult; // Add the die + tokens result
+  
   console.log(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
+  console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
   
   // Spend the turbo tokens
   await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
@@ -177,20 +183,20 @@ $(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(eve
       console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}`);
       
       // Create a completely new roll for the next die instead of continuing in same message
-      await createInteractiveDiceRoll(actor, stat, newDie);
+      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal);
     } else {
       // Already at maximum die (d20)
-      rollElement.append(`<div class="final-result">Final Result: ${newDieResult} (Maximum die reached!)</div>`);
+      rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
     }
   } else {
     // No blow-up, just final result
-    rollElement.append(`<div class="final-result">Final Result: ${newDieResult}</div>`);
+    rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
   }
 });
 
 // Helper function to create interactive dice roll
-async function createInteractiveDiceRoll(actor, stat, statValue) {
-  console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}`);
+async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0) {
+  console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}, cumulativeTotal: ${cumulativeTotal}`);
   
   const dieSteps = [4, 6, 8, 10, 12, 20];
   let dieIdx = dieSteps.indexOf(statValue);
@@ -206,6 +212,10 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
   const rollValue = roll.total;
   
   console.log(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
+  
+  // Update cumulative total with this roll
+  const newCumulativeTotal = cumulativeTotal + rollValue;
+  console.log(`📊 DEBUG: Cumulative total: ${cumulativeTotal} + ${rollValue} = ${newCumulativeTotal}`);
   
   // Create the interactive chat message
   const rollId = foundry.utils.randomID();
@@ -254,13 +264,13 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
       console.log(`🎯 DEBUG: Stat upgraded, calling createInteractiveDiceRoll recursively for d${newDie}`);
       
       // Create a new roll for the upgraded stat (recursive call)
-      await createInteractiveDiceRoll(actor, stat, newDie);
+      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal);
     } else {
       console.log(`🎯 DEBUG: Maximum die reached (d20), creating final message`);
       // Already at maximum die (d20) - create final message
       const finalContent = `
         <div class="nsbu-roll-result">
-          <div class="final-result">Final Result: ${rollValue} (Maximum die reached!)</div>
+          <div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>
         </div>
       `;
       
@@ -281,14 +291,17 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
-        <div class="roll-total">Current Result: <span class="current-total">${rollValue}</span></div>
+        <div class="roll-total">
+          Current Die: <span class="current-die-total">${rollValue}</span>
+          ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
+        </div>
         <div class="roll-controls">
           <button type="button" class="accept-roll-btn" 
             data-roll-id="${rollId}"
             data-actor-id="${actor.id}"
             data-stat="${stat}"
-            data-final-total="${rollValue}"
-            data-current-die-idx="${dieIdx}">Accept Roll (${rollValue})</button>
+            data-final-total="${newCumulativeTotal}"
+            data-current-die-idx="${dieIdx}">Accept Roll (Total: ${newCumulativeTotal})</button>
           ${currentTokens > 0 ? `
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
@@ -300,7 +313,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
                 data-stat="${stat}"
                 data-die-value="${rollValue}"
                 data-current-die="${currentDie}"
-                data-current-die-idx="${dieIdx}">Add Tokens to d${currentDie}</button>
+                data-current-die-idx="${dieIdx}"
+                data-cumulative-total="${newCumulativeTotal}">Add Tokens to d${currentDie}</button>
             </div>
           </div>
           ` : ''}
