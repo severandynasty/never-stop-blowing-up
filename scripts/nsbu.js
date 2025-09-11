@@ -61,9 +61,9 @@ class NSBUActorSheet extends ActorSheet {
 
 // Global handler for turbo token buttons in chat messages
 $(document).on('click', '.add-tokens-btn', async function(event) {
-  // Prevent multiple rapid clicks
-  if ($(this).prop('disabled')) return;
-  $(this).prop('disabled', true);
+  // Disable button to prevent multiple clicks
+  const $button = $(this);
+  $button.prop('disabled', true);
   
   const rollId = $(this).data('roll-id');
   const actorId = $(this).data('actor-id');
@@ -77,15 +77,20 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   
   if (tokensToAdd <= 0) {
     ui.notifications.warn("Please enter a number of tokens to add.");
+    $button.prop('disabled', false);
     return;
   }
   
   const actor = game.actors.get(actorId);
-  if (!actor) return;
+  if (!actor) {
+    $button.prop('disabled', false);
+    return;
+  }
   
   const currentTokens = Number(actor.system.turboTokens) || 0;
   if (tokensToAdd > currentTokens) {
     ui.notifications.warn("Not enough Turbo Tokens available.");
+    $button.prop('disabled', false);
     return;
   }
   
@@ -101,11 +106,9 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   
   // Check if tokens trigger a blow-up
   let blowUpTriggered = false;
-  let finalNotification = `Added ${tokensToAdd} Turbo Tokens to roll!`;
-  
+  let statUpgraded = false;
   if (newLastValue >= lastDie && dieIdx < dieSteps.length - 1) {
     blowUpTriggered = true;
-    const originalDieIdx = dieIdx;
     
     // Continue blow-up chain
     let blowUpTotal = newTotal;
@@ -127,12 +130,10 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
     rollElement.find('.roll-details').html(rolls.join(' + '));
     rollElement.find('.current-total').text(blowUpTotal);
     
-    // Update actor's stat if it blew up (only once)
-    if (dieIdx > originalDieIdx) {
+    // Update actor's stat if it blew up
+    if (dieIdx > currentDieIdx) {
       await actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
-      finalNotification += ` Blow-up triggered! ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx]}!`;
-    } else {
-      finalNotification += ` Blow-up triggered!`;
+      statUpgraded = true;
     }
   } else {
     // Just update the display with added tokens
@@ -147,20 +148,19 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   
   // Remove the turbo token controls
   $(this).closest('.turbo-tokens-section').remove();
+  
+  // Single consolidated notification
+  let message = `Added ${tokensToAdd} Turbo Tokens to roll!`;
+  if (blowUpTriggered) {
+    message += ' Blow-up triggered!';
+    if (statUpgraded) {
+      message += ` ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx]}!`;
+    }
+  }
+  ui.notifications.info(message);
 });
 
-class NSBUActorSheet extends ActorSheet {
-  activateListeners(html) {
-    super.activateListeners(html);
-    const dieSteps = [4, 6, 8, 10, 12, 20];
-    // Stat increase button
-    html.find('.stat-increase').on('click', async (event) => {
-      event.preventDefault();
-      const stat = event.currentTarget.dataset.stat;
-      const stats = this.actor.system.stats || {};
-      let statValue = Number(stats[stat]);
-      let idx = dieSteps.indexOf(statValue);
-      if (idx === -1) idx = 0;
+Hooks.once('ready', async function() {x = 0;
       if (idx < dieSteps.length - 1) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
         this.render();
@@ -219,7 +219,6 @@ class NSBUActorSheet extends ActorSheet {
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
       let dieIdx = dieSteps.indexOf(statValue);
       if (dieIdx === -1) dieIdx = 0;
-      const originalDieIdx = dieIdx;
       let currentDie = dieSteps[dieIdx];
       let total = 0;
       let rolls = [];
@@ -227,8 +226,9 @@ class NSBUActorSheet extends ActorSheet {
       do {
         const roll = new Roll(`1d${currentDie}`);
         await roll.evaluate();
+        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
         const value = roll.total;
-        rolls.push({value: value, die: currentDie});
+        rolls.push(value);
         total += value;
         blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
         if (blowUp) {
@@ -236,12 +236,8 @@ class NSBUActorSheet extends ActorSheet {
           currentDie = dieSteps[dieIdx];
         }
       } while (blowUp);
-      
-      // Create interactive dice roll message
-      await createInteractiveDiceRoll(this.actor, stat, rolls, total, dieIdx, originalDieIdx);
-      
       // If the die blew up, update the stat to the new die
-      if (dieIdx > originalDieIdx) {
+      if (dieIdx > dieSteps.indexOf(statValue)) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
         ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
       }
@@ -401,7 +397,6 @@ class NSBUNPCSheet extends ActorSheet {
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
       let dieIdx = dieSteps.indexOf(statValue);
       if (dieIdx === -1) dieIdx = 0;
-      const originalDieIdx = dieIdx;
       let currentDie = dieSteps[dieIdx];
       let total = 0;
       let rolls = [];
@@ -409,8 +404,9 @@ class NSBUNPCSheet extends ActorSheet {
       do {
         const roll = new Roll(`1d${currentDie}`);
         await roll.evaluate();
+        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
         const value = roll.total;
-        rolls.push({value: value, die: currentDie});
+        rolls.push(value);
         total += value;
         blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
         if (blowUp) {
@@ -418,12 +414,8 @@ class NSBUNPCSheet extends ActorSheet {
           currentDie = dieSteps[dieIdx];
         }
       } while (blowUp);
-      
-      // Create interactive dice roll message
-      await createInteractiveDiceRoll(this.actor, stat, rolls, total, dieIdx, originalDieIdx);
-      
       // If the die blew up, update the stat to the new die
-      if (dieIdx > originalDieIdx) {
+      if (dieIdx > dieSteps.indexOf(statValue)) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
         ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
       }
@@ -559,7 +551,7 @@ Hooks.once("init", () => {
           },
           hp: { type: Number, default: 8 },
           boomLevel: { type: Number, default: 1 },
-          injuries: { type: Number, default: 0 },
+          injuries: { type: Array, default: [false, false, false] },
           turboTokens: { type: Number, default: 0 },
           abilities: { type: Array, default: [] },
           groupAbilities: { type: Array, default: [] },
@@ -622,10 +614,35 @@ Hooks.once("init", () => {
     types: ["group-ability"],
     makeDefault: true
   });
+});
 
-  // Add initialization logging
+// Add early initialization hook to catch pack loading issues
+Hooks.once('init', function() {
   console.log("=== NSBU SYSTEM INIT ===");
-  console.log("Sheets registered successfully!");
+  
+  // Check system information that's available at init
+  if (game.system) {
+    console.log("System ID:", game.system.id);
+    console.log("System title:", game.system.title);
+    
+    // Check if packs property exists
+    if (game.system.packs) {
+      console.log("System packs from config:", game.system.packs);
+    } else {
+      console.log("System packs not yet available at init");
+    }
+  }
+  
+  // Check game packs collection
+  if (game.packs) {
+    console.log("Game packs collection size:", game.packs.size);
+    console.log("Available pack collections:");
+    for (let pack of game.packs) {
+      console.log(`  - ${pack.collection} (${pack.metadata?.label || 'Unknown'}) - Type: ${pack.metadata?.type || 'Unknown'}`);
+    }
+  } else {
+    console.log("Game packs collection not yet available");
+  }
 });
 
 Hooks.once('setup', async function() {
@@ -725,54 +742,3 @@ Hooks.once('setup', async function() {
   }
   console.log("=== SYSTEM READY ===");
 });
-
-// Helper function to create interactive dice roll chat messages
-async function createInteractiveDiceRoll(actor, stat, rolls, total, dieIdx, originalDieIdx) {
-  const rollId = foundry.utils.randomID();
-  const turboTokens = Number(actor.system.turboTokens) || 0;
-  const lastRoll = rolls[rolls.length - 1];
-  
-  const chatContent = `
-    <div class="nsbu-roll-result" data-roll-id="${rollId}" style="border: 1px solid #ddd; padding: 10px; margin: 5px 0;">
-      <div class="roll-header" style="font-weight: bold; margin-bottom: 5px;">
-        ${stat.toUpperCase()} Roll
-      </div>
-      <div class="roll-details" style="margin-bottom: 5px;">
-        ${rolls.map(r => `<span class="die-roll" style="background: #f0f0f0; padding: 2px 6px; margin: 2px; border-radius: 3px;">d${r.die}: ${r.value}</span>`).join(' + ')}
-      </div>
-      <div class="roll-total" style="font-weight: bold; font-size: 1.2em; margin-bottom: 10px;">
-        Total: <span class="current-total">${total}</span>
-      </div>
-      ${turboTokens > 0 ? `
-        <div class="turbo-tokens-section" style="background: #f9f9f9; padding: 8px; border-radius: 5px;">
-          <label style="font-weight: bold;">Add Turbo Tokens:</label>
-          <div class="token-controls" style="margin: 5px 0;">
-            <input type="number" class="token-input" min="0" max="${turboTokens}" value="0" style="width: 4em; margin-right: 5px;">
-            <button type="button" class="add-tokens-btn" 
-                    data-roll-id="${rollId}" 
-                    data-actor-id="${actor.id}" 
-                    data-stat="${stat}" 
-                    data-original-total="${total}" 
-                    data-last-die="${lastRoll.die}" 
-                    data-last-value="${lastRoll.value}" 
-                    data-die-idx="${dieIdx}"
-                    data-original-die-idx="${originalDieIdx}"
-                    style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
-              Add Tokens
-            </button>
-          </div>
-          <div class="tokens-available" style="font-size: 0.9em; color: #666;">Available: ${turboTokens} tokens</div>
-        </div>
-      ` : ''}
-    </div>
-  `;
-  
-  await ChatMessage.create({
-    user: game.user.id,
-    speaker: ChatMessage.getSpeaker({actor}),
-    content: chatContent,
-    flavor: `${stat.toUpperCase()} roll result`
-  });
-}
-}
-}
