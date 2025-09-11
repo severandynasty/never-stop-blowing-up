@@ -420,9 +420,9 @@ class NSBUActorSheet extends ActorSheet {
     });
     
     // Roll stat buttons - ACTOR SHEET
-    console.log('🎲 DEBUG: NSBUActorSheet - Setting up .roll-stat click handler');
-    const rollStatButtons = html.find('.roll-stat');
-    console.log('🎲 DEBUG: NSBUActorSheet - Found roll-stat buttons:', rollStatButtons.length);
+    console.log('🎲 DEBUG: NSBUActorSheet - Setting up .stat-roll click handler');
+    const rollStatButtons = html.find('.stat-roll');
+    console.log('🎲 DEBUG: NSBUActorSheet - Found stat-roll buttons:', rollStatButtons.length);
     
     rollStatButtons.on('click', async (event) => {
       console.log('🎲 DEBUG: NSBUActorSheet - Roll stat button clicked!', event);
@@ -542,15 +542,37 @@ class NSBUNPCSheet extends ActorSheet {
       }
     });
     
-    // Roll stat buttons
-    html.find('.roll-stat').on('click', async (event) => {
+    // Roll stat buttons - NPC SHEET
+    console.log('🎲 DEBUG: NSBUNPCSheet - Setting up .stat-roll click handler');
+    const rollStatButtons = html.find('.stat-roll');
+    console.log('🎲 DEBUG: NSBUNPCSheet - Found stat-roll buttons:', rollStatButtons.length);
+    
+    rollStatButtons.on('click', async (event) => {
+      console.log('🎲 DEBUG: NSBUNPCSheet - Stat roll button clicked!', event);
       event.preventDefault();
       const stat = event.currentTarget.dataset.stat;
+      console.log('🎲 DEBUG: NSBUNPCSheet - Stat from button:', stat);
       const stats = this.actor.system.stats || {};
+      console.log('🎲 DEBUG: NSBUNPCSheet - Actor stats:', stats);
       let statValue = Number(stats[stat]);
-      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      console.log('🎲 DEBUG: NSBUNPCSheet - Stat value:', statValue);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) {
+        console.log('🎲 DEBUG: NSBUNPCSheet - Invalid stat value, defaulting to 4');
+        statValue = 4;
+      }
       
-      await createInteractiveDiceRoll(this.actor, stat, statValue);
+      console.log('🎲 DEBUG: NSBUNPCSheet - About to call createInteractiveDiceRoll with:', {
+        actor: this.actor.name,
+        stat: stat,
+        statValue: statValue
+      });
+      
+      try {
+        await createInteractiveDiceRoll(this.actor, stat, statValue);
+        console.log('🎲 DEBUG: NSBUNPCSheet - createInteractiveDiceRoll completed successfully');
+      } catch (error) {
+        console.error('🎲 ERROR: NSBUNPCSheet - createInteractiveDiceRoll failed:', error);
+      }
     });
     
     // Other input listeners
