@@ -160,7 +160,62 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
   ui.notifications.info(message);
 });
 
-Hooks.once('ready', async function() {x = 0;
+// Helper function to create interactive dice roll
+async function createInteractiveDiceRoll(actor, stat, statValue) {
+  const dieSteps = [4, 6, 8, 10, 12, 20];
+  let dieIdx = dieSteps.indexOf(statValue);
+  if (dieIdx === -1) dieIdx = 0;
+  
+  let currentDie = dieSteps[dieIdx];
+  let total = 0;
+  let lastDie = currentDie;
+  let lastValue = 0;
+  
+  // Roll the initial die
+  const roll = new Roll(`1d${currentDie}`);
+  await roll.evaluate();
+  lastValue = roll.total;
+  total = lastValue;
+  
+  // Create the interactive chat message with turbo token controls
+  const rollId = randomID();
+  const currentTokens = Number(actor.system.turboTokens) || 0;
+  
+  const chatData = {
+    user: game.user.id,
+    speaker: ChatMessage.getSpeaker({ actor }),
+    flavor: `${stat.toUpperCase()} Roll`,
+    content: `
+      <div class="nsbu-roll-result" data-roll-id="${rollId}">
+        <div class="roll-details">d${currentDie}: ${lastValue}</div>
+        <div class="roll-total">Total: <span class="current-total">${total}</span></div>
+        ${currentTokens > 0 ? `
+        <div class="turbo-tokens-section">
+          <div class="turbo-tokens-controls">
+            <label>Add Turbo Tokens (${currentTokens} available):</label>
+            <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
+            <button type="button" class="add-tokens-btn" 
+              data-roll-id="${rollId}"
+              data-actor-id="${actor.id}"
+              data-stat="${stat}"
+              data-original-total="${total}"
+              data-last-die="${lastDie}"
+              data-last-value="${lastValue}"
+              data-die-idx="${dieIdx}">Add Tokens</button>
+          </div>
+        </div>
+        ` : ''}
+      </div>
+    `,
+    type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+    roll: roll,
+    rollMode: game.settings.get("core", "rollMode")
+  };
+  
+  await ChatMessage.create(chatData);
+}
+
+Hooks.once('ready', async function() {
       if (idx < dieSteps.length - 1) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
         this.render();
@@ -291,6 +346,17 @@ Hooks.once('ready', async function() {x = 0;
         await this.actor.update({ 'system.injuries': current - 1 });
         this.render();
       }
+    });
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      
+      await createInteractiveDiceRoll(this.actor, stat, statValue);
     });
   }
 
@@ -459,6 +525,17 @@ class NSBUNPCSheet extends ActorSheet {
         await this.actor.update({ 'system.injuries': current - 1 });
         this.render();
       }
+    });
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      
+      await createInteractiveDiceRoll(this.actor, stat, statValue);
     });
   }
 }
