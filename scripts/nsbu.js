@@ -282,7 +282,33 @@ class NSBUItemSheet extends ItemSheet {
   }
 }
 
+class NSBUGroupAbilitySheet extends ItemSheet {
+  getData(options) {
+    const data = super.getData(options);
+    data.system = this.item.system ?? {};
+    console.log("Group Ability Sheet Data:", data);
+    return data;
+  }
+  
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "group-ability"],
+      template: "systems/never-stop-blowing-up/templates/group-ability-sheet.html",
+      width: 450,
+      height: 400
+    });
+  }
+}
+
 Hooks.once("init", () => {
+  // Register Handlebars helper to strip numeric prefixes from names
+  Handlebars.registerHelper('stripSortPrefix', function(name) {
+    if (typeof name === 'string') {
+      return name.replace(/^\d+\s/, '');
+    }
+    return name;
+  });
+
   // Define the system model to match template.json
   game.system.model = {
     Actor: {
@@ -355,6 +381,15 @@ Hooks.once("init", () => {
           bonus: { type: String, default: "" },
           appliesTo: { type: String, default: "" }
         }
+      },
+      "group-ability": {
+        system: {
+          groupSuite: { type: String, default: "" },
+          dieRequirement: { type: String, default: "" },
+          effect: { type: String, default: "" },
+          frequency: { type: String, default: "" },
+          folder: { type: String, default: "" }
+        }
       }
     }
   };
@@ -373,25 +408,140 @@ Hooks.once("init", () => {
   // Register the custom item sheet for all item types
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
-  types: ["explosive", "gear", "upgrade"],
+    types: ["explosive", "gear", "upgrade"],
+    makeDefault: true
+  });
+  
+  // Register the custom group ability sheet
+  Items.registerSheet("never-stop-blowing-up", NSBUGroupAbilitySheet, {
+    types: ["group-ability"],
     makeDefault: true
   });
 });
 
-Hooks.once('setup', async function() {
-  // Log all compendium packs
-  console.log("Compendium Packs Loaded:");
-  for (let pack of game.packs) {
-    console.log(`Pack: ${pack.collection} | Label: ${pack.metadata.label} | Type: ${pack.metadata.type}`);
-    if (pack.collection === "never-stop-blowing-up.abilities") {
-      // Try to get all documents in the abilities compendium
-      const index = await pack.getIndex();
-      console.log("Abilities Compendium Index:", index);
-      const docs = await pack.getDocuments();
-      console.log("Abilities Compendium Documents:", docs);
+// Add early initialization hook to catch pack loading issues
+Hooks.once('init', function() {
+  console.log("=== NSBU SYSTEM INIT ===");
+  
+  // Check system information that's available at init
+  if (game.system) {
+    console.log("System ID:", game.system.id);
+    console.log("System title:", game.system.title);
+    
+    // Check if packs property exists
+    if (game.system.packs) {
+      console.log("System packs from config:", game.system.packs);
+    } else {
+      console.log("System packs not yet available at init");
     }
   }
+  
+  // Check game packs collection
+  if (game.packs) {
+    console.log("Game packs collection size:", game.packs.size);
+    console.log("Available pack collections:");
+    for (let pack of game.packs) {
+      console.log(`  - ${pack.collection} (${pack.metadata?.label || 'Unknown'}) - Type: ${pack.metadata?.type || 'Unknown'}`);
+    }
+  } else {
+    console.log("Game packs collection not yet available");
+  }
+});
 
-  // All world compendium and folder logic removed. Now using only system compendiums per group suite.
-  // No further action needed here.
+Hooks.once('setup', async function() {
+  // Basic compendium verification
+  console.log("=== NSBU SYSTEM LOADED ===");
+  console.log("Total packs available:", game.packs.size);
+  console.log("System packs registered in system.json:");
+  
+  // Log all system-defined packs (safely)
+  if (game.system?.packs) {
+    console.log("Packs from system.json:", game.system.packs);
+  } else {
+    console.log("System packs not available or undefined");
+  }
+  
+  console.log("Compendium Packs Available:");
+  for (let pack of game.packs) {
+    if (pack.collection.startsWith("never-stop-blowing-up")) {
+      console.log(`✓ ${pack.metadata?.label || 'Unknown'} (${pack.collection})`);
+      
+      // Quick verification for group abilities
+      if (pack.collection === "never-stop-blowing-up.group-abilities") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} group abilities organized by die size`);
+          
+          // Sample a few entries to verify the new naming
+          const sampleEntries = Array.from(index.values()).slice(0, 3);
+          console.log("  - Sample entries:");
+          sampleEntries.forEach(entry => {
+            console.log(`    • ${entry.name}`);
+          });
+        } catch (error) {
+          console.error("  - Error loading group abilities:", error);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.abilities") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} player abilities`);
+        } catch (error) {
+          console.error("  - Error loading player abilities:", error);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.rules-reference") {
+        try {
+          console.log("  - Rules reference compendium found! Attempting to load...");
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Rules reference compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading rules reference:", error);
+          console.error("  - Error details:", error.stack);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.test-rules") {
+        try {
+          console.log("  - Test rules compendium found! Attempting to load...");
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Test rules compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading test rules:", error);
+          console.error("  - Error details:", error.stack);
+        }
+      }
+    }
+  }
+  
+  // Also check if the packs exist in the system definition
+  console.log("Checking system-defined packs:");
+  if (game.system?.packs) {
+    const systemPacks = Array.from(game.system.packs);
+    systemPacks.forEach(pack => {
+      console.log(`  - System pack: ${pack.name} (${pack.label || 'Unknown'}) - Type: ${pack.type || 'Unknown'}`);
+      if (pack.name === "rules-reference") {
+        console.log("    → Rules reference pack is defined in system.json");
+      }
+    });
+  } else {
+    console.log("System packs definition not available");
+  }
+  console.log("=== SYSTEM READY ===");
 });
