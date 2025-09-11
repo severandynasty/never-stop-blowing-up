@@ -1,3 +1,64 @@
+class NSBUActorSheet extends ActorSheet {
+  activateListeners(html) {
+    super.activateListeners(html);
+    const dieSteps = [4, 6, 8, 10, 12, 20];
+    // Stat increase button
+    html.find('.stat-increase').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
+      if (idx < dieSteps.length - 1) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
+        this.render();
+      }
+    });
+    // Stat decrease button
+    html.find('.stat-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      let idx = dieSteps.indexOf(statValue);
+      if (idx === -1) idx = 0;
+      if (idx > 0) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx - 1]});
+        this.render();
+      }
+    });
+    // Other listeners
+    html.find('input, select, textarea').on('change blur', async (event) => {
+      const input = event.currentTarget;
+      const name = input.name;
+      let value = input.value;
+      if (name === 'system.inventory') {
+        await this.actor.update({ 'system.inventory': value });
+        this.render();
+        return;
+      }
+      if (input.type === 'checkbox') {
+        value = input.checked ? true : false;
+      } else if (input.type === 'number') {
+        value = Number(value);
+      } else if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
+      const updateData = {};
+      const keys = name.split('.');
+      let ref = updateData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!ref[keys[i]]) ref[keys[i]] = {};
+        ref = ref[keys[i]];
+      }
+      ref[keys[keys.length - 1]] = value;
+      await this.actor.update(updateData);
+      this.render();
+    });
+
 // Global handler for accept roll button - using namespace to prevent duplicates
 $(document).off('click.nsbu-accept', '.accept-roll-btn');
 $(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {
@@ -187,8 +248,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   console.log(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
   
-  // Create and evaluate the roll
-  const roll = new Roll(`1d${currentDie}`);
+  // Roll the current die
+  const roll = new Roll(`1d${currentDie}`, {}, {async: false});
   await roll.evaluate();
   const rollValue = roll.total;
   
@@ -209,19 +270,22 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   let content;
   if (isNaturalMax) {
-    // Natural maximum - automatic blow-up
+    // Natural maximum - automatically trigger blow-up
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
-        <div class="natural-max-notice">🎯 Natural Maximum! Automatic blow-up!</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
+        <div class="roll-total">Current Result: <span class="current-total">${rollValue}</span></div>
+        <div class="natural-max-notice">🎯 Natural ${rollValue}! Automatic blow-up triggered!</div>
       </div>
     `;
     
+    // Create the message first
     const chatData = {
       user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor }),
-      flavor: `${stat.toUpperCase()} Natural Blow-up!`,
+      flavor: `${stat.toUpperCase()} Roll (d${currentDie}) - NATURAL BLOW-UP!`,
       content: content,
+      rolls: [roll],
       rollMode: game.settings.get("core", "rollMode"),
       sound: null
     };
@@ -310,36 +374,23 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     const chatData = {
       user: game.user.id,
       speaker: ChatMessage.getSpeaker({ actor }),
-      flavor: `${stat.toUpperCase()} Roll`,
+      flavor: `${stat.toUpperCase()} Roll (d${currentDie})`,
       content: content,
       rolls: [roll],
       rollMode: game.settings.get("core", "rollMode"),
-      sound: CONFIG.sounds.dice
+      sound: null
     };
     
     await ChatMessage.create(chatData);
   }
 }
 
-class NSBUActorSheet extends ActorSheet {
-  activateListeners(html) {
-    super.activateListeners(html);
-    const dieSteps = [4, 6, 8, 10, 12, 20];
-    
-    // Stat increase button
-    html.find('.stat-increase').on('click', async (event) => {
-      event.preventDefault();
-      const stat = event.currentTarget.dataset.stat;
-      const stats = this.actor.system.stats || {};
-      let statValue = Number(stats[stat]);
-      let idx = dieSteps.indexOf(statValue);
-      if (idx === -1) idx = 0;
+Hooks.once('ready', async function() {
       if (idx < dieSteps.length - 1) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
         this.render();
       }
     });
-    
     // Stat decrease button
     html.find('.stat-decrease').on('click', async (event) => {
       event.preventDefault();
@@ -353,16 +404,83 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
-    
-    // Turbo token increase button
+    // Other listeners
+    html.find('input, select, textarea').on('change blur', async (event) => {
+      const input = event.currentTarget;
+      const name = input.name;
+      let value = input.value;
+      if (name === 'system.inventory') {
+        await this.actor.update({ 'system.inventory': value });
+        this.render();
+        return;
+      }
+      if (input.type === 'checkbox') {
+        value = input.checked ? true : false;
+      } else if (input.type === 'number') {
+        value = Number(value);
+      } else if (value === 'true') {
+        value = true;
+      } else if (value === 'false') {
+        value = false;
+      }
+      const updateData = {};
+      const keys = name.split('.');
+      let ref = updateData;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!ref[keys[i]]) ref[keys[i]] = {};
+        ref = ref[keys[i]];
+      }
+      ref[keys[keys.length - 1]] = value;
+      await this.actor.update(updateData);
+      this.render();
+    });
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      let dieIdx = dieSteps.indexOf(statValue);
+      if (dieIdx === -1) dieIdx = 0;
+      let currentDie = dieSteps[dieIdx];
+      let total = 0;
+      let rolls = [];
+      let blowUp = false;
+      do {
+        const roll = new Roll(`1d${currentDie}`);
+        await roll.evaluate();
+        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
+        const value = roll.total;
+        rolls.push(value);
+        total += value;
+        blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
+        if (blowUp) {
+          dieIdx++;
+          currentDie = dieSteps[dieIdx];
+        }
+      } while (blowUp);
+      // If the die blew up, update the stat to the new die
+      if (dieIdx > dieSteps.indexOf(statValue)) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
+        ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
+      }
+    });
+
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      if (itemId) {
+        await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
+      }
+    });
     html.find('.token-increase').on('click', async (event) => {
       event.preventDefault();
       const current = Number(this.actor.system.turboTokens) || 0;
       await this.actor.update({ 'system.turboTokens': current + 1 });
       this.render();
     });
-    
-    // Turbo token decrease button
     html.find('.token-decrease').on('click', async (event) => {
       event.preventDefault();
       const current = Number(this.actor.system.turboTokens) || 0;
@@ -371,7 +489,6 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
-    
     // Injury increase button
     html.find('.injury-increase').on('click', async (event) => {
       event.preventDefault();
@@ -391,7 +508,6 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
-    
     // Injury decrease button
     html.find('.injury-decrease').on('click', async (event) => {
       event.preventDefault();
@@ -401,9 +517,9 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
-    
-    // Roll stat buttons
-    html.find('.roll-stat').on('click', async (event) => {
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
       event.preventDefault();
       const stat = event.currentTarget.dataset.stat;
       const stats = this.actor.system.stats || {};
@@ -411,41 +527,6 @@ class NSBUActorSheet extends ActorSheet {
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
       
       await createInteractiveDiceRoll(this.actor, stat, statValue);
-    });
-    
-    // Other input listeners
-    html.find('input, select, textarea').on('change blur', async (event) => {
-      const input = event.currentTarget;
-      const name = input.name;
-      let value = input.value;
-      
-      if (name === 'system.inventory') {
-        await this.actor.update({ 'system.inventory': value });
-        this.render();
-        return;
-      }
-      
-      if (input.type === 'checkbox') {
-        value = input.checked ? true : false;
-      } else if (input.type === 'number') {
-        value = Number(value);
-      } else if (value === 'true') {
-        value = true;
-      } else if (value === 'false') {
-        value = false;
-      }
-      
-      const updateData = {};
-      const keys = name.split('.');
-      let ref = updateData;
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!ref[keys[i]]) ref[keys[i]] = {};
-        ref = ref[keys[i]];
-      }
-      ref[keys[keys.length - 1]] = value;
-      
-      await this.actor.update(updateData);
-      this.render();
     });
   }
 
@@ -471,10 +552,26 @@ class NSBUActorSheet extends ActorSheet {
 }
 
 class NSBUNPCSheet extends ActorSheet {
+  getData(options) {
+    const data = super.getData(options);
+    data.system = this.actor.system ?? {};
+    data.items = this.actor.items ? this.actor.items.contents : [];
+    return data;
+  }
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: ["never-stop-blowing-up", "sheet", "npc"],
+      template: "systems/never-stop-blowing-up/templates/npc-sheet.html",
+      width: 600,
+      height: 600
+    });
+  }
+  async _updateObject(event, formData) {
+    await this.actor.update(formData);
+  }
   activateListeners(html) {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
-    
     // Stat increase button
     html.find('.stat-increase').on('click', async (event) => {
       event.preventDefault();
@@ -488,7 +585,6 @@ class NSBUNPCSheet extends ActorSheet {
         this.render();
       }
     });
-    
     // Stat decrease button
     html.find('.stat-decrease').on('click', async (event) => {
       event.preventDefault();
@@ -502,24 +598,11 @@ class NSBUNPCSheet extends ActorSheet {
         this.render();
       }
     });
-    
-    // Roll stat buttons
-    html.find('.roll-stat').on('click', async (event) => {
-      event.preventDefault();
-      const stat = event.currentTarget.dataset.stat;
-      const stats = this.actor.system.stats || {};
-      let statValue = Number(stats[stat]);
-      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
-      
-      await createInteractiveDiceRoll(this.actor, stat, statValue);
-    });
-    
-    // Other input listeners
-    html.find('input, select, textarea').on('change blur', async (event) => {
+    // Other listeners
+    html.find('input, select').on('change blur', async (event) => {
       const input = event.currentTarget;
       const name = input.name;
       let value = input.value;
-      
       if (input.type === 'checkbox') {
         value = input.checked ? true : false;
       } else if (input.type === 'number') {
@@ -529,7 +612,6 @@ class NSBUNPCSheet extends ActorSheet {
       } else if (value === 'false') {
         value = false;
       }
-      
       const updateData = {};
       const keys = name.split('.');
       let ref = updateData;
@@ -538,30 +620,93 @@ class NSBUNPCSheet extends ActorSheet {
         ref = ref[keys[i]];
       }
       ref[keys[keys.length - 1]] = value;
-      
       await this.actor.update(updateData);
       this.render();
     });
-  }
 
-  getData(options) {
-    const data = super.getData(options);
-    data.system = this.actor.system ?? {};
-    data.items = this.actor.items ? this.actor.items.contents : [];
-    return data;
-  }
-
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["never-stop-blowing-up", "sheet", "npc"],
-      template: "systems/never-stop-blowing-up/templates/npc-sheet.html",
-      width: 600,
-      height: 600
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      let dieIdx = dieSteps.indexOf(statValue);
+      if (dieIdx === -1) dieIdx = 0;
+      let currentDie = dieSteps[dieIdx];
+      let total = 0;
+      let rolls = [];
+      let blowUp = false;
+      do {
+        const roll = new Roll(`1d${currentDie}`);
+        await roll.evaluate();
+        await roll.toMessage({flavor: `${stat.toUpperCase()} roll (d${currentDie})`});
+        const value = roll.total;
+        rolls.push(value);
+        total += value;
+        blowUp = (value === currentDie) && (dieIdx < dieSteps.length - 1);
+        if (blowUp) {
+          dieIdx++;
+          currentDie = dieSteps[dieIdx];
+        }
+      } while (blowUp);
+      // If the die blew up, update the stat to the new die
+      if (dieIdx > dieSteps.indexOf(statValue)) {
+        await this.actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
+        ui.notifications.info(`${stat.charAt(0).toUpperCase() + stat.slice(1)} upgraded to d${dieSteps[dieIdx]}!`);
+      }
     });
-  }
 
-  async _updateObject(event, formData) {
-    await this.actor.update(formData);
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      if (itemId) {
+        await this.actor.deleteEmbeddedDocuments('Item', [itemId]);
+      }
+    });
+    html.find('.token-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      await this.actor.update({ 'system.turboTokens': current + 1 });
+      this.render();
+    });
+    html.find('.token-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.turboTokens) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.turboTokens': current - 1 });
+        this.render();
+      }
+    });
+    // Injury increase button
+    html.find('.injury-increase').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current < 3) {
+        await this.actor.update({ 'system.injuries': current + 1 });
+        this.render();
+      }
+    });
+    // Injury decrease button
+    html.find('.injury-decrease').on('click', async (event) => {
+      event.preventDefault();
+      const current = Number(this.actor.system.injuries) || 0;
+      if (current > 0) {
+        await this.actor.update({ 'system.injuries': current - 1 });
+        this.render();
+      }
+    });
+
+    // Dice blow-up mechanic for stats
+    html.find('.stat-roll').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      const stats = this.actor.system.stats || {};
+      let statValue = Number(stats[stat]);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      
+      await createInteractiveDiceRoll(this.actor, stat, statValue);
+    });
   }
 }
 
@@ -571,7 +716,6 @@ class NSBUItemSheet extends ItemSheet {
     data.system = this.item.system ?? {};
     return data;
   }
-
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["never-stop-blowing-up", "sheet", "item"],
@@ -586,131 +730,262 @@ class NSBUGroupAbilitySheet extends ItemSheet {
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
+    console.log("Group Ability Sheet Data:", data);
     return data;
   }
-
+  
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["never-stop-blowing-up", "sheet", "group-ability"],
       template: "systems/never-stop-blowing-up/templates/group-ability-sheet.html",
-      width: 400,
-      height: 300
+      width: 450,
+      height: 400
     });
   }
 }
 
 Hooks.once("init", () => {
-  console.log("=== NSBU SYSTEM INIT ===");
-  
-  // Check system information that's available at init
-  console.log("System ID:", game.system.id);
-  console.log("System title:", game.system.title);
-  
-  // Check if packs are available at init (they usually aren't)
-  const systemPacks = game.system.packs;
-  console.log("System packs from config:", systemPacks);
-  
-  const gamePacks = game.packs;
-  console.log("Game packs collection size:", gamePacks.size);
-  console.log("Available pack collections:");
-  
-  if (gamePacks.size === 0) {
-    console.log("  - No pack collections available yet at init");
-  } else {
-    console.log("  - Found pack collections at init");
-  }
-});
-
-Hooks.once('setup', async function() {
-  console.log("=== NSBU SYSTEM LOADED ===");
-  console.log("Total packs available:", game.packs.size);
-  console.log("System packs registered in system.json:");
-  
-  // Check system.json packs configuration
-  const systemPacks = game.system.packs;
-  console.log("Packs from system.json:", systemPacks);
-  
-  console.log("Compendium Packs Available:");
-  
-  // Check each compendium pack
-  const packNames = ['abilities', 'group-abilities', 'rules-reference'];
-  
-  packNames.forEach(packName => {
-    const fullPackName = `never-stop-blowing-up.${packName}`;
-    const pack = game.packs.get(fullPackName);
-    
-    if (pack) {
-      console.log(`✓ ${pack.metadata.label} (${fullPackName})`);
-      
-      if (packName === 'abilities') {
-        pack.getDocuments().then(docs => {
-          console.log(`  - Contains ${docs.length} player abilities`);
-        });
-      } else if (packName === 'group-abilities') {
-        pack.getDocuments().then(docs => {
-          console.log(`  - Contains ${docs.length} group abilities organized by die size`);
-          console.log(`  - Sample entries:`);
-          docs.slice(0, 3).forEach(doc => {
-            console.log(`    • ${doc.name} (${doc.system?.type || 'unknown type'})`);
-          });
-        });
-      } else if (packName === 'rules-reference') {
-        console.log("  - Rules reference compendium found! Attempting to load...");
-        pack.getDocuments().then(docs => {
-          console.log(`  - Contains ${docs.length} rules reference entries`);
-          console.log("  - Rules reference compendium loaded successfully");
-          docs.forEach(doc => {
-            console.log(`    • ${doc.name} (${doc.system?.type})`);
-          });
-        }).catch(err => {
-          console.error("  - Error loading rules reference:", err);
-        });
-      }
-    } else {
-      console.log(`✗ ${packName} pack not found`);
+  // Register Handlebars helper to strip numeric prefixes from names
+  Handlebars.registerHelper('stripSortPrefix', function(name) {
+    if (typeof name === 'string') {
+      return name.replace(/^\d+\s/, '');
     }
+    return name;
   });
-  
-  // Register actor sheets
+
+  // Define the system model to match template.json
+  game.system.model = {
+    Actor: {
+      character: {
+        system: {
+          realWorldCharacter: { type: String, default: "" },
+          catchphrase: { type: String, default: "" },
+          stats: {
+            weapons: { type: Number, default: 4 },
+            brawl: { type: Number, default: 4 },
+            hot: { type: Number, default: 4 },
+            drive: { type: Number, default: 4 },
+            stunts: { type: Number, default: 4 },
+            wits: { type: Number, default: 4 },
+            tech: { type: Number, default: 4 },
+            tough: { type: Number, default: 4 },
+            sneak: { type: Number, default: 4 }
+          },
+          hp: { type: Number, default: 10 },
+          boomLevel: { type: Number, default: 1 },
+          injuries: { type: Number, default: 0 },
+          turboTokens: { type: Number, default: 0 },
+          abilities: { type: Array, default: [] },
+          groupAbilities: { type: Array, default: [] },
+          inventory: { type: String, default: "" },
+          bio: { type: String, default: "" }
+        }
+      },
+      npc: {
+        system: {
+          realWorldCharacter: { type: String, default: "" },
+          catchphrase: { type: String, default: "" },
+          stats: {
+            weapons: { type: Number, default: 4 },
+            brawl: { type: Number, default: 4 },
+            hot: { type: Number, default: 4 },
+            drive: { type: Number, default: 4 },
+            stunts: { type: Number, default: 4 },
+            wits: { type: Number, default: 4 },
+            tech: { type: Number, default: 4 },
+            tough: { type: Number, default: 4 },
+            sneak: { type: Number, default: 4 }
+          },
+          hp: { type: Number, default: 8 },
+          boomLevel: { type: Number, default: 1 },
+          injuries: { type: Array, default: [false, false, false] },
+          turboTokens: { type: Number, default: 0 },
+          abilities: { type: Array, default: [] },
+          groupAbilities: { type: Array, default: [] },
+          notes: { type: String, default: "" }
+        }
+      }
+    },
+    Item: {
+      explosive: {
+        system: {
+          damage: { type: Number, default: 2 },
+          range: { type: String, default: "short" },
+          special: { type: String, default: "" }
+        }
+      },
+      gear: {
+        system: {
+          effect: { type: String, default: "" },
+          uses: { type: Number, default: 1 }
+        }
+      },
+      upgrade: {
+        system: {
+          bonus: { type: String, default: "" },
+          appliesTo: { type: String, default: "" }
+        }
+      },
+      "group-ability": {
+        system: {
+          groupSuite: { type: String, default: "" },
+          dieRequirement: { type: String, default: "" },
+          effect: { type: String, default: "" },
+          frequency: { type: String, default: "" },
+          folder: { type: String, default: "" }
+        }
+      }
+    }
+  };
+
+  // Register the custom actor sheets
+  Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("never-stop-blowing-up", NSBUActorSheet, {
     types: ["character"],
     makeDefault: true
   });
-  
   Actors.registerSheet("never-stop-blowing-up", NSBUNPCSheet, {
     types: ["npc"],
     makeDefault: true
   });
 
-  // Register item sheets
+  // Register the custom item sheet for all item types
+  Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
     types: ["explosive", "gear", "upgrade"],
     makeDefault: true
   });
   
+  // Register the custom group ability sheet
   Items.registerSheet("never-stop-blowing-up", NSBUGroupAbilitySheet, {
     types: ["group-ability"],
     makeDefault: true
   });
+});
+
+// Add early initialization hook to catch pack loading issues
+Hooks.once('init', function() {
+  console.log("=== NSBU SYSTEM INIT ===");
+  
+  // Check system information that's available at init
+  if (game.system) {
+    console.log("System ID:", game.system.id);
+    console.log("System title:", game.system.title);
+    
+    // Check if packs property exists
+    if (game.system.packs) {
+      console.log("System packs from config:", game.system.packs);
+    } else {
+      console.log("System packs not yet available at init");
+    }
+  }
+  
+  // Check game packs collection
+  if (game.packs) {
+    console.log("Game packs collection size:", game.packs.size);
+    console.log("Available pack collections:");
+    for (let pack of game.packs) {
+      console.log(`  - ${pack.collection} (${pack.metadata?.label || 'Unknown'}) - Type: ${pack.metadata?.type || 'Unknown'}`);
+    }
+  } else {
+    console.log("Game packs collection not yet available");
+  }
+});
+
+Hooks.once('setup', async function() {
+  // Basic compendium verification
+  console.log("=== NSBU SYSTEM LOADED ===");
+  console.log("Total packs available:", game.packs.size);
+  console.log("System packs registered in system.json:");
+  
+  // Log all system-defined packs (safely)
+  if (game.system?.packs) {
+    console.log("Packs from system.json:", game.system.packs);
+  } else {
+    console.log("System packs not available or undefined");
+  }
+  
+  console.log("Compendium Packs Available:");
+  for (let pack of game.packs) {
+    if (pack.collection.startsWith("never-stop-blowing-up")) {
+      console.log(`✓ ${pack.metadata?.label || 'Unknown'} (${pack.collection})`);
+      
+      // Quick verification for group abilities
+      if (pack.collection === "never-stop-blowing-up.group-abilities") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} group abilities organized by die size`);
+          
+          // Sample a few entries to verify the new naming
+          const sampleEntries = Array.from(index.values()).slice(0, 3);
+          console.log("  - Sample entries:");
+          sampleEntries.forEach(entry => {
+            console.log(`    • ${entry.name}`);
+          });
+        } catch (error) {
+          console.error("  - Error loading group abilities:", error);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.abilities") {
+        try {
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} player abilities`);
+        } catch (error) {
+          console.error("  - Error loading player abilities:", error);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.rules-reference") {
+        try {
+          console.log("  - Rules reference compendium found! Attempting to load...");
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Rules reference compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading rules reference:", error);
+          console.error("  - Error details:", error.stack);
+        }
+      }
+      
+      if (pack.collection === "never-stop-blowing-up.test-rules") {
+        try {
+          console.log("  - Test rules compendium found! Attempting to load...");
+          const index = await pack.getIndex();
+          console.log(`  - Contains ${index.size} rules reference entries`);
+          console.log("  - Test rules compendium loaded successfully");
+          
+          // Log the entries
+          const entries = Array.from(index.values());
+          entries.forEach(entry => {
+            console.log(`    • ${entry.name} (${entry.type})`);
+          });
+        } catch (error) {
+          console.error("  - Error loading test rules:", error);
+          console.error("  - Error details:", error.stack);
+        }
+      }
+    }
+  }
   
   // Also check if the packs exist in the system definition
   console.log("Checking system-defined packs:");
-  
-  const systemConfig = game.system;
-  console.log(`  - System pack: abilities (${systemConfig?.packs?.get ? 'Available' : 'Not available'})`);
-  console.log(`  - System pack: group-abilities (${systemConfig?.packs?.get ? 'Available' : 'Not available'})`);
-  console.log(`  - System pack: rules-reference (${systemConfig?.packs?.get ? 'Available' : 'Not available'})`);
-  
-  if (systemConfig?.packs) {
-    systemConfig.packs.forEach((packConfig, packId) => {
-      console.log(`  - System pack: ${packId} (${packConfig.label}) - Type: ${packConfig.type}`);
-      if (packId === 'rules-reference') {
-        console.log(`    → Rules reference pack is defined in system.json`);
+  if (game.system?.packs) {
+    const systemPacks = Array.from(game.system.packs);
+    systemPacks.forEach(pack => {
+      console.log(`  - System pack: ${pack.name} (${pack.label || 'Unknown'}) - Type: ${pack.type || 'Unknown'}`);
+      if (pack.name === "rules-reference") {
+        console.log("    → Rules reference pack is defined in system.json");
       }
     });
   } else {
-    console.log("    → System packs definition not available");
+    console.log("System packs definition not available");
   }
-  
   console.log("=== SYSTEM READY ===");
 });
