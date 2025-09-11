@@ -137,7 +137,7 @@ Hooks.once('ready', function() {
         await actor.update({[`system.stats.${stat}`]: newDie});
         
         // Add blow-up notice
-        rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
+        rollElement.append(`<div class="blow-up-notice">💥 BLOW UP! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
         
         console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
         
@@ -229,7 +229,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
-        <div class="blow-up-notice">🎯 BLOW UP! ${rollValue} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
+        <div class="blow-up-notice">💥 BLOW UP! ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
       </div>
     `;
     
