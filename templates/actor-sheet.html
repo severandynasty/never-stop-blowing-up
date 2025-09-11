@@ -100,14 +100,14 @@
 
     <div style="display: flex; gap: 2em; align-items: flex-end; justify-content: space-between;">
       <div class="nsbu-injuries">
-        <label>Injuries</label>
+        <label style="display: block; text-align: center;">Injuries</label>
         <div style="display: flex; align-items: center; gap: 0.5em;">
           <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
             <button type="button" class="injury-decrease" style="width:2em;">-</button>
             <input name="system.injuries" type="number" value="{{system.injuries}}" min="0" max="3" style="width:3em; text-align:center;"/>
             <button type="button" class="injury-increase" style="width:2em;">+</button>
           </div>
-          <div class="injury-status" style="font-weight: bold; color: #333; font-size: 0.9em;">
+          <div class="injury-status" style="font-weight: bold; color: #333; font-size: 1.1em;">
             {{#if (eq system.injuries 0)}}Feelin' Fine{{/if}}
             {{#if (eq system.injuries 1)}}Superficial{{/if}}
             {{#if (eq system.injuries 2)}}Severe{{/if}}
@@ -116,7 +116,7 @@
         </div>
       </div>
       <div class="nsbu-turbo-tokens">
-        <label>Turbo Tokens</label>
+        <label style="display: block; text-align: center;">Turbo Tokens</label>
         <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
           <button type="button" class="token-decrease" style="width:2em;">-</button>
           <input name="system.turboTokens" type="number" value="{{system.turboTokens}}" min="0" style="width:3em; text-align:center;"/>
