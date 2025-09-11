@@ -112,6 +112,8 @@ $(document).on('click', '.add-tokens-to-die-btn', async function(event) {
   const newDieResult = dieValue + tokensToAdd;
   const dieSteps = [4, 6, 8, 10, 12, 20];
   
+  console.log(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
+  
   // Spend the turbo tokens
   await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
   
@@ -125,16 +127,22 @@ $(document).on('click', '.add-tokens-to-die-btn', async function(event) {
   
   // Check if we hit the die maximum (blow-up)
   if (newDieResult >= currentDie) {
+    console.log(`💥 DEBUG: Token blow-up triggered! ${newDieResult} >= ${currentDie}`);
+    
     // BLOW UP! Advance to next die
     if (currentDieIdx < dieSteps.length - 1) {
       const newDieIdx = currentDieIdx + 1;
       const newDie = dieSteps[newDieIdx];
+      
+      console.log(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to token blow-up`);
       
       // Update actor's stat
       await actor.update({[`system.stats.${stat}`]: newDie});
       
       // Add blow-up notice
       rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
+      
+      console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}`);
       
       // Create a completely new roll for the next die instead of continuing in same message
       await createInteractiveDiceRoll(actor, stat, newDie);
@@ -150,16 +158,22 @@ $(document).on('click', '.add-tokens-to-die-btn', async function(event) {
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue) {
+  console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}`);
+  
   const dieSteps = [4, 6, 8, 10, 12, 20];
   let dieIdx = dieSteps.indexOf(statValue);
   if (dieIdx === -1) dieIdx = 0;
   
   let currentDie = dieSteps[dieIdx];
   
+  console.log(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
+  
   // Roll the current die
   const roll = new Roll(`1d${currentDie}`, {}, {async: false});
   await roll.evaluate();
   const rollValue = roll.total;
+  
+  console.log(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
   
   // Create the interactive chat message
   const rollId = foundry.utils.randomID();
@@ -167,6 +181,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
   
   // Check if this is a natural maximum (automatic blow-up)
   const isNaturalMax = (rollValue === currentDie);
+  
+  console.log(`🎲 DEBUG: isNaturalMax: ${isNaturalMax}, currentTokens: ${currentTokens}`);
   
   let content;
   if (isNaturalMax) {
@@ -191,18 +207,24 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
     };
     
     const message = await ChatMessage.create(chatData);
+    console.log(`🎯 DEBUG: Natural blow-up message created`);
     
     // Then immediately continue with the blow-up sequence
     if (dieIdx < dieSteps.length - 1) {
       const newDieIdx = dieIdx + 1;
       const newDie = dieSteps[newDieIdx];
       
+      console.log(`🎯 DEBUG: Upgrading stat from d${currentDie} to d${newDie}`);
+      
       // Update actor's stat
       await actor.update({[`system.stats.${stat}`]: newDie});
+      
+      console.log(`🎯 DEBUG: Stat upgraded, calling createInteractiveDiceRoll recursively for d${newDie}`);
       
       // Create a new roll for the upgraded stat (recursive call)
       await createInteractiveDiceRoll(actor, stat, newDie);
     } else {
+      console.log(`🎯 DEBUG: Maximum die reached (d20), creating final message`);
       // Already at maximum die (d20) - create final message
       const finalContent = `
         <div class="nsbu-roll-result">
