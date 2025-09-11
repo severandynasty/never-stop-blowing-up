@@ -1,163 +1,170 @@
-// Global handler for accept roll button - using namespace to prevent duplicates
-$(document).off('click.nsbu-accept', '.accept-roll-btn');
-$(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {
-  event.preventDefault();
-  event.stopPropagation();
-  
-  const $button = $(this);
-  
-  // Check if already processing
-  if ($button.prop('disabled') || $button.hasClass('processing')) {
-    console.log('🚫 Accept roll button already processing, ignoring click');
-    return;
-  }
-  
-  // Mark as processing immediately
-  $button.addClass('processing').prop('disabled', true);
-  
-  const finalTotal = parseInt($(this).data('final-total'));
-  const actorId = $(this).data('actor-id');
-  const stat = $(this).data('stat');
-  const rollSequenceId = $(this).data('sequence-id');
-  
-  // Clear the active roll sequence
-  if (rollSequenceId && actorId && stat) {
-    const sequenceKey = `${actorId}-${stat}`;
-    activeRollSequences.delete(sequenceKey);
-    console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (accepted)`);
-  }
-  
-  // Update the chat message display
-  const rollElement = $(this).closest('.nsbu-roll-result');
-  rollElement.find('.roll-details').append(' → ACCEPTED');
-  
-  // Remove the roll controls
-  $(this).closest('.roll-controls').remove();
-  
-  // Add final result display
-  rollElement.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
-});
+// Track active roll sequences to prevent race conditions
+const activeRollSequences = new Map();
 
-// Global handler for adding tokens to current die - using namespace to prevent duplicates
-$(document).off('click.nsbu-tokens', '.add-tokens-to-die-btn');
-$(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(event) {
-  event.preventDefault();
-  event.stopPropagation();
+// Setup global event handlers when Foundry is ready
+Hooks.once('ready', function() {
+  console.log("=== Setting up NSBU global event handlers ===");
   
-  const $button = $(this);
-  
-  // Check if already processing
-  if ($button.prop('disabled') || $button.hasClass('processing')) {
-    console.log('🚫 Add tokens button already processing, ignoring click');
-    return;
-  }
-  
-  // Mark as processing immediately
-  $button.addClass('processing').prop('disabled', true);
-  
-  console.log('💰 Add tokens button clicked - processing...');
-  
-  const rollId = $(this).data('roll-id');
-  const actorId = $(this).data('actor-id');
-  const stat = $(this).data('stat');
-  const dieValue = parseInt($(this).data('die-value'));
-  const currentDie = parseInt($(this).data('current-die'));
-  const currentDieIdx = parseInt($(this).data('current-die-idx'));
-  const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
-  const rollSequenceId = $(this).data('sequence-id');
-  
-  console.log(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
-  
-  const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
-  
-  if (tokensToAdd <= 0) {
-    $button.prop('disabled', false);
-    return;
-  }
-  
-  const actor = game.actors.get(actorId);
-  if (!actor) {
-    $button.prop('disabled', false);
-    return;
-  }
-  
-  const currentTokens = Number(actor.system.turboTokens) || 0;
-  if (tokensToAdd > currentTokens) {
-    $button.prop('disabled', false);
-    return;
-  }
-  
-  // Calculate new die result
-  const newDieResult = dieValue + tokensToAdd;
-  const dieSteps = [4, 6, 8, 10, 12, 20];
-  
-  // Calculate new cumulative total including these tokens
-  const tokensOnlyTotal = cumulativeTotal - dieValue; // Remove the current die from cumulative
-  const newCumulativeTotal = tokensOnlyTotal + newDieResult; // Add the die + tokens result
-  
-  console.log(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
-  console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
-  
-  // Spend the turbo tokens
-  await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
-  
-  // Update the chat message display
-  const rollElement = $(this).closest('.nsbu-roll-result');
-  rollElement.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
-  rollElement.find('.current-total').text(newDieResult);
-  
-  // Remove current controls immediately to prevent multiple clicks - but only if they still exist
-  const controlsElement = $(this).closest('.roll-controls');
-  if (controlsElement.length > 0) {
-    controlsElement.remove();
-    console.log('🗑️ DEBUG: Roll controls removed');
-  } else {
-    console.log('⚠️ DEBUG: Roll controls already removed!');
-  }
-  
-  // Check if we hit the die maximum (blow-up)
-  if (newDieResult >= currentDie) {
-    console.log(`💥 DEBUG: Token blow-up triggered! ${newDieResult} >= ${currentDie}`);
+  // Global handler for accept roll button - using namespace to prevent duplicates
+  $(document).off('click.nsbu-accept', '.accept-roll-btn');
+  $(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {
+    event.preventDefault();
+    event.stopPropagation();
     
-    // BLOW UP! Advance to next die
-    if (currentDieIdx < dieSteps.length - 1) {
-      const newDieIdx = currentDieIdx + 1;
-      const newDie = dieSteps[newDieIdx];
-      
-      console.log(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to token blow-up`);
-      
-      // Update actor's stat
-      await actor.update({[`system.stats.${stat}`]: newDie});
-      
-      // Add blow-up notice
-      rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
-      
-      console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
-      
-      // Create a completely new roll for the next die instead of continuing in same message
-      await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
+    const $button = $(this);
+    
+    // Check if already processing
+    if ($button.prop('disabled') || $button.hasClass('processing')) {
+      console.log('🚫 Accept roll button already processing, ignoring click');
+      return;
+    }
+    
+    // Mark as processing immediately
+    $button.addClass('processing').prop('disabled', true);
+    
+    const finalTotal = parseInt($(this).data('final-total'));
+    const actorId = $(this).data('actor-id');
+    const stat = $(this).data('stat');
+    const rollSequenceId = $(this).data('sequence-id');
+    
+    // Clear the active roll sequence
+    if (rollSequenceId && actorId && stat) {
+      const sequenceKey = `${actorId}-${stat}`;
+      activeRollSequences.delete(sequenceKey);
+      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (accepted)`);
+    }
+    
+    // Update the chat message display
+    const rollElement = $(this).closest('.nsbu-roll-result');
+    rollElement.find('.roll-details').append(' → ACCEPTED');
+    
+    // Remove the roll controls
+    $(this).closest('.roll-controls').remove();
+    
+    // Add final result display
+    rollElement.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
+  });
+
+  // Global handler for adding tokens to current die - using namespace to prevent duplicates
+  $(document).off('click.nsbu-tokens', '.add-tokens-to-die-btn');
+  $(document).on('click.nsbu-tokens', '.add-tokens-to-die-btn', async function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const $button = $(this);
+    
+    // Check if already processing
+    if ($button.prop('disabled') || $button.hasClass('processing')) {
+      console.log('🚫 Add tokens button already processing, ignoring click');
+      return;
+    }
+    
+    // Mark as processing immediately
+    $button.addClass('processing').prop('disabled', true);
+    
+    console.log('💰 Add tokens button clicked - processing...');
+    
+    const rollId = $(this).data('roll-id');
+    const actorId = $(this).data('actor-id');
+    const stat = $(this).data('stat');
+    const dieValue = parseInt($(this).data('die-value'));
+    const currentDie = parseInt($(this).data('current-die'));
+    const currentDieIdx = parseInt($(this).data('current-die-idx'));
+    const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
+    const rollSequenceId = $(this).data('sequence-id');
+    
+    console.log(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
+    
+    const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
+    
+    if (tokensToAdd <= 0) {
+      $button.prop('disabled', false);
+      return;
+    }
+    
+    const actor = game.actors.get(actorId);
+    if (!actor) {
+      $button.prop('disabled', false);
+      return;
+    }
+    
+    const currentTokens = Number(actor.system.turboTokens) || 0;
+    if (tokensToAdd > currentTokens) {
+      $button.prop('disabled', false);
+      return;
+    }
+    
+    // Calculate new die result
+    const newDieResult = dieValue + tokensToAdd;
+    const dieSteps = [4, 6, 8, 10, 12, 20];
+    
+    // Calculate new cumulative total including these tokens
+    const tokensOnlyTotal = cumulativeTotal - dieValue; // Remove the current die from cumulative
+    const newCumulativeTotal = tokensOnlyTotal + newDieResult; // Add the die + tokens result
+    
+    console.log(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
+    console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
+    
+    // Spend the turbo tokens
+    await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
+    
+    // Update the chat message display
+    const rollElement = $(this).closest('.nsbu-roll-result');
+    rollElement.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+    rollElement.find('.current-total').text(newDieResult);
+    
+    // Remove current controls immediately to prevent multiple clicks - but only if they still exist
+    const controlsElement = $(this).closest('.roll-controls');
+    if (controlsElement.length > 0) {
+      controlsElement.remove();
+      console.log('🗑️ DEBUG: Roll controls removed');
     } else {
-      // Already at maximum die (d20)
-      rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+      console.log('⚠️ DEBUG: Roll controls already removed!');
+    }
+    
+    // Check if we hit the die maximum (blow-up)
+    if (newDieResult >= currentDie) {
+      console.log(`💥 DEBUG: Token blow-up triggered! ${newDieResult} >= ${currentDie}`);
+      
+      // BLOW UP! Advance to next die
+      if (currentDieIdx < dieSteps.length - 1) {
+        const newDieIdx = currentDieIdx + 1;
+        const newDie = dieSteps[newDieIdx];
+        
+        console.log(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to token blow-up`);
+        
+        // Update actor's stat
+        await actor.update({[`system.stats.${stat}`]: newDie});
+        
+        // Add blow-up notice
+        rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
+        
+        console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
+        
+        // Create a completely new roll for the next die instead of continuing in same message
+        await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
+      } else {
+        // Already at maximum die (d20)
+        rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+        
+        // Clear the roll sequence as it's complete
+        const sequenceKey = `${actor.id}-${stat}`;
+        activeRollSequences.delete(sequenceKey);
+        console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (max die reached)`);
+      }
+    } else {
+      // No blow-up, just final result
+      rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
       
       // Clear the roll sequence as it's complete
       const sequenceKey = `${actor.id}-${stat}`;
       activeRollSequences.delete(sequenceKey);
-      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (max die reached)`);
+      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (no blow-up)`);
     }
-  } else {
-    // No blow-up, just final result
-    rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
-    
-    // Clear the roll sequence as it's complete
-    const sequenceKey = `${actor.id}-${stat}`;
-    activeRollSequences.delete(sequenceKey);
-    console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (no blow-up)`);
-  }
+  });
+  
+  console.log("=== NSBU global event handlers setup complete ===");
 });
-
-// Track active roll sequences to prevent race conditions
-const activeRollSequences = new Map();
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
