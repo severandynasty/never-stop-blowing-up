@@ -168,6 +168,15 @@ Hooks.once('ready', function() {
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
+  console.log('🎲🎲🎲 DEBUG: createInteractiveDiceRoll ENTRY POINT', {
+    actorName: actor?.name,
+    actorId: actor?.id,
+    stat: stat,
+    statValue: statValue,
+    cumulativeTotal: cumulativeTotal,
+    rollSequenceId: rollSequenceId
+  });
+  
   // Generate a unique sequence ID for this roll chain if not provided
   if (!rollSequenceId) {
     rollSequenceId = foundry.utils.randomID();
@@ -330,6 +339,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
 
 class NSBUActorSheet extends ActorSheet {
   activateListeners(html) {
+    console.log('🎭 DEBUG: NSBUActorSheet.activateListeners() called');
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
@@ -409,15 +419,37 @@ class NSBUActorSheet extends ActorSheet {
       }
     });
     
-    // Roll stat buttons
-    html.find('.roll-stat').on('click', async (event) => {
+    // Roll stat buttons - ACTOR SHEET
+    console.log('🎲 DEBUG: NSBUActorSheet - Setting up .roll-stat click handler');
+    const rollStatButtons = html.find('.roll-stat');
+    console.log('🎲 DEBUG: NSBUActorSheet - Found roll-stat buttons:', rollStatButtons.length);
+    
+    rollStatButtons.on('click', async (event) => {
+      console.log('🎲 DEBUG: NSBUActorSheet - Roll stat button clicked!', event);
       event.preventDefault();
       const stat = event.currentTarget.dataset.stat;
+      console.log('🎲 DEBUG: NSBUActorSheet - Stat from button:', stat);
       const stats = this.actor.system.stats || {};
+      console.log('🎲 DEBUG: NSBUActorSheet - Actor stats:', stats);
       let statValue = Number(stats[stat]);
-      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) statValue = 4;
+      console.log('🎲 DEBUG: NSBUActorSheet - Stat value:', statValue);
+      if (!statValue || ![4,6,8,10,12,20].includes(statValue)) {
+        console.log('🎲 DEBUG: NSBUActorSheet - Invalid stat value, defaulting to 4');
+        statValue = 4;
+      }
       
-      await createInteractiveDiceRoll(this.actor, stat, statValue);
+      console.log('🎲 DEBUG: NSBUActorSheet - About to call createInteractiveDiceRoll with:', {
+        actor: this.actor.name,
+        stat: stat,
+        statValue: statValue
+      });
+      
+      try {
+        await createInteractiveDiceRoll(this.actor, stat, statValue);
+        console.log('🎲 DEBUG: NSBUActorSheet - createInteractiveDiceRoll completed successfully');
+      } catch (error) {
+        console.error('🎲 ERROR: NSBUActorSheet - createInteractiveDiceRoll failed:', error);
+      }
     });
     
     // Other input listeners
