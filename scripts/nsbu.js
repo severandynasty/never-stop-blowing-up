@@ -229,7 +229,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
-        <div class="natural-max-notice">🎯 Natural Maximum! Automatic blow-up!</div>
+        <div class="blow-up-notice">🎯 BLOW UP! ${rollValue} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
       </div>
     `;
     
@@ -305,7 +305,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           ${currentTokens > 0 ? `
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens to this d${currentDie} roll (${currentTokens} available):</label>
+              <label>Add Turbo Tokens (${currentTokens} Available):</label>
               <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
               <button type="button" class="add-tokens-to-die-btn" 
                 data-roll-id="${rollId}"
