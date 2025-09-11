@@ -559,7 +559,7 @@ Hooks.once("init", () => {
           },
           hp: { type: Number, default: 8 },
           boomLevel: { type: Number, default: 1 },
-          injuries: { type: Array, default: [false, false, false] },
+          injuries: { type: Number, default: 0 },
           turboTokens: { type: Number, default: 0 },
           abilities: { type: Array, default: [] },
           groupAbilities: { type: Array, default: [] },
@@ -622,35 +622,10 @@ Hooks.once("init", () => {
     types: ["group-ability"],
     makeDefault: true
   });
-});
 
-// Add early initialization hook to catch pack loading issues
-Hooks.once('init', function() {
+  // Add initialization logging
   console.log("=== NSBU SYSTEM INIT ===");
-  
-  // Check system information that's available at init
-  if (game.system) {
-    console.log("System ID:", game.system.id);
-    console.log("System title:", game.system.title);
-    
-    // Check if packs property exists
-    if (game.system.packs) {
-      console.log("System packs from config:", game.system.packs);
-    } else {
-      console.log("System packs not yet available at init");
-    }
-  }
-  
-  // Check game packs collection
-  if (game.packs) {
-    console.log("Game packs collection size:", game.packs.size);
-    console.log("Available pack collections:");
-    for (let pack of game.packs) {
-      console.log(`  - ${pack.collection} (${pack.metadata?.label || 'Unknown'}) - Type: ${pack.metadata?.type || 'Unknown'}`);
-    }
-  } else {
-    console.log("Game packs collection not yet available");
-  }
+  console.log("Sheets registered successfully!");
 });
 
 Hooks.once('setup', async function() {
