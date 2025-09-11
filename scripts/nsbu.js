@@ -118,7 +118,17 @@ class NSBUActorSheet extends ActorSheet {
       event.preventDefault();
       const current = Number(this.actor.system.injuries) || 0;
       if (current < 3) {
-        await this.actor.update({ 'system.injuries': current + 1 });
+        const newInjuries = current + 1;
+        const updateData = { 'system.injuries': newInjuries };
+        
+        // If reaching "Adrenalized" (3), add 10 turbo tokens
+        if (newInjuries === 3) {
+          const currentTokens = Number(this.actor.system.turboTokens) || 0;
+          updateData['system.turboTokens'] = currentTokens + 10;
+          ui.notifications.info("Adrenalized! Gained 10 Turbo Tokens!");
+        }
+        
+        await this.actor.update(updateData);
         this.render();
       }
     });
@@ -286,7 +296,17 @@ class NSBUNPCSheet extends ActorSheet {
       event.preventDefault();
       const current = Number(this.actor.system.injuries) || 0;
       if (current < 3) {
-        await this.actor.update({ 'system.injuries': current + 1 });
+        const newInjuries = current + 1;
+        const updateData = { 'system.injuries': newInjuries };
+        
+        // If reaching "Adrenalized" (3), add 10 turbo tokens
+        if (newInjuries === 3) {
+          const currentTokens = Number(this.actor.system.turboTokens) || 0;
+          updateData['system.turboTokens'] = currentTokens + 10;
+          ui.notifications.info("Adrenalized! Gained 10 Turbo Tokens!");
+        }
+        
+        await this.actor.update(updateData);
         this.render();
       }
     });
