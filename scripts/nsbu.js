@@ -59,19 +59,37 @@ class NSBUActorSheet extends ActorSheet {
       this.render();
     });
 
-// Global handler for turbo token buttons in chat messages
-$(document).on('click', '.add-tokens-btn', async function(event) {
-  // Disable button to prevent multiple clicks
+// Global handler for accept roll button
+$(document).on('click', '.accept-roll-btn', async function(event) {
+  const $button = $(this);
+  $button.prop('disabled', true);
+  
+  const finalTotal = parseInt($(this).data('final-total'));
+  
+  // Update the chat message display
+  const rollElement = $(this).closest('.nsbu-roll-result');
+  rollElement.find('.roll-details').append(' → ACCEPTED');
+  
+  // Remove the roll controls
+  $(this).closest('.roll-controls').remove();
+  
+  // Add final result display
+  rollElement.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
+  
+  ui.notifications.info(`Roll accepted: ${finalTotal}`);
+});
+
+// Global handler for adding tokens to current die
+$(document).on('click', '.add-tokens-to-die-btn', async function(event) {
   const $button = $(this);
   $button.prop('disabled', true);
   
   const rollId = $(this).data('roll-id');
   const actorId = $(this).data('actor-id');
   const stat = $(this).data('stat');
-  const originalTotal = parseInt($(this).data('original-total'));
-  const lastDie = parseInt($(this).data('last-die'));
-  const lastValue = parseInt($(this).data('last-value'));
-  const currentDieIdx = parseInt($(this).data('die-idx'));
+  const dieValue = parseInt($(this).data('die-value'));
+  const currentDie = parseInt($(this).data('current-die'));
+  const currentDieIdx = parseInt($(this).data('current-die-idx'));
   
   const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
   
@@ -94,161 +112,94 @@ $(document).on('click', '.add-tokens-btn', async function(event) {
     return;
   }
   
-  // Calculate new total and check for blow-up
-  const newLastValue = lastValue + tokensToAdd;
-  const newTotal = originalTotal + tokensToAdd;
-  let dieIdx = currentDieIdx;
+  // Calculate new die result
+  const newDieResult = dieValue + tokensToAdd;
   const dieSteps = [4, 6, 8, 10, 12, 20];
-  
-  // Update the chat message display
-  const rollElement = $(this).closest('.nsbu-roll-result');
-  rollElement.find('.current-total').text(newTotal);
-  
-  // Check if tokens trigger a blow-up
-  let blowUpTriggered = false;
-  let statUpgraded = false;
-  if (newLastValue >= lastDie && dieIdx < dieSteps.length - 1) {
-    blowUpTriggered = true;
-    
-    // Continue blow-up chain
-    let blowUpTotal = newTotal;
-    let rolls = [`d${lastDie}: ${lastValue} + ${tokensToAdd} tokens = ${newLastValue}`];
-    
-    do {
-      dieIdx++;
-      const currentDie = dieSteps[dieIdx];
-      const roll = new Roll(`1d${currentDie}`);
-      await roll.evaluate();
-      const value = roll.total;
-      rolls.push(`d${currentDie}: ${value}`);
-      blowUpTotal += value;
-      
-      if (value < currentDie || dieIdx >= dieSteps.length - 1) break;
-    } while (true);
-    
-    // Update display with blow-up results
-    rollElement.find('.roll-details').html(rolls.join(' + '));
-    rollElement.find('.current-total').text(blowUpTotal);
-    
-    // Update actor's stat if it blew up
-    if (dieIdx > currentDieIdx) {
-      await actor.update({[`system.stats.${stat}`]: dieSteps[dieIdx]});
-      statUpgraded = true;
-    }
-  } else {
-    // Just update the display with added tokens
-    const rollDetails = rollElement.find('.roll-details');
-    const currentText = rollDetails.text();
-    const newText = currentText.replace(/d\d+: \d+$/, `d${lastDie}: ${lastValue} + ${tokensToAdd} tokens = ${newLastValue}`);
-    rollDetails.html(newText);
-  }
   
   // Spend the turbo tokens
   await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
   
-  // Remove the turbo token controls
-  $(this).closest('.turbo-tokens-section').remove();
-  
-  // Single consolidated notification
-  let message = `Added ${tokensToAdd} Turbo Tokens to roll!`;
-  if (blowUpTriggered) {
-    message += ' Blow-up triggered!';
-    if (statUpgraded) {
-      message += ` ${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx]}!`;
-    }
-  }
-  ui.notifications.info(message);
-});
-
-// Global handler for pass button in chat messages
-$(document).on('click', '.pass-btn', async function(event) {
-  const $button = $(this);
-  $button.prop('disabled', true);
-  
-  const rollId = $(this).data('roll-id');
-  const actorId = $(this).data('actor-id');
-  const stat = $(this).data('stat');
-  const total = parseInt($(this).data('total'));
-  const dieIdx = parseInt($(this).data('die-idx'));
-  const naturalMax = $(this).data('natural-max') === 'true';
-  
-  const actor = game.actors.get(actorId);
-  if (!actor) return;
-  
-  const dieSteps = [4, 6, 8, 10, 12, 20];
-  let finalTotal = total;
-  let finalDieIdx = dieIdx;
-  let rolls = [`d${dieSteps[dieIdx]}: ${total}`];
-  
-  // If natural maximum, execute blow-up chain
-  if (naturalMax) {
-    let currentDieIdx = dieIdx;
-    let blowUpTotal = total;
-    
-    do {
-      if (currentDieIdx >= dieSteps.length - 1) break;
-      currentDieIdx++;
-      const currentDie = dieSteps[currentDieIdx];
-      const roll = new Roll(`1d${currentDie}`, {}, {async: false});
-      await roll.evaluate();
-      const value = roll.total;
-      rolls.push(`d${currentDie}: ${value}`);
-      blowUpTotal += value;
-      
-      if (value < currentDie) break;
-    } while (true);
-    
-    // Update actor's stat if it blew up
-    if (currentDieIdx > dieIdx) {
-      await actor.update({[`system.stats.${stat}`]: dieSteps[currentDieIdx]});
-      finalDieIdx = currentDieIdx;
-    }
-    
-    finalTotal = blowUpTotal;
-  }
-  
   // Update the chat message display
   const rollElement = $(this).closest('.nsbu-roll-result');
-  rollElement.find('.roll-details').html(rolls.join(' + '));
-  rollElement.find('.current-total').text(finalTotal);
+  rollElement.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+  rollElement.find('.current-total').text(newDieResult);
   
-  // Remove the roll controls
-  $(this).closest('.roll-controls').remove();
-  
-  // Add final result display
-  let resultHtml = `<div class="final-result">Final Result: ${finalTotal}</div>`;
-  if (naturalMax) {
-    resultHtml += `<div class="blow-up-complete">🎯 Blow-up chain complete!${finalDieIdx > dieIdx ? ` ${stat.toUpperCase()} upgraded to d${dieSteps[finalDieIdx]}!` : ''}</div>`;
-    
-    // If blow-up occurred and actor has tokens, offer to add tokens to the final roll
-    const currentTokens = Number(actor.system.turboTokens) || 0;
-    if (currentTokens > 0 && finalDieIdx > dieIdx) {
-      const lastRollValue = parseInt(rolls[rolls.length - 1].split(': ')[1]);
-      const lastDie = dieSteps[finalDieIdx];
+  // Check if we hit the die maximum (blow-up)
+  if (newDieResult >= currentDie) {
+    // BLOW UP! Advance to next die
+    if (currentDieIdx < dieSteps.length - 1) {
+      const newDieIdx = currentDieIdx + 1;
+      const newDie = dieSteps[newDieIdx];
       
-      resultHtml += `
-        <div class="subsequent-tokens-section">
-          <div class="turbo-tokens-controls">
-            <label>Add tokens to final d${lastDie} roll (${currentTokens} available):</label>
-            <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
-            <button type="button" class="add-tokens-btn" 
-              data-roll-id="${rollId}"
-              data-actor-id="${actorId}"
-              data-stat="${stat}"
-              data-original-total="${finalTotal}"
-              data-last-die="${lastDie}"
-              data-last-value="${lastRollValue}"
-              data-die-idx="${finalDieIdx}">Add Tokens to Final Roll</button>
-          </div>
-        </div>
-      `;
+      // Update actor's stat
+      await actor.update({[`system.stats.${stat}`]: newDie});
+      
+      // Remove current controls
+      $(this).closest('.roll-controls').remove();
+      
+      // Add blow-up notice
+      rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
+      
+      // Continue with next die roll
+      await continueBlowUpSequence(actor, stat, newDie, newDieIdx, rollElement, rollId);
+    } else {
+      // Already at maximum die (d20)
+      $(this).closest('.roll-controls').remove();
+      rollElement.append(`<div class="final-result">Final Result: ${newDieResult} (Maximum die reached!)</div>`);
+      ui.notifications.info(`Roll completed: ${newDieResult} (Maximum die reached!)`);
     }
+  } else {
+    // No blow-up, just final result
+    $(this).closest('.roll-controls').remove();
+    rollElement.append(`<div class="final-result">Final Result: ${newDieResult}</div>`);
+    ui.notifications.info(`Roll completed: ${newDieResult}`);
   }
-  
-  rollElement.append(resultHtml);
-  
-  ui.notifications.info(`Roll completed: ${finalTotal}${naturalMax && finalDieIdx > dieIdx ? ` (${stat.toUpperCase()} upgraded!)` : ''}`);
 });
+
+// Helper function to continue blow-up sequence
+async function continueBlowUpSequence(actor, stat, currentDie, currentDieIdx, rollElement, rollId) {
+  const dieSteps = [4, 6, 8, 10, 12, 20];
+  
+  // Roll the new die
+  const roll = new Roll(`1d${currentDie}`, {}, {async: false});
+  await roll.evaluate();
+  const rollValue = roll.total;
+  
+  // Add the new roll to the display
+  rollElement.find('.roll-details').append(`<br>Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}`);
+  rollElement.find('.current-total').text(rollValue);
+  
+  // Add controls for this new roll
+  const currentTokens = Number(actor.system.turboTokens) || 0;
+  
+  const newControls = `
+    <div class="roll-controls">
+      <button type="button" class="accept-roll-btn" 
+        data-roll-id="${rollId}"
+        data-actor-id="${actor.id}"
+        data-stat="${stat}"
+        data-final-total="${rollValue}"
+        data-current-die-idx="${currentDieIdx}">Accept Roll (${rollValue})</button>
+      ${currentTokens > 0 ? `
+      <div class="turbo-tokens-section">
+        <div class="turbo-tokens-controls">
+          <label>Add Turbo Tokens to this d${currentDie} roll (${currentTokens} available):</label>
+          <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
+          <button type="button" class="add-tokens-to-die-btn" 
+            data-roll-id="${rollId}"
+            data-actor-id="${actor.id}"
+            data-stat="${stat}"
+            data-die-value="${rollValue}"
+            data-current-die="${currentDie}"
+            data-current-die-idx="${currentDieIdx}">Add Tokens to d${currentDie}</button>
+        </div>
+      </div>
+      ` : ''}
+    </div>
+  `;
+  
+  rollElement.append(newControls);
+}
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue) {
@@ -257,104 +208,54 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
   if (dieIdx === -1) dieIdx = 0;
   
   let currentDie = dieSteps[dieIdx];
-  let total = 0;
-  let lastDie = currentDie;
-  let lastValue = 0;
-  let rolls = [];
-  let finalDieIdx = dieIdx;
   
-  // Roll the initial die
+  // Roll the current die
   const roll = new Roll(`1d${currentDie}`, {}, {async: false});
   await roll.evaluate();
-  lastValue = roll.total;
-  total = lastValue;
-  rolls.push(`d${currentDie}: ${lastValue}`);
+  const rollValue = roll.total;
   
-  // Check if natural maximum - but don't auto-execute blow-up yet
-  let naturalMax = (lastValue === currentDie);
-  
-  // Create the chat message with appropriate controls
+  // Create the interactive chat message
   const rollId = foundry.utils.randomID();
   const currentTokens = Number(actor.system.turboTokens) || 0;
   
-  let content;
-  if (naturalMax) {
-    // Natural maximum - show Pass button and token options
-    content = `
-      <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">${rolls.join(' + ')}</div>
-        <div class="roll-total">Total: <span class="current-total">${total}</span></div>
-        <div class="natural-max-notice">🎯 Natural ${lastValue}! This will trigger a blow-up chain.</div>
-        <div class="roll-controls">
-          <button type="button" class="pass-btn" 
-            data-roll-id="${rollId}"
-            data-actor-id="${actor.id}"
-            data-stat="${stat}"
-            data-total="${total}"
-            data-die-idx="${dieIdx}"
-            data-natural-max="true">Pass - Accept Roll & Trigger Blow-up</button>
-          ${currentTokens > 0 ? `
-          <div class="turbo-tokens-section">
-            <div class="turbo-tokens-controls">
-              <label>Or add Turbo Tokens first (${currentTokens} available):</label>
-              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
-              <button type="button" class="add-tokens-btn" 
-                data-roll-id="${rollId}"
-                data-actor-id="${actor.id}"
-                data-stat="${stat}"
-                data-original-total="${total}"
-                data-last-die="${lastDie}"
-                data-last-value="${lastValue}"
-                data-die-idx="${dieIdx}"
-                data-natural-max="true">Add Tokens</button>
-            </div>
+  const content = `
+    <div class="nsbu-roll-result" data-roll-id="${rollId}">
+      <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
+      <div class="roll-total">Current Result: <span class="current-total">${rollValue}</span></div>
+      <div class="roll-controls">
+        <button type="button" class="accept-roll-btn" 
+          data-roll-id="${rollId}"
+          data-actor-id="${actor.id}"
+          data-stat="${stat}"
+          data-final-total="${rollValue}"
+          data-current-die-idx="${dieIdx}">Accept Roll (${rollValue})</button>
+        ${currentTokens > 0 ? `
+        <div class="turbo-tokens-section">
+          <div class="turbo-tokens-controls">
+            <label>Add Turbo Tokens to this d${currentDie} roll (${currentTokens} available):</label>
+            <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
+            <button type="button" class="add-tokens-to-die-btn" 
+              data-roll-id="${rollId}"
+              data-actor-id="${actor.id}"
+              data-stat="${stat}"
+              data-die-value="${rollValue}"
+              data-current-die="${currentDie}"
+              data-current-die-idx="${dieIdx}">Add Tokens to d${currentDie}</button>
           </div>
-          ` : ''}
         </div>
+        ` : ''}
       </div>
-    `;
-  } else {
-    // Normal roll - show token controls or pass button
-    content = `
-      <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">${rolls.join(' + ')}</div>
-        <div class="roll-total">Total: <span class="current-total">${total}</span></div>
-        <div class="roll-controls">
-          <button type="button" class="pass-btn" 
-            data-roll-id="${rollId}"
-            data-actor-id="${actor.id}"
-            data-stat="${stat}"
-            data-total="${total}"
-            data-die-idx="${dieIdx}">Pass - Accept Roll</button>
-          ${currentTokens > 0 ? `
-          <div class="turbo-tokens-section">
-            <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens (${currentTokens} available):</label>
-              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
-              <button type="button" class="add-tokens-btn" 
-                data-roll-id="${rollId}"
-                data-actor-id="${actor.id}"
-                data-stat="${stat}"
-                data-original-total="${total}"
-                data-last-die="${lastDie}"
-                data-last-value="${lastValue}"
-                data-die-idx="${dieIdx}">Add Tokens</button>
-            </div>
-          </div>
-          ` : ''}
-        </div>
-      </div>
-    `;
-  }
+    </div>
+  `;
   
   const chatData = {
     user: game.user.id,
     speaker: ChatMessage.getSpeaker({ actor }),
-    flavor: `${stat.toUpperCase()} Roll${naturalMax ? ' - Natural Maximum!' : ''}`,
+    flavor: `${stat.toUpperCase()} Roll (d${currentDie})`,
     content: content,
     rolls: [roll],
     rollMode: game.settings.get("core", "rollMode"),
-    sound: null // Explicitly disable sound
+    sound: null
   };
   
   await ChatMessage.create(chatData);
