@@ -120,6 +120,9 @@ $(document).on('click', '.add-tokens-to-die-btn', async function(event) {
   rollElement.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
   rollElement.find('.current-total').text(newDieResult);
   
+  // Remove current controls immediately to prevent multiple clicks
+  $(this).closest('.roll-controls').remove();
+  
   // Check if we hit the die maximum (blow-up)
   if (newDieResult >= currentDie) {
     // BLOW UP! Advance to next die
@@ -130,102 +133,20 @@ $(document).on('click', '.add-tokens-to-die-btn', async function(event) {
       // Update actor's stat
       await actor.update({[`system.stats.${stat}`]: newDie});
       
-      // Remove current controls
-      $(this).closest('.roll-controls').remove();
-      
       // Add blow-up notice
       rollElement.append(`<div class="blow-up-notice">🎯 BLOW UP! ${newDieResult} hits d${currentDie} maximum! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
       
-      // Continue with next die roll
-      setTimeout(() => {
-        continueBlowUpSequence(actor, stat, newDie, newDieIdx, rollElement, rollId);
-      }, 1000);
+      // Create a completely new roll for the next die instead of continuing in same message
+      await createInteractiveDiceRoll(actor, stat, newDie);
     } else {
       // Already at maximum die (d20)
-      $(this).closest('.roll-controls').remove();
       rollElement.append(`<div class="final-result">Final Result: ${newDieResult} (Maximum die reached!)</div>`);
     }
   } else {
     // No blow-up, just final result
-    $(this).closest('.roll-controls').remove();
     rollElement.append(`<div class="final-result">Final Result: ${newDieResult}</div>`);
   }
 });
-
-// Helper function to continue blow-up sequence
-async function continueBlowUpSequence(actor, stat, currentDie, currentDieIdx, rollElement, rollId) {
-  const dieSteps = [4, 6, 8, 10, 12, 20];
-  
-  // Roll the new die
-  const roll = new Roll(`1d${currentDie}`, {}, {async: false});
-  await roll.evaluate();
-  const rollValue = roll.total;
-  
-  // Check if this new roll is also a natural maximum
-  const isNaturalMax = (rollValue === currentDie);
-  
-  if (rollElement) {
-    // Update existing message
-    rollElement.find('.roll-details').append(`<br>Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}`);
-    rollElement.find('.current-total').text(rollValue);
-    
-    if (isNaturalMax) {
-      // Another natural blow-up!
-      if (currentDieIdx < dieSteps.length - 1) {
-        const nextDieIdx = currentDieIdx + 1;
-        const nextDie = dieSteps[nextDieIdx];
-        
-        // Update actor's stat
-        await actor.update({[`system.stats.${stat}`]: nextDie});
-        
-        // Add another blow-up notice
-        rollElement.append(`<div class="blow-up-notice">🎯 ANOTHER NATURAL BLOW-UP! ${stat.toUpperCase()} upgraded to d${nextDie}!</div>`);
-        
-        // Continue the chain
-        setTimeout(() => {
-          continueBlowUpSequence(actor, stat, nextDie, nextDieIdx, rollElement, rollId);
-        }, 1000);
-      } else {
-        // Hit maximum die
-        rollElement.append(`<div class="final-result">Final Result: ${rollValue} (Maximum die reached!)</div>`);
-      }
-    } else {
-      // Normal roll - add controls
-      const currentTokens = Number(actor.system.turboTokens) || 0;
-      
-      const newControls = `
-        <div class="roll-controls">
-          <button type="button" class="accept-roll-btn" 
-            data-roll-id="${rollId}"
-            data-actor-id="${actor.id}"
-            data-stat="${stat}"
-            data-final-total="${rollValue}"
-            data-current-die-idx="${currentDieIdx}">Accept Roll (${rollValue})</button>
-          ${currentTokens > 0 ? `
-          <div class="turbo-tokens-section">
-            <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens to this d${currentDie} roll (${currentTokens} available):</label>
-              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
-              <button type="button" class="add-tokens-to-die-btn" 
-                data-roll-id="${rollId}"
-                data-actor-id="${actor.id}"
-                data-stat="${stat}"
-                data-die-value="${rollValue}"
-                data-current-die="${currentDie}"
-                data-current-die-idx="${currentDieIdx}">Add Tokens to d${currentDie}</button>
-            </div>
-          </div>
-          ` : ''}
-        </div>
-      `;
-      
-      rollElement.append(newControls);
-    }
-  } else {
-    // Create a new message for natural blow-up continuation
-    await createInteractiveDiceRoll(actor, stat, currentDie);
-  }
-}
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue) {
@@ -279,18 +200,26 @@ async function createInteractiveDiceRoll(actor, stat, statValue) {
       // Update actor's stat
       await actor.update({[`system.stats.${stat}`]: newDie});
       
-      // Add blow-up notice to the existing message
-      const rollElement = $(message.content);
-      rollElement.find('.nsbu-roll-result').append(`<div class="blow-up-notice">🎯 BLOW UP! ${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
-      
-      // Continue with next die roll
-      setTimeout(() => {
-        continueBlowUpSequence(actor, stat, newDie, newDieIdx, null, rollId);
-      }, 1000);
+      // Create a new roll for the upgraded stat (recursive call)
+      await createInteractiveDiceRoll(actor, stat, newDie);
     } else {
-      // Already at maximum die (d20)
-      const rollElement = $(message.content);
-      rollElement.find('.nsbu-roll-result').append(`<div class="final-result">Final Result: ${rollValue} (Maximum die reached!)</div>`);
+      // Already at maximum die (d20) - create final message
+      const finalContent = `
+        <div class="nsbu-roll-result">
+          <div class="final-result">Final Result: ${rollValue} (Maximum die reached!)</div>
+        </div>
+      `;
+      
+      const finalChatData = {
+        user: game.user.id,
+        speaker: ChatMessage.getSpeaker({ actor }),
+        flavor: `${stat.toUpperCase()} Final Result`,
+        content: finalContent,
+        rollMode: game.settings.get("core", "rollMode"),
+        sound: null
+      };
+      
+      await ChatMessage.create(finalChatData);
     }
     
   } else {
