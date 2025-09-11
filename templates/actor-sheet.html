@@ -98,7 +98,7 @@
     </div>
 
 
-    <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 1em;">
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1em;">
       <div class="nsbu-injuries">
         <label style="display: block; text-align: center;">Injuries</label>
         <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
@@ -109,10 +109,10 @@
       </div>
       <div class="nsbu-injury-status" style="flex: 1; text-align: center;">
         <label style="display: block; text-align: center;">Status</label>
-        <div class="injury-status" style="font-weight: bold; font-size: 1.1em;">
+        <div class="injury-status" style="font-weight: bold; font-size: 2.2em;">
           {{#if (eq system.injuries 0)}}<span style="color: #333;">Feelin' Fine</span>{{/if}}
           {{#if (eq system.injuries 1)}}<span style="color: #333;">Superficial</span>{{/if}}
-          {{#if (eq system.injuries 2)}}<span style="color: orange;">Severe</span>{{/if}}
+          {{#if (eq system.injuries 2)}}<span style="color: #cc6600;">Severe</span>{{/if}}
           {{#if (eq system.injuries 3)}}<span style="color: red;">Adrenalized</span>{{/if}}
         </div>
       </div>
