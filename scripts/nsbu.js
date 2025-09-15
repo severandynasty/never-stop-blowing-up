@@ -270,6 +270,56 @@ Hooks.once('ready', function() {
       clearRollSequence(actor.id, stat, '(no blow-up)');
     }
   });
+
+  // Global handler for refresh tokens button - using namespace to prevent duplicates
+  $(document).off('click.nsbu-refresh', '.refresh-tokens-btn');
+  $(document).on('click.nsbu-refresh', '.refresh-tokens-btn', async function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const $button = $(this);
+    const actorId = $(this).data('actor-id');
+    
+    // Check if current user can control this actor
+    const actor = game.actors.get(actorId);
+    if (!actor || !actor.isOwner) {
+      ui.notifications.warn("You don't have permission to control this character's rolls.");
+      return;
+    }
+    
+    console.log('🔄 DEBUG: Refresh tokens button clicked');
+    
+    // Get current token count from actor
+    const currentTokens = Number(actor.system.turboTokens) || 0;
+    
+    // Find the roll result container
+    const $rollResult = $button.closest('.nsbu-roll-result');
+    const $availableTokensSpan = $rollResult.find('.available-tokens');
+    const $tokenInput = $rollResult.find('.token-input');
+    const $addTokensBtn = $rollResult.find('.add-tokens-to-die-btn');
+    
+    // Update the displayed token count
+    $availableTokensSpan.text(currentTokens);
+    
+    // Update the input max value and reset to 0
+    $tokenInput.attr('max', currentTokens).val(0);
+    
+    // Enable/disable the add tokens button based on availability
+    if (currentTokens > 0) {
+      $addTokensBtn.prop('disabled', false).removeClass('disabled');
+    } else {
+      $addTokensBtn.prop('disabled', true).addClass('disabled');
+    }
+    
+    // Visual feedback
+    $button.text('✅').prop('disabled', true);
+    setTimeout(() => {
+      $button.text('🔄').prop('disabled', false);
+    }, 1000);
+    
+    ui.notifications.info(`Token count refreshed: ${currentTokens} available`);
+    console.log(`🔄 DEBUG: Refreshed token count to ${currentTokens} for ${actor.name}`);
+  });
   
   console.log("=== NSBU global event handlers setup complete ===");
 });
@@ -505,10 +555,14 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
             data-final-total="${newCumulativeTotal}"
             data-current-die-idx="${dieIdx}"
             data-sequence-id="${rollSequenceId}">Accept Roll (Total: ${newCumulativeTotal})</button>
-          ${currentTokens > 0 ? `
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens (${currentTokens} Available):</label>
+              <label>Add Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available): 
+                <button type="button" class="refresh-tokens-btn" 
+                  data-roll-id="${rollId}"
+                  data-actor-id="${actor.id}"
+                  title="Refresh available token count">🔄</button>
+              </label>
               <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
               <button type="button" class="add-tokens-to-die-btn" 
                 data-roll-id="${rollId}"
@@ -518,10 +572,10 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                 data-current-die="${currentDie}"
                 data-current-die-idx="${dieIdx}"
                 data-cumulative-total="${newCumulativeTotal}"
-                data-sequence-id="${rollSequenceId}">Add Tokens to d${currentDie}</button>
+                data-sequence-id="${rollSequenceId}"
+                ${currentTokens === 0 ? 'disabled' : ''}>Add Tokens to d${currentDie}</button>
             </div>
           </div>
-          ` : ''}
         </div>
         <div class="roll-observer" data-actor-id="${actor.id}" style="display: none;">
           <em>Waiting for ${actor.name}'s player to accept or modify this roll...</em>
