@@ -1,5 +1,25 @@
 // Track active roll sequences to prevent race conditions
 const activeRollSequences = new Map();
+const rollSequenceTimeouts = new Map(); // Track timeouts for auto-cleanup
+
+// Function to clear a roll sequence and its timeout
+function clearRollSequence(actorId, stat, reason = '') {
+  const sequenceKey = `${actorId}-${stat}`;
+  const sequenceId = activeRollSequences.get(sequenceKey);
+  
+  if (sequenceId) {
+    activeRollSequences.delete(sequenceKey);
+    console.log(`🔓 DEBUG: Cleared roll sequence ${sequenceId} for ${stat} ${reason}`);
+  }
+  
+  // Clear any associated timeout
+  const timeoutId = rollSequenceTimeouts.get(sequenceKey);
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+    rollSequenceTimeouts.delete(sequenceKey);
+    console.log(`⏰ DEBUG: Cleared timeout for ${stat} sequence`);
+  }
+}
 
 // Setup global event handlers when Foundry is ready
 Hooks.once('ready', function() {
@@ -36,9 +56,7 @@ Hooks.once('ready', function() {
     
     // Clear the active roll sequence
     if (rollSequenceId && actorId && stat) {
-      const sequenceKey = `${actorId}-${stat}`;
-      activeRollSequences.delete(sequenceKey);
-      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (accepted)`);
+      clearRollSequence(actorId, stat, '(accepted)');
     }
 
     // Find the chat message and update it for all players
@@ -213,9 +231,7 @@ Hooks.once('ready', function() {
         }
         
         // Clear the roll sequence as it's complete
-        const sequenceKey = `${actor.id}-${stat}`;
-        activeRollSequences.delete(sequenceKey);
-        console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (max die reached)`);
+        clearRollSequence(actor.id, stat, '(max die reached)');
       }
     } else {
       // No blow-up, just final result - update chat message for all players
@@ -251,9 +267,7 @@ Hooks.once('ready', function() {
       }
       
       // Clear the roll sequence as it's complete
-      const sequenceKey = `${actor.id}-${stat}`;
-      activeRollSequences.delete(sequenceKey);
-      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (no blow-up)`);
+      clearRollSequence(actor.id, stat, '(no blow-up)');
     }
   });
   
@@ -278,13 +292,43 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Check if there's already an active sequence for this actor+stat
     const sequenceKey = `${actor.id}-${stat}`;
     if (activeRollSequences.has(sequenceKey)) {
-      console.log(`🚫 DEBUG: Roll sequence already active for ${actor.name} ${stat}, ignoring new roll`);
-      return;
+      console.log(`🚫 DEBUG: Roll sequence already active for ${actor.name} ${stat}`);
+      
+      // Prompt player to cancel previous roll
+      const shouldCancel = await Dialog.confirm({
+        title: "Previous Roll Active",
+        content: `<p>You have an unfinished <strong>${stat.toUpperCase()}</strong> roll waiting for your decision.</p>
+                 <p>Would you like to cancel the previous roll and start a new one?</p>`,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (shouldCancel) {
+        console.log(`🗑️ DEBUG: Player chose to cancel previous ${stat} roll`);
+        clearRollSequence(actor.id, stat, '(cancelled by player)');
+        ui.notifications.info(`Previous ${stat.toUpperCase()} roll cancelled. Starting new roll...`);
+        // Continue with the new roll by not returning
+      } else {
+        console.log(`🚫 DEBUG: Player chose to keep previous ${stat} roll active`);
+        ui.notifications.warn(`Previous ${stat.toUpperCase()} roll is still active. Please complete it before rolling again.`);
+        return;
+      }
     }
     
     // Mark this sequence as active
     activeRollSequences.set(sequenceKey, rollSequenceId);
     console.log(`🔒 DEBUG: Started new roll sequence ${rollSequenceId} for ${actor.name} ${stat}`);
+    
+    // Set up auto-cleanup timeout (5 minutes)
+    const timeoutId = setTimeout(() => {
+      console.log(`⏰ DEBUG: Auto-clearing abandoned roll sequence for ${actor.name} ${stat}`);
+      clearRollSequence(actor.id, stat, '(timeout - abandoned)');
+      ui.notifications.warn(`Abandoned roll sequence cleared for ${actor.name}'s ${stat.toUpperCase()} roll. You can roll again now.`);
+    }, 5 * 60 * 1000); // 5 minutes
+    
+    rollSequenceTimeouts.set(sequenceKey, timeoutId);
+    console.log(`⏰ DEBUG: Set 5-minute timeout for ${actor.name} ${stat} roll sequence`);
   }
   
   console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}, cumulativeTotal: ${cumulativeTotal}, sequenceId: ${rollSequenceId}`);
@@ -374,9 +418,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       await ChatMessage.create(finalChatData);
       
       // Clear the roll sequence as it's complete
-      const sequenceKey = `${actor.id}-${stat}`;
-      activeRollSequences.delete(sequenceKey);
-      console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (natural max die reached)`);
+      clearRollSequence(actor.id, stat, '(natural max die reached)');
     }
     
   } else if (currentTokens === 0) {
@@ -407,9 +449,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     await ChatMessage.create(chatData);
     
     // Clear the roll sequence since it's complete
-    const sequenceKey = `${actor.id}-${stat}`;
-    activeRollSequences.delete(sequenceKey);
-    console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (auto-accepted)`);
+    clearRollSequence(actor.id, stat, '(auto-accepted)');
     
   } else {
     // Normal roll with turbo tokens available - include controls but they'll be shown/hidden based on permissions
