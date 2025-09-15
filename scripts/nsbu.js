@@ -558,8 +558,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
               <label>Add Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
-              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" style="width: 100%; margin: 5px 0; padding: 4px; text-align: center;">
-              <div style="display: flex; gap: 5px;">
+              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" style="width: 100%; margin: 5px 0; padding: 4px; text-align: center; box-sizing: border-box;">
+              <div style="display: flex; gap: 5px; width: 100%;">
                 <button type="button" class="add-tokens-to-die-btn" 
                   data-roll-id="${rollId}"
                   data-actor-id="${actor.id}"
@@ -569,13 +569,13 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                   data-current-die-idx="${dieIdx}"
                   data-cumulative-total="${newCumulativeTotal}"
                   data-sequence-id="${rollSequenceId}"
-                  style="flex: 1;"
-                  ${currentTokens === 0 ? 'disabled' : ''}>Add Tokens to d${currentDie}</button>
+                  style="flex: 1; white-space: nowrap;"
+                  ${currentTokens === 0 ? 'disabled' : ''}>Add to d${currentDie}</button>
                 <button type="button" class="refresh-tokens-btn" 
                   data-roll-id="${rollId}"
                   data-actor-id="${actor.id}"
                   title="Refresh available token count"
-                  style="flex: 0 0 20%; padding: 4px; font-size: 18px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center;">🔄</button>
+                  style="flex: 0 0 20%; padding: 4px; font-size: 18px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">🔄</button>
               </div>
             </div>
           </div>
