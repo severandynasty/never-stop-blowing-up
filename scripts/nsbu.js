@@ -312,9 +312,9 @@ Hooks.once('ready', function() {
     }
     
     // Visual feedback
-    $button.text('DONE').prop('disabled', true);
+    $button.html('✅').prop('disabled', true);
     setTimeout(() => {
-      $button.text('REFRESH').prop('disabled', false);
+      $button.html('🔄').prop('disabled', false);
     }, 1000);
     
     ui.notifications.info(`Token count refreshed: ${currentTokens} available`);
@@ -557,24 +557,25 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
             data-sequence-id="${rollSequenceId}">Accept Roll (Total: ${newCumulativeTotal})</button>
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available): 
+              <label>Add Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
+              <div style="display: flex; align-items: center; gap: 5px; margin-top: 5px;">
+                <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" style="width: 60px;">
+                <button type="button" class="add-tokens-to-die-btn" 
+                  data-roll-id="${rollId}"
+                  data-actor-id="${actor.id}"
+                  data-stat="${stat}"
+                  data-die-value="${rollValue}"
+                  data-current-die="${currentDie}"
+                  data-current-die-idx="${dieIdx}"
+                  data-cumulative-total="${newCumulativeTotal}"
+                  data-sequence-id="${rollSequenceId}"
+                  ${currentTokens === 0 ? 'disabled' : ''}>Add Tokens to d${currentDie}</button>
                 <button type="button" class="refresh-tokens-btn" 
                   data-roll-id="${rollId}"
                   data-actor-id="${actor.id}"
                   title="Refresh available token count"
-                  style="background: #f0f0f0; border: 1px solid #999; border-radius: 3px; padding: 4px 10px; margin-left: 5px; cursor: pointer; font-size: 12px; color: #333; font-weight: bold; min-width: 25px; min-height: 20px; line-height: 1;">REFRESH</button>
-              </label>
-              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
-              <button type="button" class="add-tokens-to-die-btn" 
-                data-roll-id="${rollId}"
-                data-actor-id="${actor.id}"
-                data-stat="${stat}"
-                data-die-value="${rollValue}"
-                data-current-die="${currentDie}"
-                data-current-die-idx="${dieIdx}"
-                data-cumulative-total="${newCumulativeTotal}"
-                data-sequence-id="${rollSequenceId}"
-                ${currentTokens === 0 ? 'disabled' : ''}>Add Tokens to d${currentDie}</button>
+                  style="padding: 4px 8px; font-size: 14px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer;">🔄</button>
+              </div>
             </div>
           </div>
         </div>
