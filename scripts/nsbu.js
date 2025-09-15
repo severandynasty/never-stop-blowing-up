@@ -294,20 +294,15 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     }
     
   } else {
-    // Normal roll - show accept and token options only to the controlling user
-    // Check if current user can control this actor
-    const canControl = actor.isOwner;
-    console.log(`🔐 DEBUG: User ${game.user.name} can control ${actor.name}: ${canControl}`);
-    
+    // Normal roll - include controls but they'll be shown/hidden based on permissions
     content = `
-      <div class="nsbu-roll-result" data-roll-id="${rollId}">
+      <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
         <div class="roll-total">
           Current Die: <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
         </div>
-        ${canControl ? `
-        <div class="roll-controls">
+        <div class="roll-controls" data-actor-id="${actor.id}">
           <button type="button" class="accept-roll-btn" 
             data-roll-id="${rollId}"
             data-actor-id="${actor.id}"
@@ -333,11 +328,9 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           </div>
           ` : ''}
         </div>
-        ` : `
-        <div class="roll-observer">
+        <div class="roll-observer" data-actor-id="${actor.id}" style="display: none;">
           <em>Waiting for ${actor.name}'s player to accept or modify this roll...</em>
         </div>
-        `}
       </div>
     `;
     
@@ -840,4 +833,35 @@ Hooks.once('setup', async function() {
   }
   
   console.log("=== SYSTEM READY ===");
+});
+
+// Hook to control visibility of roll controls based on actor ownership
+Hooks.on("renderChatMessage", (message, html, data) => {
+  // Find all roll results in this message
+  const rollResults = html.find('.nsbu-roll-result');
+  
+  rollResults.each(function() {
+    const $rollResult = $(this);
+    const actorId = $rollResult.data('actor-id');
+    
+    if (actorId) {
+      const actor = game.actors.get(actorId);
+      const canControl = actor && actor.isOwner;
+      
+      console.log(`🔐 DEBUG: Chat render - User ${game.user.name} can control actor ${actor?.name}: ${canControl}`);
+      
+      const $controls = $rollResult.find('.roll-controls');
+      const $observer = $rollResult.find('.roll-observer');
+      
+      if (canControl) {
+        // Show controls, hide observer message
+        $controls.show();
+        $observer.hide();
+      } else {
+        // Hide controls, show observer message
+        $controls.hide();
+        $observer.show();
+      }
+    }
+  });
 });
