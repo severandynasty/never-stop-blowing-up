@@ -306,6 +306,43 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       
       if (shouldCancel) {
         console.log(`🗑️ DEBUG: Player chose to cancel previous ${stat} roll`);
+        
+        // Find and update the existing chat message to show it was cancelled
+        const existingSequenceId = activeRollSequences.get(sequenceKey);
+        if (existingSequenceId) {
+          // Search recent chat messages for the one with this sequence ID
+          const recentMessages = game.messages.contents.slice(-20); // Check last 20 messages
+          for (const message of recentMessages) {
+            if (message.content && message.content.includes(`data-sequence-id="${existingSequenceId}"`)) {
+              console.log(`📝 DEBUG: Found existing roll message to update: ${message.id}`);
+              
+              // Update the message content to show cancellation
+              const $tempDiv = $('<div>').html(message.content);
+              const $rollResult = $tempDiv.find('.nsbu-roll-result');
+              
+              if ($rollResult.length > 0) {
+                // Update roll details to show cancellation
+                $rollResult.find('.roll-details').append(' → CANCELLED');
+                
+                // Remove controls and observer message
+                $rollResult.find('.roll-controls').remove();
+                $rollResult.find('.roll-observer').remove();
+                
+                // Add cancellation notice
+                $rollResult.append(`<div class="cancellation-notice">Roll cancelled by player</div>`);
+                
+                // Update the chat message
+                await message.update({
+                  content: $tempDiv.html()
+                });
+                
+                console.log(`✅ DEBUG: Updated chat message ${message.id} to show cancellation`);
+              }
+              break;
+            }
+          }
+        }
+        
         clearRollSequence(actor.id, stat, '(cancelled by player)');
         ui.notifications.info(`Previous ${stat.toUpperCase()} roll cancelled. Starting new roll...`);
         // Continue with the new roll by not returning
