@@ -40,16 +40,43 @@ Hooks.once('ready', function() {
       activeRollSequences.delete(sequenceKey);
       console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (accepted)`);
     }
+
+    // Find the chat message and update it for all players
+    const messageElement = $(this).closest('.message');
+    const messageId = messageElement.data('message-id');
+    const chatMessage = game.messages.get(messageId);
     
-    // Update the chat message display
-    const rollElement = $(this).closest('.nsbu-roll-result');
-    rollElement.find('.roll-details').append(' → ACCEPTED');
-    
-    // Remove the roll controls
-    $(this).closest('.roll-controls').remove();
-    
-    // Add final result display
-    rollElement.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
+    if (chatMessage) {
+      // Get the current content and modify it
+      const $tempDiv = $('<div>').html(chatMessage.content);
+      const $rollResult = $tempDiv.find('.nsbu-roll-result');
+      
+      // Update the roll details to show accepted
+      $rollResult.find('.roll-details').append(' → ACCEPTED');
+      
+      // Remove the roll controls
+      $rollResult.find('.roll-controls').remove();
+      
+      // Remove the observer message
+      $rollResult.find('.roll-observer').remove();
+      
+      // Add final result display
+      $rollResult.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
+      
+      // Update the chat message content for all players
+      await chatMessage.update({
+        content: $tempDiv.html()
+      });
+      
+      console.log(`✅ DEBUG: Updated chat message ${messageId} with accepted roll result`);
+    } else {
+      console.error('❌ DEBUG: Could not find chat message to update');
+      // Fallback to local update
+      const rollElement = $(this).closest('.nsbu-roll-result');
+      rollElement.find('.roll-details').append(' → ACCEPTED');
+      $(this).closest('.roll-controls').remove();
+      rollElement.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
+    }
   });
 
   // Global handler for adding tokens to current die - using namespace to prevent duplicates
@@ -152,8 +179,38 @@ Hooks.once('ready', function() {
         // Create a completely new roll for the next die instead of continuing in same message
         await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
       } else {
-        // Already at maximum die (d20)
-        rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+        // Already at maximum die (d20) - update chat message for all players
+        const messageElement = $(this).closest('.message');
+        const messageId = messageElement.data('message-id');
+        const chatMessage = game.messages.get(messageId);
+        
+        if (chatMessage) {
+          // Get the current content and modify it
+          const $tempDiv = $('<div>').html(chatMessage.content);
+          const $rollResult = $tempDiv.find('.nsbu-roll-result');
+          
+          // Update the roll details to show token addition
+          $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+          
+          // Remove the roll controls and observer message
+          $rollResult.find('.roll-controls').remove();
+          $rollResult.find('.roll-observer').remove();
+          
+          // Add blow-up notice and final result
+          $rollResult.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${currentDie}!</div>`);
+          $rollResult.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+          
+          // Update the chat message content for all players
+          await chatMessage.update({
+            content: $tempDiv.html()
+          });
+          
+          console.log(`✅ DEBUG: Updated chat message ${messageId} with max die token result`);
+        } else {
+          console.error('❌ DEBUG: Could not find chat message to update');
+          // Fallback to local update
+          rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+        }
         
         // Clear the roll sequence as it's complete
         const sequenceKey = `${actor.id}-${stat}`;
@@ -161,8 +218,37 @@ Hooks.once('ready', function() {
         console.log(`🔓 DEBUG: Cleared roll sequence ${rollSequenceId} for ${stat} (max die reached)`);
       }
     } else {
-      // No blow-up, just final result
-      rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
+      // No blow-up, just final result - update chat message for all players
+      const messageElement = $(this).closest('.message');
+      const messageId = messageElement.data('message-id');
+      const chatMessage = game.messages.get(messageId);
+      
+      if (chatMessage) {
+        // Get the current content and modify it
+        const $tempDiv = $('<div>').html(chatMessage.content);
+        const $rollResult = $tempDiv.find('.nsbu-roll-result');
+        
+        // Update the roll details to show token addition
+        $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+        
+        // Remove the roll controls and observer message
+        $rollResult.find('.roll-controls').remove();
+        $rollResult.find('.roll-observer').remove();
+        
+        // Add final result display
+        $rollResult.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
+        
+        // Update the chat message content for all players
+        await chatMessage.update({
+          content: $tempDiv.html()
+        });
+        
+        console.log(`✅ DEBUG: Updated chat message ${messageId} with token result (no blow-up)`);
+      } else {
+        console.error('❌ DEBUG: Could not find chat message to update');
+        // Fallback to local update
+        rollElement.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
+      }
       
       // Clear the roll sequence as it's complete
       const sequenceKey = `${actor.id}-${stat}`;
