@@ -508,38 +508,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       clearRollSequence(actor.id, stat, '(natural max die reached)');
     }
     
-  } else if (currentTokens === 0) {
-    // Auto-accept roll when player has no turbo tokens
-    console.log(`🎯 DEBUG: Auto-accepting roll - no turbo tokens available`);
-    
-    content = `
-      <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} → AUTO-ACCEPTED</div>
-        <div class="roll-total">
-          Current Die: <span class="current-die-total">${rollValue}</span>
-          ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
-        </div>
-        <div class="final-result">Final Result: ${newCumulativeTotal}</div>
-      </div>
-    `;
-    
-    const chatData = {
-      user: game.user.id,
-      speaker: ChatMessage.getSpeaker({ actor }),
-      flavor: `${stat.toUpperCase()} Roll (Auto-Accepted)`,
-      content: content,
-      rolls: [roll],
-      rollMode: game.settings.get("core", "rollMode"),
-      sound: CONFIG.sounds.dice
-    };
-    
-    await ChatMessage.create(chatData);
-    
-    // Clear the roll sequence since it's complete
-    clearRollSequence(actor.id, stat, '(auto-accepted)');
-    
   } else {
-    // Normal roll with turbo tokens available - include controls but they'll be shown/hidden based on permissions
+    // Normal roll - always show interactive controls (removed auto-accept for 0 tokens)
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
