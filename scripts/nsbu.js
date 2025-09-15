@@ -12,6 +12,14 @@ Hooks.once('ready', function() {
     event.stopPropagation();
     
     const $button = $(this);
+    const actorId = $(this).data('actor-id');
+    
+    // Check if current user can control this actor
+    const actor = game.actors.get(actorId);
+    if (!actor || !actor.isOwner) {
+      ui.notifications.warn("You don't have permission to control this character's rolls.");
+      return;
+    }
     
     // Check if already processing
     if ($button.prop('disabled') || $button.hasClass('processing')) {
@@ -23,7 +31,6 @@ Hooks.once('ready', function() {
     $button.addClass('processing').prop('disabled', true);
     
     const finalTotal = parseInt($(this).data('final-total'));
-    const actorId = $(this).data('actor-id');
     const stat = $(this).data('stat');
     const rollSequenceId = $(this).data('sequence-id');
     
@@ -52,6 +59,14 @@ Hooks.once('ready', function() {
     event.stopPropagation();
     
     const $button = $(this);
+    const actorId = $(this).data('actor-id');
+    
+    // Check if current user can control this actor
+    const actor = game.actors.get(actorId);
+    if (!actor || !actor.isOwner) {
+      ui.notifications.warn("You don't have permission to control this character's rolls.");
+      return;
+    }
     
     // Check if already processing
     if ($button.prop('disabled') || $button.hasClass('processing')) {
@@ -65,7 +80,6 @@ Hooks.once('ready', function() {
     console.log('💰 Add tokens button clicked - processing...');
     
     const rollId = $(this).data('roll-id');
-    const actorId = $(this).data('actor-id');
     const stat = $(this).data('stat');
     const dieValue = parseInt($(this).data('die-value'));
     const currentDie = parseInt($(this).data('current-die'));
@@ -78,12 +92,6 @@ Hooks.once('ready', function() {
     const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
     
     if (tokensToAdd <= 0) {
-      $button.prop('disabled', false);
-      return;
-    }
-    
-    const actor = game.actors.get(actorId);
-    if (!actor) {
       $button.prop('disabled', false);
       return;
     }
@@ -286,7 +294,11 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     }
     
   } else {
-    // Normal roll - show accept and token options
+    // Normal roll - show accept and token options only to the controlling user
+    // Check if current user can control this actor
+    const canControl = actor.isOwner;
+    console.log(`🔐 DEBUG: User ${game.user.name} can control ${actor.name}: ${canControl}`);
+    
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
@@ -294,6 +306,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           Current Die: <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
         </div>
+        ${canControl ? `
         <div class="roll-controls">
           <button type="button" class="accept-roll-btn" 
             data-roll-id="${rollId}"
@@ -320,6 +333,11 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           </div>
           ` : ''}
         </div>
+        ` : `
+        <div class="roll-observer">
+          <em>Waiting for ${actor.name}'s player to accept or modify this roll...</em>
+        </div>
+        `}
       </div>
     `;
     
