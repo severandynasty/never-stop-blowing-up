@@ -314,7 +314,7 @@ Hooks.once('ready', function() {
     // Visual feedback
     $button.text('✓').prop('disabled', true);
     setTimeout(() => {
-      $button.text('⟲').prop('disabled', false);
+      $button.text('R').prop('disabled', false);
     }, 1000);
     
     ui.notifications.info(`Token count refreshed: ${currentTokens} available`);
@@ -562,7 +562,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                   data-roll-id="${rollId}"
                   data-actor-id="${actor.id}"
                   title="Refresh available token count"
-                  style="background: #f0f0f0; border: 1px solid #999; border-radius: 3px; padding: 2px 8px; margin-left: 5px; cursor: pointer; font-size: 12px; color: #333;">⟲</button>
+                  style="background: #f0f0f0; border: 1px solid #999; border-radius: 3px; padding: 2px 8px; margin-left: 5px; cursor: pointer; font-size: 10px; color: #333; font-weight: bold;">R</button>
               </label>
               <input type="number" class="token-input" min="0" max="${currentTokens}" value="0">
               <button type="button" class="add-tokens-to-die-btn" 
