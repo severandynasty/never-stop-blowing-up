@@ -1424,17 +1424,20 @@ Hooks.on("renderChatMessage", (message, html, data) => {
       const actor = game.actors.get(actorId);
       const canControl = actor && actor.isOwner;
       
-      console.log(`🔐 DEBUG: Chat render - User ${game.user.name} can control actor ${actor?.name}: ${canControl}`);
-      
       const $controls = $rollResult.find('.roll-controls');
       const $observer = $rollResult.find('.roll-observer');
       
+      console.log(`🔐 DEBUG: Chat render - User ${game.user.name} can control actor ${actor?.name}: ${canControl}`);
+      console.log(`🔐 DEBUG: Found controls: ${$controls.length}, observer: ${$observer.length}`);
+      
       if (canControl) {
         // Show controls, hide observer message
+        console.log(`🔐 DEBUG: Owner - showing controls, hiding observer`);
         $controls.show();
         $observer.hide();
       } else {
         // Hide controls, show observer message
+        console.log(`🔐 DEBUG: Non-owner - hiding controls, showing observer`);
         $controls.hide();
         $observer.show();
       }
