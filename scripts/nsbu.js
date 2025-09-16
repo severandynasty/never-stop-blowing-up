@@ -312,7 +312,7 @@ Hooks.once('ready', function() {
     }
     
     // Enable/disable the auto blow-up button based on token availability
-    const $autoBlowUpBtn = $rollControls.find('.auto-blowup-btn');
+    const $autoBlowUpBtn = $rollResult.find('.auto-blowup-btn');
     if ($autoBlowUpBtn.length > 0) {
       const dieValue = parseInt($autoBlowUpBtn.data('die-value'));
       const currentDie = parseInt($autoBlowUpBtn.data('current-die'));
