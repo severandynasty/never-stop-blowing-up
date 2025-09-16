@@ -311,20 +311,6 @@ Hooks.once('ready', function() {
       $addTokensBtn.prop('disabled', true).addClass('disabled');
     }
     
-    // Enable/disable the auto blow-up button based on token availability
-    const $autoBlowUpBtn = $rollControls.find('.auto-blowup-btn');
-    if ($autoBlowUpBtn.length > 0) {
-      const dieValue = parseInt($autoBlowUpBtn.data('die-value'));
-      const currentDie = parseInt($autoBlowUpBtn.data('current-die'));
-      const tokensNeeded = currentDie - dieValue;
-      
-      if (tokensNeeded > 0 && tokensNeeded <= currentTokens) {
-        $autoBlowUpBtn.prop('disabled', false).removeClass('disabled');
-      } else {
-        $autoBlowUpBtn.prop('disabled', true).addClass('disabled');
-      }
-    }
-    
     // Visual feedback
     $button.html('✅').prop('disabled', true);
     setTimeout(() => {
@@ -874,7 +860,6 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                   data-die-value="${rollValue}"
                   data-current-die="${dieType.replace('d', '')}"
                   title="Automatically blow up this die"
-                  ${(currentDie - rollValue) > currentTokens || (currentDie - rollValue) <= 0 ? 'disabled' : ''}
                   style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
               </div>
               <button type="button" class="combined-roll-btn" 
