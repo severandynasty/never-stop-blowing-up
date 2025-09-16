@@ -319,9 +319,19 @@ Hooks.once('ready', function() {
       const tokensNeeded = currentDie - dieValue;
       
       if (tokensNeeded > 0 && tokensNeeded <= currentTokens) {
-        $autoBlowUpBtn.prop('disabled', false).removeClass('disabled');
+        $autoBlowUpBtn.prop('disabled', false).removeClass('disabled')
+          .css({
+            'background': '#f8f8f8',
+            'color': '#000',
+            'cursor': 'pointer'
+          });
       } else {
-        $autoBlowUpBtn.prop('disabled', true).addClass('disabled');
+        $autoBlowUpBtn.prop('disabled', true).addClass('disabled')
+          .css({
+            'background': '#e0e0e0',
+            'color': '#999',
+            'cursor': 'not-allowed'
+          });
       }
     }
     
@@ -875,7 +885,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                   data-current-die="${currentDie}"
                   title="Automatically blow up this die"
                   ${(currentDie - rollValue) > currentTokens || (currentDie - rollValue) <= 0 ? 'disabled' : ''}
-                  style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
+                  style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: ${(currentDie - rollValue) > currentTokens || (currentDie - rollValue) <= 0 ? '#e0e0e0' : '#f8f8f8'}; color: ${(currentDie - rollValue) > currentTokens || (currentDie - rollValue) <= 0 ? '#999' : '#000'}; cursor: ${(currentDie - rollValue) > currentTokens || (currentDie - rollValue) <= 0 ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
               </div>
               <button type="button" class="combined-roll-btn" 
                 data-roll-id="${rollId}"
@@ -895,7 +905,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           </div>
         </div>
         <div class="roll-observer" data-actor-id="${actor.id}" style="display: none;">
-          <em>Waiting for ${actor.name}'s player to accept or modify this roll...</em>
+          <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
         </div>
       </div>
     `;
