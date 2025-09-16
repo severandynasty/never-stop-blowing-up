@@ -872,7 +872,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                   data-actor-id="${actor.id}"
                   data-stat="${stat}"
                   data-die-value="${rollValue}"
-                  data-current-die="${dieType.replace('d', '')}"
+                  data-current-die="${currentDie}"
                   title="Automatically blow up this die"
                   ${(currentDie - rollValue) > currentTokens || (currentDie - rollValue) <= 0 ? 'disabled' : ''}
                   style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
