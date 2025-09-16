@@ -326,11 +326,28 @@ Hooks.once('ready', function() {
   $(document).on('click.nsbu-token-inc', '.token-increase-btn', function(event) {
     event.preventDefault();
     const $input = $(this).siblings('.token-input');
+    const $rollControls = $(this).closest('.roll-controls');
+    const $combinedBtn = $rollControls.find('.combined-roll-btn');
+    
     const current = parseInt($input.val()) || 0;
-    const max = parseInt($input.attr('max')) || 0;
-    if (current < max) {
+    const maxAvailable = parseInt($input.attr('max')) || 0;
+    
+    // Calculate the maximum tokens needed to blow up the die
+    const dieValue = parseInt($combinedBtn.data('die-value'));
+    const currentDie = parseInt($combinedBtn.data('current-die'));
+    const tokensNeededForBlowUp = currentDie - dieValue;
+    
+    // The effective maximum is the smaller of: available tokens or tokens needed for blow-up
+    const effectiveMax = Math.min(maxAvailable, tokensNeededForBlowUp);
+    
+    console.log(`🔺 DEBUG: Token increase - dieValue: ${dieValue}, currentDie: d${currentDie}, tokensNeeded: ${tokensNeededForBlowUp}, available: ${maxAvailable}, effectiveMax: ${effectiveMax}`);
+    
+    if (current < effectiveMax) {
       $input.val(current + 1);
-      updateCombinedButtonText($(this).closest('.roll-controls'));
+      updateCombinedButtonText($rollControls);
+    } else if (current >= tokensNeededForBlowUp && tokensNeededForBlowUp > 0) {
+      // Give feedback when they hit the blow-up limit
+      ui.notifications.info(`Maximum ${tokensNeededForBlowUp} tokens needed to blow up d${currentDie} (save the rest for next roll!)`);
     }
   });
 
@@ -549,9 +566,23 @@ function updateCombinedButtonText($rollControls) {
   } else {
     const newDieResult = dieValue + tokensToAdd;
     const newTotal = originalTotal - dieValue + newDieResult;
-    $btnText.text(`Add ${tokensToAdd} Tokens (New Total: ${newTotal})`);
-    $combinedBtn.css('background', '#2196F3');
+    
+    // Check if this will cause a blow-up
+    if (newDieResult >= currentDie) {
+      $btnText.text(`Add ${tokensToAdd} Tokens → BLOW UP! (d${currentDie} → d${getNextDie(currentDie)})`);
+      $combinedBtn.css('background', '#FF5722'); // Orange/red for blow-up
+    } else {
+      $btnText.text(`Add ${tokensToAdd} Tokens (New Total: ${newTotal})`);
+      $combinedBtn.css('background', '#2196F3'); // Blue for normal add
+    }
   }
+}
+
+// Helper function to get the next die size
+function getNextDie(currentDie) {
+  const dieSteps = [4, 6, 8, 10, 12, 20];
+  const currentIdx = dieSteps.indexOf(currentDie);
+  return currentIdx < dieSteps.length - 1 ? dieSteps[currentIdx + 1] : 20;
 }
 
 // Helper function to create interactive dice roll
