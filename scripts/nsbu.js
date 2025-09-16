@@ -861,7 +861,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           Current Die: <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
         </div>
-        <div class="roll-controls" data-actor-id="${actor.id}">
+        <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
               <label>Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
@@ -904,7 +904,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           </div>
           </div>
         </div>
-        <div class="roll-observer" data-actor-id="${actor.id}" style="display: none;">
+        <div class="roll-observer" data-actor-id="${actor.id}">
           <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
         </div>
       </div>
