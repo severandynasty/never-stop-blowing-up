@@ -320,9 +320,239 @@ Hooks.once('ready', function() {
     ui.notifications.info(`Token count refreshed: ${currentTokens} available`);
     console.log(`🔄 DEBUG: Refreshed token count to ${currentTokens} for ${actor.name}`);
   });
+
+  // Global handler for token increase button (+)
+  $(document).off('click.nsbu-token-inc', '.token-increase-btn');
+  $(document).on('click.nsbu-token-inc', '.token-increase-btn', function(event) {
+    event.preventDefault();
+    const $input = $(this).siblings('.token-input');
+    const current = parseInt($input.val()) || 0;
+    const max = parseInt($input.attr('max')) || 0;
+    if (current < max) {
+      $input.val(current + 1);
+      updateCombinedButtonText($(this).closest('.roll-controls'));
+    }
+  });
+
+  // Global handler for token decrease button (-)
+  $(document).off('click.nsbu-token-dec', '.token-decrease-btn');
+  $(document).on('click.nsbu-token-dec', '.token-decrease-btn', function(event) {
+    event.preventDefault();
+    const $input = $(this).siblings('.token-input');
+    const current = parseInt($input.val()) || 0;
+    if (current > 0) {
+      $input.val(current - 1);
+      updateCombinedButtonText($(this).closest('.roll-controls'));
+    }
+  });
+
+  // Global handler for token input changes
+  $(document).off('input.nsbu-token', '.token-input');
+  $(document).on('input.nsbu-token', '.token-input', function(event) {
+    updateCombinedButtonText($(this).closest('.roll-controls'));
+  });
+
+  // Global handler for combined roll button
+  $(document).off('click.nsbu-combined', '.combined-roll-btn');
+  $(document).on('click.nsbu-combined', '.combined-roll-btn', async function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const $button = $(this);
+    const actorId = $(this).data('actor-id');
+    
+    // Check if current user can control this actor
+    const actor = game.actors.get(actorId);
+    if (!actor || !actor.isOwner) {
+      ui.notifications.warn("You don't have permission to control this character's rolls.");
+      return;
+    }
+    
+    // Check if already processing
+    if ($button.prop('disabled') || $button.hasClass('processing')) {
+      console.log('🚫 Combined roll button already processing, ignoring click');
+      return;
+    }
+    
+    // Mark as processing immediately
+    $button.addClass('processing').prop('disabled', true);
+    
+    const tokensToAdd = parseInt($(this).closest('.roll-controls').find('.token-input').val()) || 0;
+    
+    if (tokensToAdd === 0) {
+      // Just accept the roll
+      const finalTotal = parseInt($(this).data('final-total'));
+      const stat = $(this).data('stat');
+      const rollSequenceId = $(this).data('sequence-id');
+      
+      // Clear the active roll sequence
+      if (rollSequenceId && actorId && stat) {
+        clearRollSequence(actorId, stat, '(accepted)');
+      }
+
+      // Find and update the chat message
+      const messageElement = $(this).closest('.message');
+      const messageId = messageElement.data('message-id');
+      const chatMessage = game.messages.get(messageId);
+      
+      if (chatMessage) {
+        const $tempDiv = $('<div>').html(chatMessage.content);
+        const $rollResult = $tempDiv.find('.nsbu-roll-result');
+        
+        $rollResult.find('.roll-details').append(' → ACCEPTED');
+        $rollResult.find('.roll-controls').remove();
+        $rollResult.find('.roll-observer').remove();
+        $rollResult.append(`<div class="final-result">Final Result: ${finalTotal}</div>`);
+        
+        await chatMessage.update({
+          content: $tempDiv.html()
+        });
+        
+        console.log(`✅ DEBUG: Updated chat message ${messageId} with accepted roll result`);
+      }
+    } else {
+      // Add tokens and process
+      // This will reuse the existing add-tokens logic
+      const rollId = $(this).data('roll-id');
+      const stat = $(this).data('stat');
+      const dieValue = parseInt($(this).data('die-value'));
+      const currentDie = parseInt($(this).data('current-die'));
+      const currentDieIdx = parseInt($(this).data('current-die-idx'));
+      const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
+      const rollSequenceId = $(this).data('sequence-id');
+      
+      console.log(`💰 DEBUG: Combined button - adding ${tokensToAdd} tokens`);
+      
+      const currentTokens = Number(actor.system.turboTokens) || 0;
+      if (tokensToAdd > currentTokens) {
+        $button.prop('disabled', false).removeClass('processing');
+        ui.notifications.warn(`You don't have enough turbo tokens (${tokensToAdd} requested, ${currentTokens} available)`);
+        return;
+      }
+      
+      // Calculate new die result
+      const newDieResult = dieValue + tokensToAdd;
+      const dieSteps = [4, 6, 8, 10, 12, 20];
+      
+      // Calculate new cumulative total including these tokens
+      const tokensOnlyTotal = cumulativeTotal - dieValue;
+      const newCumulativeTotal = tokensOnlyTotal + newDieResult;
+      
+      console.log(`💰 DEBUG: Combined button - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
+      console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
+      
+      // Spend the turbo tokens
+      await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
+      
+      // Check if we hit the die maximum (blow-up)
+      if (newDieResult >= currentDie) {
+        console.log(`💥 DEBUG: Combined button blow-up triggered! ${newDieResult} >= ${currentDie}`);
+        
+        // BLOW UP! Advance to next die
+        if (currentDieIdx < dieSteps.length - 1) {
+          const newDieIdx = currentDieIdx + 1;
+          const newDie = dieSteps[newDieIdx];
+          
+          console.log(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to combined button blow-up`);
+          
+          // Update actor's stat
+          await actor.update({[`system.stats.${stat}`]: newDie});
+          
+          // Update the chat message with blow-up notice
+          const messageElement = $(this).closest('.message');
+          const messageId = messageElement.data('message-id');
+          const chatMessage = game.messages.get(messageId);
+          
+          if (chatMessage) {
+            const $tempDiv = $('<div>').html(chatMessage.content);
+            const $rollResult = $tempDiv.find('.nsbu-roll-result');
+            
+            $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+            $rollResult.find('.roll-controls').remove();
+            $rollResult.find('.roll-observer').remove();
+            $rollResult.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
+            
+            await chatMessage.update({
+              content: $tempDiv.html()
+            });
+          }
+          
+          console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
+          
+          // Create a completely new roll for the next die
+          await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
+        } else {
+          // Already at maximum die (d20)
+          const messageElement = $(this).closest('.message');
+          const messageId = messageElement.data('message-id');
+          const chatMessage = game.messages.get(messageId);
+          
+          if (chatMessage) {
+            const $tempDiv = $('<div>').html(chatMessage.content);
+            const $rollResult = $tempDiv.find('.nsbu-roll-result');
+            
+            $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+            $rollResult.find('.roll-controls').remove();
+            $rollResult.find('.roll-observer').remove();
+            $rollResult.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${currentDie}!</div>`);
+            $rollResult.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+            
+            await chatMessage.update({
+              content: $tempDiv.html()
+            });
+          }
+          
+          clearRollSequence(actor.id, stat, '(max die reached)');
+        }
+      } else {
+        // No blow-up, just final result
+        const messageElement = $(this).closest('.message');
+        const messageId = messageElement.data('message-id');
+        const chatMessage = game.messages.get(messageId);
+        
+        if (chatMessage) {
+          const $tempDiv = $('<div>').html(chatMessage.content);
+          const $rollResult = $tempDiv.find('.nsbu-roll-result');
+          
+          $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+          $rollResult.find('.roll-controls').remove();
+          $rollResult.find('.roll-observer').remove();
+          $rollResult.append(`<div class="final-result">Final Result: ${newCumulativeTotal}</div>`);
+          
+          await chatMessage.update({
+            content: $tempDiv.html()
+          });
+        }
+        
+        clearRollSequence(actor.id, stat, '(no blow-up)');
+      }
+    }
+  });
   
   console.log("=== NSBU global event handlers setup complete ===");
 });
+
+// Helper function to update combined button text based on token input
+function updateCombinedButtonText($rollControls) {
+  const $tokenInput = $rollControls.find('.token-input');
+  const $combinedBtn = $rollControls.find('.combined-roll-btn');
+  const $btnText = $combinedBtn.find('.btn-text');
+  
+  const tokensToAdd = parseInt($tokenInput.val()) || 0;
+  const originalTotal = parseInt($combinedBtn.data('final-total'));
+  const currentDie = parseInt($combinedBtn.data('current-die'));
+  const dieValue = parseInt($combinedBtn.data('die-value'));
+  
+  if (tokensToAdd === 0) {
+    $btnText.text(`Accept Roll (Total: ${originalTotal})`);
+    $combinedBtn.css('background', '#4CAF50');
+  } else {
+    const newDieResult = dieValue + tokensToAdd;
+    const newTotal = originalTotal - dieValue + newDieResult;
+    $btnText.text(`Add ${tokensToAdd} Tokens (New Total: ${newTotal})`);
+    $combinedBtn.css('background', '#2196F3');
+  }
+}
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
@@ -518,36 +748,37 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
         </div>
         <div class="roll-controls" data-actor-id="${actor.id}">
-          <button type="button" class="accept-roll-btn" 
-            data-roll-id="${rollId}"
-            data-actor-id="${actor.id}"
-            data-stat="${stat}"
-            data-final-total="${newCumulativeTotal}"
-            data-current-die-idx="${dieIdx}"
-            data-sequence-id="${rollSequenceId}">Accept Roll (Total: ${newCumulativeTotal})</button>
           <div class="turbo-tokens-section">
             <div class="turbo-tokens-controls">
-              <label>Add Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
-              <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" style="width: 100%; margin: 5px 0; padding: 4px; text-align: center; box-sizing: border-box;">
-              <div style="display: flex; gap: 5px; width: 100%;">
-                <button type="button" class="add-tokens-to-die-btn" 
-                  data-roll-id="${rollId}"
-                  data-actor-id="${actor.id}"
-                  data-stat="${stat}"
-                  data-die-value="${rollValue}"
-                  data-current-die="${currentDie}"
-                  data-current-die-idx="${dieIdx}"
-                  data-cumulative-total="${newCumulativeTotal}"
-                  data-sequence-id="${rollSequenceId}"
-                  style="flex: 1; white-space: nowrap;"
-                  ${currentTokens === 0 ? 'disabled' : ''}>Add to d${currentDie}</button>
+              <label>Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
+              <div style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                <button type="button" class="token-decrease-btn" 
+                  style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">−</button>
+                <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" 
+                  style="flex: 1; padding: 6px; text-align: center; box-sizing: border-box; border: 1px solid #999; border-radius: 3px;">
+                <button type="button" class="token-increase-btn" 
+                  style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">+</button>
                 <button type="button" class="refresh-tokens-btn" 
                   data-roll-id="${rollId}"
                   data-actor-id="${actor.id}"
                   title="Refresh available token count"
-                  style="flex: 0 0 20%; padding: 4px; font-size: 18px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; box-sizing: border-box;">🔄</button>
+                  style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔄</button>
               </div>
+              <button type="button" class="combined-roll-btn" 
+                data-roll-id="${rollId}"
+                data-actor-id="${actor.id}"
+                data-stat="${stat}"
+                data-die-value="${rollValue}"
+                data-current-die="${currentDie}"
+                data-current-die-idx="${dieIdx}"
+                data-cumulative-total="${newCumulativeTotal}"
+                data-final-total="${newCumulativeTotal}"
+                data-sequence-id="${rollSequenceId}"
+                style="width: 100%; padding: 8px; margin-top: 5px; background: #4CAF50; color: white; border: 1px solid #45a049; border-radius: 3px; cursor: pointer; font-weight: bold;">
+                <span class="btn-text">Accept Roll (Total: ${newCumulativeTotal})</span>
+              </button>
             </div>
+          </div>
           </div>
         </div>
         <div class="roll-observer" data-actor-id="${actor.id}" style="display: none;">
