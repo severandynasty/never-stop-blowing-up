@@ -902,7 +902,6 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
               </button>
             </div>
           </div>
-          </div>
         </div>
         <div class="roll-observer" data-actor-id="${actor.id}">
           <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
