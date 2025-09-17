@@ -777,6 +777,10 @@ Hooks.once('ready', function() {
   });
   
   console.log("=== NSBU global event handlers setup complete ===");
+  
+  // Show initial debug logging status
+  const debugEnabled = game?.settings?.get("never-stop-blowing-up", "enableDebugLogging") || false;
+  console.log(`🔧 NSBU Debug Logging is currently ${debugEnabled ? 'ENABLED' : 'DISABLED'} (can be changed in Game Settings)`);
 });
 
 // Global handler for auto blow-up button
@@ -1389,25 +1393,25 @@ class NSBUActorSheet extends ActorSheet {
     });
     
     // Roll stat buttons - ACTOR SHEET
-    console.log('🎲 DEBUG: NSBUActorSheet - Setting up .stat-roll click handler');
+    debugLog('🎲 DEBUG: NSBUActorSheet - Setting up .stat-roll click handler');
     const rollStatButtons = html.find('.stat-roll');
-    console.log('🎲 DEBUG: NSBUActorSheet - Found stat-roll buttons:', rollStatButtons.length);
+    debugLog('🎲 DEBUG: NSBUActorSheet - Found stat-roll buttons:', rollStatButtons.length);
     
     rollStatButtons.on('click', async (event) => {
-      console.log('🎲 DEBUG: NSBUActorSheet - Roll stat button clicked!', event);
+      debugLog('🎲 DEBUG: NSBUActorSheet - Roll stat button clicked!', event);
       event.preventDefault();
       const stat = event.currentTarget.dataset.stat;
-      console.log('🎲 DEBUG: NSBUActorSheet - Stat from button:', stat);
+      debugLog('🎲 DEBUG: NSBUActorSheet - Stat from button:', stat);
       const stats = this.actor.system.stats || {};
-      console.log('🎲 DEBUG: NSBUActorSheet - Actor stats:', stats);
+      debugLog('🎲 DEBUG: NSBUActorSheet - Actor stats:', stats);
       let statValue = Number(stats[stat]);
-      console.log('🎲 DEBUG: NSBUActorSheet - Stat value:', statValue);
+      debugLog('🎲 DEBUG: NSBUActorSheet - Stat value:', statValue);
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) {
-        console.log('🎲 DEBUG: NSBUActorSheet - Invalid stat value, defaulting to 4');
+        debugLog('🎲 DEBUG: NSBUActorSheet - Invalid stat value, defaulting to 4');
         statValue = 4;
       }
       
-      console.log('🎲 DEBUG: NSBUActorSheet - About to call createInteractiveDiceRoll with:', {
+      debugLog('🎲 DEBUG: NSBUActorSheet - About to call createInteractiveDiceRoll with:', {
         actor: this.actor.name,
         stat: stat,
         statValue: statValue
@@ -1415,7 +1419,7 @@ class NSBUActorSheet extends ActorSheet {
       
       try {
         await createInteractiveDiceRoll(this.actor, stat, statValue);
-        console.log('🎲 DEBUG: NSBUActorSheet - createInteractiveDiceRoll completed successfully');
+        debugLog('🎲 DEBUG: NSBUActorSheet - createInteractiveDiceRoll completed successfully');
       } catch (error) {
         console.error('🎲 ERROR: NSBUActorSheet - createInteractiveDiceRoll failed:', error);
       }
@@ -1817,7 +1821,10 @@ Hooks.once("init", () => {
     scope: "world",
     config: true,
     type: Boolean,
-    default: false
+    default: false,
+    onChange: (value) => {
+      console.log(`🔧 NSBU Debug Logging ${value ? 'ENABLED' : 'DISABLED'} - Future debug messages will ${value ? 'appear' : 'be hidden'}`);
+    }
   });
   
   console.log("=== NSBU game settings registered ===");
@@ -1968,17 +1975,17 @@ Hooks.on("renderChatMessage", (message, html, data) => {
       const $controls = $rollResult.find('.roll-controls');
       const $observer = $rollResult.find('.roll-observer');
       
-      console.log(`🔐 DEBUG: Chat render - User ${game.user.name} can control actor ${actor?.name}: ${canControl}`);
-      console.log(`🔐 DEBUG: Found controls: ${$controls.length}, observer: ${$observer.length}`);
+      debugLog(`🔐 DEBUG: Chat render - User ${game.user.name} can control actor ${actor?.name}: ${canControl}`);
+      debugLog(`🔐 DEBUG: Found controls: ${$controls.length}, observer: ${$observer.length}`);
       
       if (canControl) {
         // Show controls, hide observer message
-        console.log(`🔐 DEBUG: Owner - showing controls, hiding observer`);
+        debugLog(`🔐 DEBUG: Owner - showing controls, hiding observer`);
         $controls.show();
         $observer.hide();
       } else {
         // Hide controls, show observer message
-        console.log(`🔐 DEBUG: Non-owner - hiding controls, showing observer`);
+        debugLog(`🔐 DEBUG: Non-owner - hiding controls, showing observer`);
         $controls.hide();
         $observer.show();
       }
