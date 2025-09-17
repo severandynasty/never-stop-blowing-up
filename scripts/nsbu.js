@@ -703,7 +703,7 @@ Hooks.once('ready', function() {
                         data-current-die-idx="5"
                         data-cumulative-total="${newCumulativeTotal + d20Value}"
                         data-final-total="${newCumulativeTotal + d20Value}"
-                        data-sequence-id="${sequenceId}"
+                        data-sequence-id="${rollSequenceId}"
                         style="width: 100%; padding: 8px; margin-top: 5px; background: #4CAF50; color: white; border: 1px solid #45a049; border-radius: 3px; cursor: pointer; font-weight: bold;">
                         <span class="btn-text">Accept Roll (Total: ${newCumulativeTotal + d20Value})</span>
                       </button>
