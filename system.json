@@ -26,7 +26,10 @@
       "label": "Game Rules",
       "path": "packs/rules-reference.db",
       "type": "JournalEntry",
-      "system": "never-stop-blowing-up"
+      "system": "never-stop-blowing-up",
+      "ownership": {
+        "default": 2
+      }
     }
   ],
   "compatibility": {
