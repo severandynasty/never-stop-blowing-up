@@ -9,7 +9,7 @@ function clearRollSequence(actorId, stat, reason = '') {
   
   if (sequenceId) {
     activeRollSequences.delete(sequenceKey);
-    console.log(`🔓 DEBUG: Cleared roll sequence ${sequenceId} for ${stat} ${reason}`);
+    debugLog(`🔓 DEBUG: Cleared roll sequence ${sequenceId} for ${stat} ${reason}`);
   }
   
   // Clear any associated timeout
@@ -17,13 +17,13 @@ function clearRollSequence(actorId, stat, reason = '') {
   if (timeoutId) {
     clearTimeout(timeoutId);
     rollSequenceTimeouts.delete(sequenceKey);
-    console.log(`⏰ DEBUG: Cleared timeout for ${stat} sequence`);
+    debugLog(`⏰ DEBUG: Cleared timeout for ${stat} sequence`);
   }
 }
 
 // Setup global event handlers when Foundry is ready
 Hooks.once('ready', function() {
-  console.log("=== Setting up NSBU global event handlers ===");
+  debugLog("=== Setting up NSBU global event handlers ===");
   
   // Global handler for accept roll button - using namespace to prevent duplicates
   $(document).off('click.nsbu-accept', '.accept-roll-btn');
@@ -86,7 +86,7 @@ Hooks.once('ready', function() {
         content: $tempDiv.html()
       });
       
-      console.log(`✅ DEBUG: Updated chat message ${messageId} with accepted roll result`);
+      debugLog(`✅ DEBUG: Updated chat message ${messageId} with accepted roll result`);
     } else {
       console.error('❌ DEBUG: Could not find chat message to update');
       // Fallback to local update
@@ -1269,7 +1269,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
 
 class NSBUActorSheet extends ActorSheet {
   activateListeners(html) {
-    console.log('🎭 DEBUG: NSBUActorSheet.activateListeners() called');
+    debugLog('🎭 DEBUG: NSBUActorSheet.activateListeners() called');
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
@@ -1421,22 +1421,22 @@ class NSBUActorSheet extends ActorSheet {
       
       // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
       if (name === 'name') {
-        console.log('🎭 DEBUG: Name field change detected in CHARACTER SHEET');
-        console.log('🎭 DEBUG: Original value from input:', value);
-        console.log('🎭 DEBUG: Input type:', input.type);
-        console.log('🎭 DEBUG: Current actor name:', this.actor.name);
+        debugLog('🎭 DEBUG: Name field change detected in CHARACTER SHEET');
+        debugLog('🎭 DEBUG: Original value from input:', value);
+        debugLog('🎭 DEBUG: Input type:', input.type);
+        debugLog('🎭 DEBUG: Current actor name:', this.actor.name);
         
         // Use the value as provided, let template handle defaults
         const actualValue = value ? value.trim() : '';
-        console.log('🎭 DEBUG: Processed value to save:', actualValue);
+        debugLog('🎭 DEBUG: Processed value to save:', actualValue);
         
         await this.actor.update({ 
           'name': actualValue,
           'system.realWorldCharacter': actualValue 
         });
         
-        console.log('🎭 DEBUG: Actor update completed');
-        console.log('🎭 DEBUG: New actor name after update:', this.actor.name);
+        debugLog('🎭 DEBUG: Actor update completed');
+        debugLog('🎭 DEBUG: New actor name after update:', this.actor.name);
         
         this.render();
         return;
@@ -1471,15 +1471,15 @@ class NSBUActorSheet extends ActorSheet {
     data.system = this.actor.system ?? {};
     data.items = this.actor.items ? this.actor.items.contents : [];
     
-    console.log('🎭 DEBUG: CHARACTER SHEET getData called');
-    console.log('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
-    console.log('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
-    console.log('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
+    debugLog('🎭 DEBUG: CHARACTER SHEET getData called');
+    debugLog('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
+    debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
     // FIX: Ensure data.name is set properly
     if (!data.name) {
       data.name = this.actor.name;
-      console.log('🎭 DEBUG: Fixed data.name to:', data.name);
+      debugLog('🎭 DEBUG: Fixed data.name to:', data.name);
     }
     
     return data;
@@ -1495,18 +1495,18 @@ class NSBUActorSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
-    console.log('🎭 DEBUG: CHARACTER SHEET _updateObject called');
-    console.log('🎭 DEBUG: formData received:', formData);
+    debugLog('🎭 DEBUG: CHARACTER SHEET _updateObject called');
+    debugLog('🎭 DEBUG: formData received:', formData);
     
     // Handle name field specially to ensure synchronization
     if (formData.hasOwnProperty('name')) {
-      console.log('🎭 DEBUG: Name field found in formData:', formData.name);
+      debugLog('🎭 DEBUG: Name field found in formData:', formData.name);
       formData['system.realWorldCharacter'] = formData.name;
-      console.log('🎭 DEBUG: Modified formData:', formData);
+      debugLog('🎭 DEBUG: Modified formData:', formData);
     }
     
     await this.actor.update(formData);
-    console.log('🎭 DEBUG: Actor update completed in _updateObject');
+    debugLog('🎭 DEBUG: Actor update completed in _updateObject');
   }
 }
 
@@ -1962,3 +1962,7 @@ Hooks.on("renderChatMessage", (message, html, data) => {
     }
   });
 });
+
+
+
+
