@@ -1351,12 +1351,29 @@ Hooks.once('setup', async function() {
         });
       } else if (packName === 'rules-reference') {
         console.log("  - Rules reference compendium found! Attempting to load...");
-        pack.getDocuments().then(docs => {
+        pack.getDocuments().then(async docs => {
           console.log(`  - Contains ${docs.length} rules reference entries`);
           console.log("  - Rules reference compendium loaded successfully");
-          docs.forEach(doc => {
+          
+          // Fix permissions for all rules reference documents
+          for (const doc of docs) {
             console.log(`    • ${doc.name} (${doc.system?.type})`);
-          });
+            
+            // Check if the document needs permission fix
+            if (doc.ownership?.default !== 2) {
+              try {
+                await doc.update({
+                  ownership: {
+                    ...doc.ownership,
+                    default: 2  // OBSERVER permission for all players
+                  }
+                });
+                console.log(`    ✓ Fixed permissions for ${doc.name}`);
+              } catch (err) {
+                console.warn(`    ⚠ Could not fix permissions for ${doc.name}:`, err.message);
+              }
+            }
+          }
         }).catch(err => {
           console.error("  - Error loading rules reference:", err);
         });
