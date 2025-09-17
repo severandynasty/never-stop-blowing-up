@@ -10,16 +10,14 @@ A custom tabletop RPG system for Foundry Virtual Tabletop, inspired by Kids on B
 - **Rules Reference Journal** - Quick access to core mechanics and full PDF rulebook
 - Dice macros for fast gameplay with exploding dice mechanics
 - Die progression system (d4 → d6 → d8 → d10 → d12 → d20)
+- Option to use either a d20 or d100 when a player blows up a d20 stat, configure in the Game Settings menu
 - Turbo Token tracking and management
-- Designed for Foundry VTT v12.343+
+- Designed for Foundry VTT v12.343
 
 ## Compendiums
 
 ### Player Abilities
-36 individual abilities organized into categories:
-- Combat, Defense, Physical, Stealth
-- Social, Mental, Technology, Vehicle  
-- Token, Utility, Special
+36 individual abilities that can be dragged onto the character sheets
 
 ### Group Abilities  
 27 team abilities organized by group suite and die requirement:
@@ -31,11 +29,11 @@ A custom tabletop RPG system for Foundry Virtual Tabletop, inspired by Kids on B
 
 ### Rules Reference
 Complete game reference including:
-- Link to full PDF rulebook
 - Core mechanics and stats
 - Quick reference tables
 - Turbo Token rules
-- Group suite descriptions
+- Player Abilities
+- Group Abilities
 
 ## Installation
 
@@ -47,7 +45,11 @@ Complete game reference including:
 
 - Create actors using the character or NPC sheet templates.
 - Drag and drop abilities from the appropriate compendium onto actor sheets.
-- Click the appropriate dice button for any check.  They will blow up automatically.
+- Click the appropriate dice button for any check.  They will blow up if:
+    - A natural maximum value is rolled (e.g. 4 on a d4)
+    - The player adds available Turbo Tokens to the roll using the +/- buttons in the roll dialog to increase the roll value to the max.
+    - The player clicks the :insert blowup emoji here: Auto Blow Up button.
+- Once the player is satisfied with the roll they complete it by clicking the button at the bottom of the roll dialog.
 
 ## Credits
 
@@ -61,5 +63,4 @@ See [LICENSE](LICENSE) for details.
 
 # To Do:
 
-- create config module to allow option to configure d20 blow up settings
 - style/art

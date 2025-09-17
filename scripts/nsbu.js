@@ -305,7 +305,7 @@ Hooks.once('ready', function() {
       return;
     }
     
-    console.log('🔄 DEBUG: Refresh tokens button clicked');
+    debugLog('🔄 DEBUG: Refresh tokens button clicked');
     
     // Get current token count from actor
     const currentTokens = Number(actor.system.turboTokens) || 0;
@@ -360,7 +360,7 @@ Hooks.once('ready', function() {
     }, 1000);
     
     ui.notifications.info(`Token count refreshed: ${currentTokens} available`);
-    console.log(`🔄 DEBUG: Refreshed token count to ${currentTokens} for ${actor.name}`);
+    debugLog(`🔄 DEBUG: Refreshed token count to ${currentTokens} for ${actor.name}`);
   });
 
   // Global handler for token increase button (+)
@@ -382,7 +382,7 @@ Hooks.once('ready', function() {
     // The effective maximum is the smaller of: available tokens or tokens needed for blow-up
     const effectiveMax = Math.min(maxAvailable, tokensNeededForBlowUp);
     
-    console.log(`🔺 DEBUG: Token increase - dieValue: ${dieValue}, currentDie: d${currentDie}, tokensNeeded: ${tokensNeededForBlowUp}, available: ${maxAvailable}, effectiveMax: ${effectiveMax}`);
+    debugLog(`🔺 DEBUG: Token increase - dieValue: ${dieValue}, currentDie: d${currentDie}, tokensNeeded: ${tokensNeededForBlowUp}, available: ${maxAvailable}, effectiveMax: ${effectiveMax}`);
     
     if (current < effectiveMax) {
       $input.val(current + 1);
@@ -880,7 +880,7 @@ function getNextDie(currentDie) {
 
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
-  console.log('🎲🎲🎲 DEBUG: createInteractiveDiceRoll ENTRY POINT', {
+  debugLog('🎲🎲🎲 DEBUG: createInteractiveDiceRoll ENTRY POINT', {
     actorName: actor?.name,
     actorId: actor?.id,
     stat: stat,
@@ -959,20 +959,20 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     
     // Mark this sequence as active
     activeRollSequences.set(sequenceKey, rollSequenceId);
-    console.log(`🔒 DEBUG: Started new roll sequence ${rollSequenceId} for ${actor.name} ${stat}`);
+    debugLog(`🔒 DEBUG: Started new roll sequence ${rollSequenceId} for ${actor.name} ${stat}`);
     
     // Set up auto-cleanup timeout (5 minutes)
     const timeoutId = setTimeout(() => {
-      console.log(`⏰ DEBUG: Auto-clearing abandoned roll sequence for ${actor.name} ${stat}`);
+      debugLog(`⏰ DEBUG: Auto-clearing abandoned roll sequence for ${actor.name} ${stat}`);
       clearRollSequence(actor.id, stat, '(timeout - abandoned)');
       ui.notifications.warn(`Abandoned roll sequence cleared for ${actor.name}'s ${stat.toUpperCase()} roll. You can roll again now.`);
     }, 5 * 60 * 1000); // 5 minutes
     
     rollSequenceTimeouts.set(sequenceKey, timeoutId);
-    console.log(`⏰ DEBUG: Set 5-minute timeout for ${actor.name} ${stat} roll sequence`);
+    debugLog(`⏰ DEBUG: Set 5-minute timeout for ${actor.name} ${stat} roll sequence`);
   }
   
-  console.log(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}, cumulativeTotal: ${cumulativeTotal}, sequenceId: ${rollSequenceId}`);
+  debugLog(`🎲 DEBUG: createInteractiveDiceRoll called - actor: ${actor.name}, stat: ${stat}, statValue: ${statValue}, cumulativeTotal: ${cumulativeTotal}, sequenceId: ${rollSequenceId}`);
   
   const dieSteps = [4, 6, 8, 10, 12, 20];
   let dieIdx = dieSteps.indexOf(statValue);
@@ -987,18 +987,18 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   let currentDie = statValue === 100 ? 100 : dieSteps[dieIdx];
   
-  console.log(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
+  debugLog(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
   
   // Create and evaluate the roll
   const roll = new Roll(`1d${currentDie}`);
   await roll.evaluate();
   const rollValue = roll.total;
   
-  console.log(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
+  debugLog(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
   
   // Update cumulative total with this roll
   const newCumulativeTotal = cumulativeTotal + rollValue;
-  console.log(`📊 DEBUG: Cumulative total: ${cumulativeTotal} + ${rollValue} = ${newCumulativeTotal}`);
+  debugLog(`📊 DEBUG: Cumulative total: ${cumulativeTotal} + ${rollValue} = ${newCumulativeTotal}`);
   
   // Create the interactive chat message
   const rollId = foundry.utils.randomID();
