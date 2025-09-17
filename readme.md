@@ -48,7 +48,8 @@ Complete game reference including:
 - Click the appropriate dice button for any check.  They will blow up if:
     - A natural maximum value is rolled (e.g. 4 on a d4)
     - The player adds available Turbo Tokens to the roll using the +/- buttons in the roll dialog to increase the roll value to the max.
-    - The player clicks the :insert blowup emoji here: Auto Blow Up button.
+    - The player clicks the 💥 Auto Blow Up button.
+- The player can add tokens to their sheet (for example if another player in the scene gives them to the player) and then click the 🔄 Refresh button to update the available number of tokens.
 - Once the player is satisfied with the roll they complete it by clicking the button at the bottom of the roll dialog.
 
 ## Credits

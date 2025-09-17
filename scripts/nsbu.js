@@ -146,7 +146,7 @@ Hooks.once('ready', function() {
     const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
     const rollSequenceId = $(this).data('sequence-id');
     
-    console.log(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
+    debugLog(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
     
     const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
     
@@ -169,8 +169,8 @@ Hooks.once('ready', function() {
     const tokensOnlyTotal = cumulativeTotal - dieValue; // Remove the current die from cumulative
     const newCumulativeTotal = tokensOnlyTotal + newDieResult; // Add the die + tokens result
     
-    console.log(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
-    console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
+    debugLog(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
+    debugLog(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
     
     // Spend the turbo tokens and track episode spending
     const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
@@ -188,21 +188,21 @@ Hooks.once('ready', function() {
     const controlsElement = $(this).closest('.roll-controls');
     if (controlsElement.length > 0) {
       controlsElement.remove();
-      console.log('🗑️ DEBUG: Roll controls removed');
+      debugLog('🗑️ DEBUG: Roll controls removed');
     } else {
-      console.log('⚠️ DEBUG: Roll controls already removed!');
+      debugLog('⚠️ DEBUG: Roll controls already removed!');
     }
     
     // Check if we hit the die maximum (blow-up)
     if (newDieResult >= currentDie) {
-      console.log(`💥 DEBUG: Token blow-up triggered! ${newDieResult} >= ${currentDie}`);
+      debugLog(`💥 DEBUG: Token blow-up triggered! ${newDieResult} >= ${currentDie}`);
       
       // BLOW UP! Advance to next die
       if (currentDieIdx < dieSteps.length - 1) {
         const newDieIdx = currentDieIdx + 1;
         const newDie = dieSteps[newDieIdx];
         
-        console.log(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to token blow-up`);
+        debugLog(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to token blow-up`);
         
         // Update actor's stat
         await actor.update({[`system.stats.${stat}`]: newDie});
@@ -210,7 +210,7 @@ Hooks.once('ready', function() {
         // Add blow-up notice
         rollElement.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${newDie}!</div>`);
         
-        console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
+        debugLog(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
         
         // Create a completely new roll for the next die instead of continuing in same message
         await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
@@ -241,7 +241,7 @@ Hooks.once('ready', function() {
             content: $tempDiv.html()
           });
           
-          console.log(`✅ DEBUG: Updated chat message ${messageId} with max die token result`);
+          debugLog(`✅ DEBUG: Updated chat message ${messageId} with max die token result`);
         } else {
           console.error('❌ DEBUG: Could not find chat message to update');
           // Fallback to local update
@@ -277,7 +277,7 @@ Hooks.once('ready', function() {
           content: $tempDiv.html()
         });
         
-        console.log(`✅ DEBUG: Updated chat message ${messageId} with token result (no blow-up)`);
+        debugLog(`✅ DEBUG: Updated chat message ${messageId} with token result (no blow-up)`);
       } else {
         console.error('❌ DEBUG: Could not find chat message to update');
         // Fallback to local update
@@ -467,7 +467,7 @@ Hooks.once('ready', function() {
           content: $tempDiv.html()
         });
         
-        console.log(`✅ DEBUG: Updated chat message ${messageId} with accepted roll result`);
+        debugLog(`✅ DEBUG: Updated chat message ${messageId} with accepted roll result`);
       }
     } else {
       // Add tokens and process
@@ -480,7 +480,7 @@ Hooks.once('ready', function() {
       const cumulativeTotal = parseInt($(this).data('cumulative-total')) || 0;
       const rollSequenceId = $(this).data('sequence-id');
       
-      console.log(`💰 DEBUG: Combined button - adding ${tokensToAdd} tokens`);
+      debugLog(`💰 DEBUG: Combined button - adding ${tokensToAdd} tokens`);
       
       const currentTokens = Number(actor.system.turboTokens) || 0;
       if (tokensToAdd > currentTokens) {
@@ -497,8 +497,8 @@ Hooks.once('ready', function() {
       const tokensOnlyTotal = cumulativeTotal - dieValue;
       const newCumulativeTotal = tokensOnlyTotal + newDieResult;
       
-      console.log(`💰 DEBUG: Combined button - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
-      console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
+      debugLog(`💰 DEBUG: Combined button - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
+      debugLog(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
       
       // Spend the turbo tokens and track episode spending
       const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
@@ -509,14 +509,14 @@ Hooks.once('ready', function() {
       
       // Check if we hit the die maximum (blow-up)
       if (newDieResult >= currentDie) {
-        console.log(`💥 DEBUG: Combined button blow-up triggered! ${newDieResult} >= ${currentDie}`);
+        debugLog(`💥 DEBUG: Combined button blow-up triggered! ${newDieResult} >= ${currentDie}`);
         
         // BLOW UP! Advance to next die
         if (currentDieIdx < dieSteps.length - 1) {
           const newDieIdx = currentDieIdx + 1;
           const newDie = dieSteps[newDieIdx];
           
-          console.log(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to combined button blow-up`);
+          debugLog(`💥 DEBUG: Upgrading stat from d${currentDie} to d${newDie} due to combined button blow-up`);
           
           // Update actor's stat
           await actor.update({[`system.stats.${stat}`]: newDie});
@@ -540,18 +540,18 @@ Hooks.once('ready', function() {
             });
           }
           
-          console.log(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
+          debugLog(`💥 DEBUG: Calling createInteractiveDiceRoll for upgraded d${newDie}, sequenceId: ${rollSequenceId}`);
           
           // Create a completely new roll for the next die
           await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
         } else {
           // At maximum die (d20) - check setting for continued blow-ups
           const d20BlowUpSetting = game.settings.get("never-stop-blowing-up", "d20BlowUpDie");
-          console.log(`💥 DEBUG: Maximum die reached (d20), d20BlowUpDie setting: ${d20BlowUpSetting}`);
+          debugLog(`💥 DEBUG: Maximum die reached (d20), d20BlowUpDie setting: ${d20BlowUpSetting}`);
           
           if (d20BlowUpSetting === "d100") {
             // Continue with d100 blow-up logic
-            console.log(`💥 DEBUG: Continuing with d100 blow-up for ${stat}`);
+            debugLog(`💥 DEBUG: Continuing with d100 blow-up for ${stat}`);
             
             // Update the current message to show the d20 result and blow-up
             const messageElement = $(this).closest('.message');
@@ -581,7 +581,7 @@ Hooks.once('ready', function() {
             await d100Roll.evaluate();
             const d100Value = d100Roll.total;
             
-            console.log(`💥 DEBUG: D100 continuation roll result: ${d100Value}`);
+            debugLog(`💥 DEBUG: D100 continuation roll result: ${d100Value}`);
             
             const d100Content = `
               <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
@@ -651,7 +651,7 @@ Hooks.once('ready', function() {
             await ChatMessage.create(d100ChatData);
           } else {
             // Continue with d20 rolls (setting: "d20")
-            console.log(`🎯 DEBUG: Continuing with d20 rolls (setting: ${d20BlowUpSetting})`);
+            debugLog(`🎯 DEBUG: Continuing with d20 rolls (setting: ${d20BlowUpSetting})`);
             
             // Update current message to show blow-up
             const messageElement = $(this).closest('.message');
@@ -681,7 +681,7 @@ Hooks.once('ready', function() {
             await d20Roll.evaluate();
             const d20Value = d20Roll.total;
             
-            console.log(`🎯 DEBUG: D20 continuation roll result: ${d20Value}`);
+            debugLog(`🎯 DEBUG: D20 continuation roll result: ${d20Value}`);
             
             const d20Content = `
               <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
@@ -813,7 +813,7 @@ $(document).on('click.nsbu-auto-blowup', '.auto-blowup-btn', async function(even
   const tokensNeeded = currentDie - dieValue;
   const currentTokens = Number(actor.system.turboTokens) || 0;
   
-  console.log(`💥 DEBUG: Auto blow-up - die value: ${dieValue}, current die: ${currentDie}, tokens needed: ${tokensNeeded}, available: ${currentTokens}`);
+  debugLog(`💥 DEBUG: Auto blow-up - die value: ${dieValue}, current die: ${currentDie}, tokens needed: ${tokensNeeded}, available: ${currentTokens}`);
   
   if (tokensNeeded <= 0) {
     $button.prop('disabled', false).removeClass('processing');
@@ -896,7 +896,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Check if there's already an active sequence for this actor+stat
     const sequenceKey = `${actor.id}-${stat}`;
     if (activeRollSequences.has(sequenceKey)) {
-      console.log(`🚫 DEBUG: Roll sequence already active for ${actor.name} ${stat}`);
+      debugLog(`🚫 DEBUG: Roll sequence already active for ${actor.name} ${stat}`);
       
       // Prompt player to cancel previous roll
       const shouldCancel = await Dialog.confirm({
@@ -909,7 +909,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       });
       
       if (shouldCancel) {
-        console.log(`🗑️ DEBUG: Player chose to cancel previous ${stat} roll`);
+        debugLog(`🗑️ DEBUG: Player chose to cancel previous ${stat} roll`);
         
         // Find and update the existing chat message to show it was cancelled
         const existingSequenceId = activeRollSequences.get(sequenceKey);
@@ -918,7 +918,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           const recentMessages = game.messages.contents.slice(-20); // Check last 20 messages
           for (const message of recentMessages) {
             if (message.content && message.content.includes(`data-sequence-id="${existingSequenceId}"`)) {
-              console.log(`📝 DEBUG: Found existing roll message to update: ${message.id}`);
+              debugLog(`📝 DEBUG: Found existing roll message to update: ${message.id}`);
               
               // Update the message content to show cancellation
               const $tempDiv = $('<div>').html(message.content);
@@ -940,7 +940,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
                   content: $tempDiv.html()
                 });
                 
-                console.log(`✅ DEBUG: Updated chat message ${message.id} to show cancellation`);
+                debugLog(`✅ DEBUG: Updated chat message ${message.id} to show cancellation`);
               }
               break;
             }
@@ -951,7 +951,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
         ui.notifications.info(`Previous ${stat.toUpperCase()} roll cancelled. Starting new roll...`);
         // Continue with the new roll by not returning
       } else {
-        console.log(`🚫 DEBUG: Player chose to keep previous ${stat} roll active`);
+        debugLog(`🚫 DEBUG: Player chose to keep previous ${stat} roll active`);
         ui.notifications.warn(`Previous ${stat.toUpperCase()} roll is still active. Please complete it before rolling again.`);
         return;
       }
@@ -1007,7 +1007,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   // Check if this is a natural maximum (automatic blow-up)
   const isNaturalMax = (rollValue === currentDie);
   
-  console.log(`🎲 DEBUG: isNaturalMax: ${isNaturalMax}, currentTokens: ${currentTokens}`);
+  debugLog(`🎲 DEBUG: isNaturalMax: ${isNaturalMax}, currentTokens: ${currentTokens}`);
   
   let content;
   if (isNaturalMax) {
@@ -1029,37 +1029,37 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     };
     
     const message = await ChatMessage.create(chatData);
-    console.log(`🎯 DEBUG: Natural blow-up message created`);
+    debugLog(`🎯 DEBUG: Natural blow-up message created`);
     
     // Then immediately continue with the blow-up sequence
     if (dieIdx < dieSteps.length - 1) {
       const newDieIdx = dieIdx + 1;
       const newDie = dieSteps[newDieIdx];
       
-      console.log(`🎯 DEBUG: Upgrading stat from d${currentDie} to d${newDie}`);
+      debugLog(`🎯 DEBUG: Upgrading stat from d${currentDie} to d${newDie}`);
       
       // Update actor's stat
       await actor.update({[`system.stats.${stat}`]: newDie});
       
-      console.log(`🎯 DEBUG: Stat upgraded, calling createInteractiveDiceRoll recursively for d${newDie}, sequenceId: ${rollSequenceId}`);
+      debugLog(`🎯 DEBUG: Stat upgraded, calling createInteractiveDiceRoll recursively for d${newDie}, sequenceId: ${rollSequenceId}`);
       
       // Create a new roll for the upgraded stat (recursive call)
       await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
     } else {
       // At maximum die (d20) - check setting for continued blow-ups
       const d20BlowUpSetting = game.settings.get("never-stop-blowing-up", "d20BlowUpDie");
-      console.log(`🎯 DEBUG: Maximum die reached (d20), d20BlowUpDie setting: ${d20BlowUpSetting}`);
+      debugLog(`🎯 DEBUG: Maximum die reached (d20), d20BlowUpDie setting: ${d20BlowUpSetting}`);
       
       if (d20BlowUpSetting === "d100") {
         // Continue with d100 blow-up logic
-        console.log(`🎯 DEBUG: Continuing with d100 blow-up for ${stat}`);
+        debugLog(`🎯 DEBUG: Continuing with d100 blow-up for ${stat}`);
         
         // Create a d100 roll for continued blow-up
         const d100Roll = new Roll("1d100");
         await d100Roll.evaluate();
         const d100Value = d100Roll.total;
         
-        console.log(`🎯 DEBUG: D100 roll result: ${d100Value}`);
+        debugLog(`🎯 DEBUG: D100 roll result: ${d100Value}`);
         
         const d100Content = `
           <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
@@ -1129,7 +1129,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
         await ChatMessage.create(d100ChatData);
       } else {
         // Continue with d20 rolls (setting: "d20")
-        console.log(`🎯 DEBUG: Continuing with d20 rolls (setting: ${d20BlowUpSetting})`);
+        debugLog(`🎯 DEBUG: Continuing with d20 rolls (setting: ${d20BlowUpSetting})`);
         
         // Create another d20 roll for continued blow-up (stat stays at d20)
         const currentTokens = Number(actor.system.turboTokens) || 0;
@@ -1140,7 +1140,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
         await d20Roll.evaluate();
         const d20Value = d20Roll.total;
         
-        console.log(`🎯 DEBUG: D20 continuation roll result: ${d20Value}`);
+        debugLog(`🎯 DEBUG: D20 continuation roll result: ${d20Value}`);
         
         const d20Content = `
           <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
@@ -1635,25 +1635,25 @@ class NSBUNPCSheet extends ActorSheet {
     });
     
     // Roll stat buttons - NPC SHEET
-    console.log('🎲 DEBUG: NSBUNPCSheet - Setting up .stat-roll click handler');
+    debugLog('🎲 DEBUG: NSBUNPCSheet - Setting up .stat-roll click handler');
     const rollStatButtons = html.find('.stat-roll');
-    console.log('🎲 DEBUG: NSBUNPCSheet - Found stat-roll buttons:', rollStatButtons.length);
+    debugLog('🎲 DEBUG: NSBUNPCSheet - Found stat-roll buttons:', rollStatButtons.length);
     
     rollStatButtons.on('click', async (event) => {
-      console.log('🎲 DEBUG: NSBUNPCSheet - Stat roll button clicked!', event);
+      debugLog('🎲 DEBUG: NSBUNPCSheet - Stat roll button clicked!', event);
       event.preventDefault();
       const stat = event.currentTarget.dataset.stat;
-      console.log('🎲 DEBUG: NSBUNPCSheet - Stat from button:', stat);
+      debugLog('🎲 DEBUG: NSBUNPCSheet - Stat from button:', stat);
       const stats = this.actor.system.stats || {};
-      console.log('🎲 DEBUG: NSBUNPCSheet - Actor stats:', stats);
+      debugLog('🎲 DEBUG: NSBUNPCSheet - Actor stats:', stats);
       let statValue = Number(stats[stat]);
-      console.log('🎲 DEBUG: NSBUNPCSheet - Stat value:', statValue);
+      debugLog('🎲 DEBUG: NSBUNPCSheet - Stat value:', statValue);
       if (!statValue || ![4,6,8,10,12,20].includes(statValue)) {
-        console.log('🎲 DEBUG: NSBUNPCSheet - Invalid stat value, defaulting to 4');
+        debugLog('🎲 DEBUG: NSBUNPCSheet - Invalid stat value, defaulting to 4');
         statValue = 4;
       }
       
-      console.log('🎲 DEBUG: NSBUNPCSheet - About to call createInteractiveDiceRoll with:', {
+      debugLog('🎲 DEBUG: NSBUNPCSheet - About to call createInteractiveDiceRoll with:', {
         actor: this.actor.name,
         stat: stat,
         statValue: statValue
@@ -1661,7 +1661,7 @@ class NSBUNPCSheet extends ActorSheet {
       
       try {
         await createInteractiveDiceRoll(this.actor, stat, statValue);
-        console.log('🎲 DEBUG: NSBUNPCSheet - createInteractiveDiceRoll completed successfully');
+        debugLog('🎲 DEBUG: NSBUNPCSheet - createInteractiveDiceRoll completed successfully');
       } catch (error) {
         console.error('🎲 ERROR: NSBUNPCSheet - createInteractiveDiceRoll failed:', error);
       }
@@ -1675,22 +1675,22 @@ class NSBUNPCSheet extends ActorSheet {
       
       // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
       if (name === 'name') {
-        console.log('🎭 DEBUG: Name field change detected in NPC SHEET');
-        console.log('🎭 DEBUG: Original value from input:', value);
-        console.log('🎭 DEBUG: Input type:', input.type);
-        console.log('🎭 DEBUG: Current actor name:', this.actor.name);
+        debugLog('🎭 DEBUG: Name field change detected in NPC SHEET');
+        debugLog('🎭 DEBUG: Original value from input:', value);
+        debugLog('🎭 DEBUG: Input type:', input.type);
+        debugLog('🎭 DEBUG: Current actor name:', this.actor.name);
         
         // Use the value as provided, let template handle defaults
         const actualValue = value ? value.trim() : '';
-        console.log('🎭 DEBUG: Processed value to save:', actualValue);
+        debugLog('🎭 DEBUG: Processed value to save:', actualValue);
         
         await this.actor.update({ 
           'name': actualValue,
           'system.realWorldCharacter': actualValue 
         });
         
-        console.log('🎭 DEBUG: Actor update completed');
-        console.log('🎭 DEBUG: New actor name after update:', this.actor.name);
+        debugLog('🎭 DEBUG: Actor update completed');
+        debugLog('🎭 DEBUG: New actor name after update:', this.actor.name);
         
         this.render();
         return;
@@ -1725,15 +1725,15 @@ class NSBUNPCSheet extends ActorSheet {
     data.system = this.actor.system ?? {};
     data.items = this.actor.items ? this.actor.items.contents : [];
     
-    console.log('🎭 DEBUG: NPC SHEET getData called');
-    console.log('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
-    console.log('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
-    console.log('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
+    debugLog('🎭 DEBUG: NPC SHEET getData called');
+    debugLog('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
+    debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
     // FIX: Ensure data.name is set properly
     if (!data.name) {
       data.name = this.actor.name;
-      console.log('🎭 DEBUG: Fixed data.name to:', data.name);
+      debugLog('🎭 DEBUG: Fixed data.name to:', data.name);
     }
     
     return data;
@@ -1749,18 +1749,18 @@ class NSBUNPCSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
-    console.log('🎭 DEBUG: NPC SHEET _updateObject called');
-    console.log('🎭 DEBUG: formData received:', formData);
+    debugLog('🎭 DEBUG: NPC SHEET _updateObject called');
+    debugLog('🎭 DEBUG: formData received:', formData);
     
     // Handle name field specially to ensure synchronization
     if (formData.hasOwnProperty('name')) {
-      console.log('🎭 DEBUG: Name field found in formData:', formData.name);
+      debugLog('🎭 DEBUG: Name field found in formData:', formData.name);
       formData['system.realWorldCharacter'] = formData.name;
-      console.log('🎭 DEBUG: Modified formData:', formData);
+      debugLog('🎭 DEBUG: Modified formData:', formData);
     }
     
     await this.actor.update(formData);
-    console.log('🎭 DEBUG: Actor update completed in _updateObject');
+    debugLog('🎭 DEBUG: Actor update completed in _updateObject');
   }
 }
 
