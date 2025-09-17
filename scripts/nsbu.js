@@ -523,27 +523,211 @@ Hooks.once('ready', function() {
           // Create a completely new roll for the next die
           await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
         } else {
-          // Already at maximum die (d20)
-          const messageElement = $(this).closest('.message');
-          const messageId = messageElement.data('message-id');
-          const chatMessage = game.messages.get(messageId);
+          // At maximum die (d20) - check setting for continued blow-ups
+          const d20BlowUpSetting = game.settings.get("never-stop-blowing-up", "d20BlowUpDie");
+          console.log(`💥 DEBUG: Maximum die reached (d20), d20BlowUpDie setting: ${d20BlowUpSetting}`);
           
-          if (chatMessage) {
-            const $tempDiv = $('<div>').html(chatMessage.content);
-            const $rollResult = $tempDiv.find('.nsbu-roll-result');
+          if (d20BlowUpSetting === "d100") {
+            // Continue with d100 blow-up logic
+            console.log(`💥 DEBUG: Continuing with d100 blow-up for ${stat}`);
             
-            $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
-            $rollResult.find('.roll-controls').remove();
-            $rollResult.find('.roll-observer').remove();
-            $rollResult.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${currentDie}!</div>`);
-            $rollResult.append(`<div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>`);
+            // Update the current message to show the d20 result and blow-up
+            const messageElement = $(this).closest('.message');
+            const messageId = messageElement.data('message-id');
+            const chatMessage = game.messages.get(messageId);
             
-            await chatMessage.update({
-              content: $tempDiv.html()
-            });
+            if (chatMessage) {
+              const $tempDiv = $('<div>').html(chatMessage.content);
+              const $rollResult = $tempDiv.find('.nsbu-roll-result');
+              
+              $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+              $rollResult.find('.roll-controls').remove();
+              $rollResult.find('.roll-observer').remove();
+              $rollResult.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} continues with d100!</div>`);
+              
+              await chatMessage.update({
+                content: $tempDiv.html()
+              });
+            }
+            
+            // Create a new d100 roll (stat remains at d20)
+            const currentTokens = Number(actor.system.turboTokens) || 0;
+            const rollId = foundry.utils.randomID();
+            
+            // Create a d100 roll
+            const d100Roll = new Roll("1d100");
+            await d100Roll.evaluate();
+            const d100Value = d100Roll.total;
+            
+            console.log(`💥 DEBUG: D100 continuation roll result: ${d100Value}`);
+            
+            const d100Content = `
+              <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
+                <div class="roll-details">Rolling ${stat.toUpperCase()} (d100 continued): ${d100Value}</div>
+                <div class="roll-total">
+                  Current Die: <span class="current-die-total">${d100Value}</span>
+                  <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d100Value}</span>
+                </div>
+                <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
+                  <div class="turbo-tokens-section">
+                    <div class="turbo-tokens-controls">
+                      <label>Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
+                      <div style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                        <button type="button" class="token-decrease-btn" 
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">−</button>
+                        <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" 
+                          style="flex: 1; padding: 6px; text-align: center; box-sizing: border-box; border: 1px solid #999; border-radius: 3px;">
+                        <button type="button" class="token-increase-btn" 
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">+</button>
+                        <button type="button" class="refresh-tokens-btn" 
+                          data-roll-id="${rollId}"
+                          data-actor-id="${actor.id}"
+                          title="Refresh available token count"
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔄</button>
+                        <button type="button" class="auto-blowup-btn" 
+                          data-roll-id="${rollId}"
+                          data-actor-id="${actor.id}"
+                          data-stat="${stat}"
+                          data-die-value="${d100Value}"
+                          data-current-die="100"
+                          title="Automatically blow up this die"
+                          ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? 'disabled' : ''}
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? '#e0e0e0' : '#f8f8f8'}; color: ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? '#999' : '#000'}; cursor: ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
+                      </div>
+                      <button type="button" class="combined-roll-btn" 
+                        data-roll-id="${rollId}"
+                        data-actor-id="${actor.id}"
+                        data-stat="${stat}"
+                        data-die-value="${d100Value}"
+                        data-current-die="100"
+                        data-current-die-idx="6"
+                        data-cumulative-total="${newCumulativeTotal + d100Value}"
+                        data-final-total="${newCumulativeTotal + d100Value}"
+                        data-sequence-id="${rollSequenceId}"
+                        style="width: 100%; padding: 8px; margin-top: 5px; background: #4CAF50; color: white; border: 1px solid #45a049; border-radius: 3px; cursor: pointer; font-weight: bold;">
+                        <span class="btn-text">Accept Roll (Total: ${newCumulativeTotal + d100Value})</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="roll-observer" data-actor-id="${actor.id}">
+                  <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
+                </div>
+              </div>
+            `;
+
+            const d100ChatData = {
+              user: game.user.id,
+              speaker: ChatMessage.getSpeaker({ actor }),
+              flavor: `${stat.toUpperCase()} D100 Continued Roll`,
+              content: d100Content,
+              rolls: [d100Roll],
+              rollMode: game.settings.get("core", "rollMode"),
+              sound: CONFIG.sounds.dice
+            };
+
+            await ChatMessage.create(d100ChatData);
+          } else {
+            // Continue with d20 rolls (setting: "d20")
+            console.log(`🎯 DEBUG: Continuing with d20 rolls (setting: ${d20BlowUpSetting})`);
+            
+            // Update current message to show blow-up
+            const messageElement = $(this).closest('.message');
+            const messageId = messageElement.data('message-id');
+            const chatMessage = game.messages.get(messageId);
+            
+            if (chatMessage) {
+              const $tempDiv = $('<div>').html(chatMessage.content);
+              const $rollResult = $tempDiv.find('.nsbu-roll-result');
+              
+              $rollResult.find('.roll-details').html(`Rolling ${stat.toUpperCase()} (d${currentDie}): ${dieValue} + ${tokensToAdd} tokens = ${newDieResult}`);
+              $rollResult.find('.roll-controls').remove();
+              $rollResult.find('.roll-observer').remove();
+              $rollResult.append(`<div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} stays at d20, continuing rolls!</div>`);
+              
+              await chatMessage.update({
+                content: $tempDiv.html()
+              });
+            }
+            
+            // Create another d20 roll for continued blow-up (stat stays at d20)
+            const currentTokens = Number(actor.system.turboTokens) || 0;
+            const rollId = foundry.utils.randomID();
+            
+            // Create a d20 roll
+            const d20Roll = new Roll("1d20");
+            await d20Roll.evaluate();
+            const d20Value = d20Roll.total;
+            
+            console.log(`🎯 DEBUG: D20 continuation roll result: ${d20Value}`);
+            
+            const d20Content = `
+              <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
+                <div class="roll-details">Rolling ${stat.toUpperCase()} (d20 continued): ${d20Value}</div>
+                <div class="roll-total">
+                  Current Die: <span class="current-die-total">${d20Value}</span>
+                  <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d20Value}</span>
+                </div>
+                <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
+                  <div class="turbo-tokens-section">
+                    <div class="turbo-tokens-controls">
+                      <label>Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
+                      <div style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                        <button type="button" class="token-decrease-btn" 
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">−</button>
+                        <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" 
+                          style="flex: 1; padding: 6px; text-align: center; box-sizing: border-box; border: 1px solid #999; border-radius: 3px;">
+                        <button type="button" class="token-increase-btn" 
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">+</button>
+                        <button type="button" class="refresh-tokens-btn" 
+                          data-roll-id="${rollId}"
+                          data-actor-id="${actor.id}"
+                          title="Refresh available token count"
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔄</button>
+                        <button type="button" class="auto-blowup-btn" 
+                          data-roll-id="${rollId}"
+                          data-actor-id="${actor.id}"
+                          data-stat="${stat}"
+                          data-die-value="${d20Value}"
+                          data-current-die="20"
+                          title="Automatically blow up this die"
+                          ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? 'disabled' : ''}
+                          style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? '#e0e0e0' : '#f8f8f8'}; color: ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? '#999' : '#000'}; cursor: ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
+                      </div>
+                      <button type="button" class="combined-roll-btn" 
+                        data-roll-id="${rollId}"
+                        data-actor-id="${actor.id}"
+                        data-stat="${stat}"
+                        data-die-value="${d20Value}"
+                        data-current-die="20"
+                        data-current-die-idx="5"
+                        data-cumulative-total="${newCumulativeTotal + d20Value}"
+                        data-final-total="${newCumulativeTotal + d20Value}"
+                        data-sequence-id="${rollSequenceId}"
+                        style="width: 100%; padding: 8px; margin-top: 5px; background: #4CAF50; color: white; border: 1px solid #45a049; border-radius: 3px; cursor: pointer; font-weight: bold;">
+                        <span class="btn-text">Accept Roll (Total: ${newCumulativeTotal + d20Value})</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="roll-observer" data-actor-id="${actor.id}">
+                  <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
+                </div>
+              </div>
+            `;
+
+            const d20ChatData = {
+              user: game.user.id,
+              speaker: ChatMessage.getSpeaker({ actor }),
+              flavor: `${stat.toUpperCase()} D20 Continued Roll`,
+              content: d20Content,
+              rolls: [d20Roll],
+              rollMode: game.settings.get("core", "rollMode"),
+              sound: CONFIG.sounds.dice
+            };
+
+            await ChatMessage.create(d20ChatData);
           }
-          
-          clearRollSequence(actor.id, stat, '(max die reached)');
         }
       } else {
         // No blow-up, just final result
@@ -766,9 +950,16 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   const dieSteps = [4, 6, 8, 10, 12, 20];
   let dieIdx = dieSteps.indexOf(statValue);
-  if (dieIdx === -1) dieIdx = 0;
+  if (dieIdx === -1) {
+    if (statValue === 100) {
+      // Special case for d100 continued rolls
+      dieIdx = 6; // Beyond the normal progression
+    } else {
+      dieIdx = 0;
+    }
+  }
   
-  let currentDie = dieSteps[dieIdx];
+  let currentDie = statValue === 100 ? 100 : dieSteps[dieIdx];
   
   console.log(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
   
@@ -829,27 +1020,172 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       // Create a new roll for the upgraded stat (recursive call)
       await createInteractiveDiceRoll(actor, stat, newDie, newCumulativeTotal, rollSequenceId);
     } else {
-      console.log(`🎯 DEBUG: Maximum die reached (d20), creating final message`);
-      // Already at maximum die (d20) - create final message
-      const finalContent = `
-        <div class="nsbu-roll-result">
-          <div class="final-result">Final Result: ${newCumulativeTotal} (Maximum die reached!)</div>
-        </div>
-      `;
+      // At maximum die (d20) - check setting for continued blow-ups
+      const d20BlowUpSetting = game.settings.get("never-stop-blowing-up", "d20BlowUpDie");
+      console.log(`🎯 DEBUG: Maximum die reached (d20), d20BlowUpDie setting: ${d20BlowUpSetting}`);
       
-      const finalChatData = {
-        user: game.user.id,
-        speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: `${stat.toUpperCase()} Final Result`,
-        content: finalContent,
-        rollMode: game.settings.get("core", "rollMode"),
-        sound: null
-      };
-      
-      await ChatMessage.create(finalChatData);
-      
-      // Clear the roll sequence as it's complete
-      clearRollSequence(actor.id, stat, '(natural max die reached)');
+      if (d20BlowUpSetting === "d100") {
+        // Continue with d100 blow-up logic
+        console.log(`🎯 DEBUG: Continuing with d100 blow-up for ${stat}`);
+        
+        // Create a d100 roll for continued blow-up
+        const d100Roll = new Roll("1d100");
+        await d100Roll.evaluate();
+        const d100Value = d100Roll.total;
+        
+        console.log(`🎯 DEBUG: D100 roll result: ${d100Value}`);
+        
+        const d100Content = `
+          <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
+            <div class="roll-details">Rolling ${stat.toUpperCase()} (d100 continued): ${d100Value}</div>
+            <div class="roll-total">
+              Current Die: <span class="current-die-total">${d100Value}</span>
+              <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d100Value}</span>
+            </div>
+            <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
+              <div class="turbo-tokens-section">
+                <div class="turbo-tokens-controls">
+                  <label>Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
+                  <div style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                    <button type="button" class="token-decrease-btn" 
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">−</button>
+                    <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" 
+                      style="flex: 1; padding: 6px; text-align: center; box-sizing: border-box; border: 1px solid #999; border-radius: 3px;">
+                    <button type="button" class="token-increase-btn" 
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">+</button>
+                    <button type="button" class="refresh-tokens-btn" 
+                      data-roll-id="${rollId}"
+                      data-actor-id="${actor.id}"
+                      title="Refresh available token count"
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔄</button>
+                    <button type="button" class="auto-blowup-btn" 
+                      data-roll-id="${rollId}"
+                      data-actor-id="${actor.id}"
+                      data-stat="${stat}"
+                      data-die-value="${d100Value}"
+                      data-current-die="100"
+                      title="Automatically blow up this die"
+                      ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? 'disabled' : ''}
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? '#e0e0e0' : '#f8f8f8'}; color: ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? '#999' : '#000'}; cursor: ${(100 - d100Value) > currentTokens || (100 - d100Value) <= 0 ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
+                  </div>
+                  <button type="button" class="combined-roll-btn" 
+                    data-roll-id="${rollId}"
+                    data-actor-id="${actor.id}"
+                    data-stat="${stat}"
+                    data-die-value="${d100Value}"
+                    data-current-die="100"
+                    data-current-die-idx="6"
+                    data-cumulative-total="${newCumulativeTotal + d100Value}"
+                    data-final-total="${newCumulativeTotal + d100Value}"
+                    data-sequence-id="${rollSequenceId}"
+                    style="width: 100%; padding: 8px; margin-top: 5px; background: #4CAF50; color: white; border: 1px solid #45a049; border-radius: 3px; cursor: pointer; font-weight: bold;">
+                    <span class="btn-text">Accept Roll (Total: ${newCumulativeTotal + d100Value})</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="roll-observer" data-actor-id="${actor.id}">
+              <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
+            </div>
+          </div>
+        `;
+
+        const d100ChatData = {
+          user: game.user.id,
+          speaker: ChatMessage.getSpeaker({ actor }),
+          flavor: `${stat.toUpperCase()} D100 Continued Roll`,
+          content: d100Content,
+          rolls: [d100Roll],
+          rollMode: game.settings.get("core", "rollMode"),
+          sound: CONFIG.sounds.dice
+        };
+
+        await ChatMessage.create(d100ChatData);
+      } else {
+        // Continue with d20 rolls (setting: "d20")
+        console.log(`🎯 DEBUG: Continuing with d20 rolls (setting: ${d20BlowUpSetting})`);
+        
+        // Create another d20 roll for continued blow-up (stat stays at d20)
+        const currentTokens = Number(actor.system.turboTokens) || 0;
+        const rollId = foundry.utils.randomID();
+        
+        // Create a d20 roll
+        const d20Roll = new Roll("1d20");
+        await d20Roll.evaluate();
+        const d20Value = d20Roll.total;
+        
+        console.log(`🎯 DEBUG: D20 continuation roll result: ${d20Value}`);
+        
+        const d20Content = `
+          <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
+            <div class="roll-details">Rolling ${stat.toUpperCase()} (d20 continued): ${d20Value}</div>
+            <div class="roll-total">
+              Current Die: <span class="current-die-total">${d20Value}</span>
+              <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d20Value}</span>
+            </div>
+            <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
+              <div class="turbo-tokens-section">
+                <div class="turbo-tokens-controls">
+                  <label>Turbo Tokens (<span class="available-tokens">${currentTokens}</span> Available):</label>
+                  <div style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                    <button type="button" class="token-decrease-btn" 
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">−</button>
+                    <input type="number" class="token-input" min="0" max="${currentTokens}" value="0" 
+                      style="flex: 1; padding: 6px; text-align: center; box-sizing: border-box; border: 1px solid #999; border-radius: 3px;">
+                    <button type="button" class="token-increase-btn" 
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; font-size: 16px; font-weight: bold;">+</button>
+                    <button type="button" class="refresh-tokens-btn" 
+                      data-roll-id="${rollId}"
+                      data-actor-id="${actor.id}"
+                      title="Refresh available token count"
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: #f8f8f8; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px;">🔄</button>
+                    <button type="button" class="auto-blowup-btn" 
+                      data-roll-id="${rollId}"
+                      data-actor-id="${actor.id}"
+                      data-stat="${stat}"
+                      data-die-value="${d20Value}"
+                      data-current-die="20"
+                      title="Automatically blow up this die"
+                      ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? 'disabled' : ''}
+                      style="width: 30px; height: 30px; border: 1px solid #999; border-radius: 3px; background: ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? '#e0e0e0' : '#f8f8f8'}; color: ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? '#999' : '#000'}; cursor: ${(20 - d20Value) > currentTokens || (20 - d20Value) <= 0 ? 'not-allowed' : 'pointer'}; display: flex; align-items: center; justify-content: center; font-size: 14px;">💥</button>
+                  </div>
+                  <button type="button" class="combined-roll-btn" 
+                    data-roll-id="${rollId}"
+                    data-actor-id="${actor.id}"
+                    data-stat="${stat}"
+                    data-die-value="${d20Value}"
+                    data-current-die="20"
+                    data-current-die-idx="5"
+                    data-cumulative-total="${newCumulativeTotal + d20Value}"
+                    data-final-total="${newCumulativeTotal + d20Value}"
+                    data-sequence-id="${rollSequenceId}"
+                    style="width: 100%; padding: 8px; margin-top: 5px; background: #4CAF50; color: white; border: 1px solid #45a049; border-radius: 3px; cursor: pointer; font-weight: bold;">
+                    <span class="btn-text">Accept Roll (Total: ${newCumulativeTotal + d20Value})</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="roll-observer" data-actor-id="${actor.id}">
+              <em>Waiting for ${actor.name || 'the player'} to accept or modify this roll...</em>
+            </div>
+          </div>
+        `;
+
+        const d20ChatData = {
+          user: game.user.id,
+          speaker: ChatMessage.getSpeaker({ actor }),
+          flavor: `${stat.toUpperCase()} D20 Continued Roll`,
+          content: d20Content,
+          rolls: [d20Roll],
+          rollMode: game.settings.get("core", "rollMode"),
+          sound: CONFIG.sounds.dice
+        };
+
+        await ChatMessage.create(d20ChatData);
+        
+        // Clear the roll sequence as it's complete
+        clearRollSequence(actor.id, stat, '(natural max die reached)');
+      }
     }
     
   } else {
@@ -1296,6 +1632,22 @@ class NSBUGroupAbilitySheet extends ItemSheet {
 
 Hooks.once("init", () => {
   console.log("=== NSBU SYSTEM INIT ===");
+  
+  // Register game settings
+  game.settings.register("never-stop-blowing-up", "d20BlowUpDie", {
+    name: "D20 Blow-Up Die",
+    hint: "When a d20 stat blows up, what die should be rolled for continued blow-ups?",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: {
+      "d20": "Continue with d20",
+      "d100": "Upgrade to d100"
+    },
+    default: "d20"
+  });
+  
+  console.log("=== NSBU game settings registered ===");
   
   // Check system information that's available at init
   console.log("System ID:", game.system.id);
