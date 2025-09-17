@@ -113,6 +113,21 @@
         </div>
       </div>
     </div>
+
+    <!-- Episode Tracking Section -->
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 1em; margin-top: 1em; padding: 0.75em; border: 2px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+      <div class="nsbu-episode-tokens" style="flex: 1;">
+        <label style="display: block; text-align: center; font-weight: bold;">Tokens Spent This Episode</label>
+        <div style="text-align: center; font-size: 1.5em; font-weight: bold; color: #666;">
+          {{#if system.tokensSpentThisEpisode}}{{system.tokensSpentThisEpisode}}{{else}}0{{/if}}
+        </div>
+      </div>
+      <div class="nsbu-new-episode" style="flex: 1;">
+        <button type="button" class="new-episode-btn" style="width: 100%; padding: 12px; background: #e74c3c; color: white; border: 2px solid #c0392b; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
+          🎬 New Episode
+        </button>
+      </div>
+    </div>
         </div>
       </div>
     </div>
