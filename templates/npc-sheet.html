@@ -6,7 +6,7 @@
     </div>
     <div class="nsbu-player-info">
   <label>Character Name</label>
-  <input name="system.realWorldCharacter" type="text" value="{{system.realWorldCharacter}}"/>
+  <input name="name" type="text" value="{{#if name}}{{name}}{{else}}Actor{{/if}}" placeholder="Character Name" data-dtype="String"/>
   <label>Catchphrase</label>
   <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase"/>
   <div style="margin-bottom: 1em;"></div>
