@@ -1421,9 +1421,11 @@ class NSBUActorSheet extends ActorSheet {
       
       // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
       if (name === 'name') {
+        // Default to "Actor" if the value is empty or undefined
+        const actualValue = value && value.trim() ? value.trim() : 'Actor';
         await this.actor.update({ 
-          'name': value,
-          'system.realWorldCharacter': value 
+          'name': actualValue,
+          'system.realWorldCharacter': actualValue 
         });
         this.render();
         return;
@@ -1457,6 +1459,12 @@ class NSBUActorSheet extends ActorSheet {
     const data = super.getData(options);
     data.system = this.actor.system ?? {};
     data.items = this.actor.items ? this.actor.items.contents : [];
+    
+    // Ensure name has a default value
+    if (!data.name || !data.name.trim()) {
+      data.name = 'Actor';
+    }
+    
     return data;
   }
 
@@ -1470,6 +1478,13 @@ class NSBUActorSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
+    // Handle name field specially to ensure synchronization and default value
+    if (formData.name !== undefined) {
+      const actualName = formData.name && formData.name.trim() ? formData.name.trim() : 'Actor';
+      formData.name = actualName;
+      formData['system.realWorldCharacter'] = actualName;
+    }
+    
     await this.actor.update(formData);
   }
 }
@@ -1621,9 +1636,11 @@ class NSBUNPCSheet extends ActorSheet {
       
       // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
       if (name === 'name') {
+        // Default to "Actor" if the value is empty or undefined
+        const actualValue = value && value.trim() ? value.trim() : 'Actor';
         await this.actor.update({ 
-          'name': value,
-          'system.realWorldCharacter': value 
+          'name': actualValue,
+          'system.realWorldCharacter': actualValue 
         });
         this.render();
         return;
@@ -1657,6 +1674,12 @@ class NSBUNPCSheet extends ActorSheet {
     const data = super.getData(options);
     data.system = this.actor.system ?? {};
     data.items = this.actor.items ? this.actor.items.contents : [];
+    
+    // Ensure name has a default value
+    if (!data.name || !data.name.trim()) {
+      data.name = 'Actor';
+    }
+    
     return data;
   }
 
@@ -1670,6 +1693,13 @@ class NSBUNPCSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
+    // Handle name field specially to ensure synchronization and default value
+    if (formData.name !== undefined) {
+      const actualName = formData.name && formData.name.trim() ? formData.name.trim() : 'Actor';
+      formData.name = actualName;
+      formData['system.realWorldCharacter'] = actualName;
+    }
+    
     await this.actor.update(formData);
   }
 }
