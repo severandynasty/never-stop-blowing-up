@@ -1810,6 +1810,15 @@ Hooks.once("init", () => {
     },
     default: "d20"
   });
+
+  game.settings.register("never-stop-blowing-up", "enableDebugLogging", {
+    name: "Enable Debug Logging",
+    hint: "Developers only. Enables debug logging in the application console.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false
+  });
   
   console.log("=== NSBU game settings registered ===");
   
