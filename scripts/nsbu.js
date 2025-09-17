@@ -1419,6 +1419,16 @@ class NSBUActorSheet extends ActorSheet {
         return;
       }
       
+      // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
+      if (name === 'name') {
+        await this.actor.update({ 
+          'name': value,
+          'system.realWorldCharacter': value 
+        });
+        this.render();
+        return;
+      }
+      
       if (input.type === 'checkbox') {
         value = input.checked ? true : false;
       } else if (input.type === 'number') {
@@ -1608,6 +1618,16 @@ class NSBUNPCSheet extends ActorSheet {
       const input = event.currentTarget;
       const name = input.name;
       let value = input.value;
+      
+      // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
+      if (name === 'name') {
+        await this.actor.update({ 
+          'name': value,
+          'system.realWorldCharacter': value 
+        });
+        this.render();
+        return;
+      }
       
       if (input.type === 'checkbox') {
         value = input.checked ? true : false;
