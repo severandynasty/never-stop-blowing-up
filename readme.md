@@ -62,5 +62,4 @@ See [LICENSE](LICENSE) for details.
 # To Do:
 
 - create config module to allow option to configure d20 blow up settings
-- fix permissions on rule compendium
 - style/art
