@@ -1421,12 +1421,23 @@ class NSBUActorSheet extends ActorSheet {
       
       // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
       if (name === 'name') {
+        console.log('🎭 DEBUG: Name field change detected in CHARACTER SHEET');
+        console.log('🎭 DEBUG: Original value from input:', value);
+        console.log('🎭 DEBUG: Input type:', input.type);
+        console.log('🎭 DEBUG: Current actor name:', this.actor.name);
+        
         // Use the value as provided, let template handle defaults
         const actualValue = value ? value.trim() : '';
+        console.log('🎭 DEBUG: Processed value to save:', actualValue);
+        
         await this.actor.update({ 
           'name': actualValue,
           'system.realWorldCharacter': actualValue 
         });
+        
+        console.log('🎭 DEBUG: Actor update completed');
+        console.log('🎭 DEBUG: New actor name after update:', this.actor.name);
+        
         this.render();
         return;
       }
@@ -1459,6 +1470,12 @@ class NSBUActorSheet extends ActorSheet {
     const data = super.getData(options);
     data.system = this.actor.system ?? {};
     data.items = this.actor.items ? this.actor.items.contents : [];
+    
+    console.log('🎭 DEBUG: CHARACTER SHEET getData called');
+    console.log('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    console.log('🎭 DEBUG: Name in data object:', data.name);
+    console.log('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
+    
     return data;
   }
 
@@ -1472,12 +1489,18 @@ class NSBUActorSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
+    console.log('🎭 DEBUG: CHARACTER SHEET _updateObject called');
+    console.log('🎭 DEBUG: formData received:', formData);
+    
     // Handle name field specially to ensure synchronization
     if (formData.hasOwnProperty('name')) {
+      console.log('🎭 DEBUG: Name field found in formData:', formData.name);
       formData['system.realWorldCharacter'] = formData.name;
+      console.log('🎭 DEBUG: Modified formData:', formData);
     }
     
     await this.actor.update(formData);
+    console.log('🎭 DEBUG: Actor update completed in _updateObject');
   }
 }
 
@@ -1628,12 +1651,23 @@ class NSBUNPCSheet extends ActorSheet {
       
       // Special case: when name is changed, also update system.realWorldCharacter to keep them in sync
       if (name === 'name') {
+        console.log('🎭 DEBUG: Name field change detected in NPC SHEET');
+        console.log('🎭 DEBUG: Original value from input:', value);
+        console.log('🎭 DEBUG: Input type:', input.type);
+        console.log('🎭 DEBUG: Current actor name:', this.actor.name);
+        
         // Use the value as provided, let template handle defaults
         const actualValue = value ? value.trim() : '';
+        console.log('🎭 DEBUG: Processed value to save:', actualValue);
+        
         await this.actor.update({ 
           'name': actualValue,
           'system.realWorldCharacter': actualValue 
         });
+        
+        console.log('🎭 DEBUG: Actor update completed');
+        console.log('🎭 DEBUG: New actor name after update:', this.actor.name);
+        
         this.render();
         return;
       }
@@ -1679,12 +1713,18 @@ class NSBUNPCSheet extends ActorSheet {
   }
 
   async _updateObject(event, formData) {
+    console.log('🎭 DEBUG: NPC SHEET _updateObject called');
+    console.log('🎭 DEBUG: formData received:', formData);
+    
     // Handle name field specially to ensure synchronization
     if (formData.hasOwnProperty('name')) {
+      console.log('🎭 DEBUG: Name field found in formData:', formData.name);
       formData['system.realWorldCharacter'] = formData.name;
+      console.log('🎭 DEBUG: Modified formData:', formData);
     }
     
     await this.actor.update(formData);
+    console.log('🎭 DEBUG: Actor update completed in _updateObject');
   }
 }
 
