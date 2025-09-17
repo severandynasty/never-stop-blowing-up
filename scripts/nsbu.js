@@ -1,3 +1,17 @@
+// Debug logging helper function
+function debugLog(...args) {
+  // Check if debug logging is enabled in game settings
+  // Use try-catch to handle cases where game/settings aren't ready yet
+  try {
+    if (game?.settings?.get("never-stop-blowing-up", "enableDebugLogging")) {
+      console.log(...args);
+    }
+  } catch (error) {
+    // If settings aren't available yet, fall back to silent (don't log)
+    // This prevents errors during system initialization
+  }
+}
+
 // Track active roll sequences to prevent race conditions
 const activeRollSequences = new Map();
 const rollSequenceTimeouts = new Map(); // Track timeouts for auto-cleanup
