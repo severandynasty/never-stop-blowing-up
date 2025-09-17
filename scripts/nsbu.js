@@ -158,8 +158,12 @@ Hooks.once('ready', function() {
     console.log(`💰 DEBUG: Token blow-up - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
     console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
     
-    // Spend the turbo tokens
-    await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
+    // Spend the turbo tokens and track episode spending
+    const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
+    await actor.update({ 
+      'system.turboTokens': currentTokens - tokensToAdd,
+      'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
+    });
     
     // Update the chat message display
     const rollElement = $(this).closest('.nsbu-roll-result');
@@ -482,8 +486,12 @@ Hooks.once('ready', function() {
       console.log(`💰 DEBUG: Combined button - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
       console.log(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
       
-      // Spend the turbo tokens
-      await actor.update({ 'system.turboTokens': currentTokens - tokensToAdd });
+      // Spend the turbo tokens and track episode spending
+      const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
+      await actor.update({ 
+        'system.turboTokens': currentTokens - tokensToAdd,
+        'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
+      });
       
       // Check if we hit the die maximum (blow-up)
       if (newDieResult >= currentDie) {
@@ -1340,6 +1348,31 @@ class NSBUActorSheet extends ActorSheet {
         this.render();
       }
     });
+
+    // New Episode button
+    html.find('.new-episode-btn').on('click', async (event) => {
+      event.preventDefault();
+      
+      // Confirm dialog
+      const confirmed = await Dialog.confirm({
+        title: "Start New Episode",
+        content: "<p>This will reset Injuries, Turbo Tokens, and Tokens Spent to 0.</p><p>Are you sure you want to start a new episode?</p>",
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (confirmed) {
+        await this.actor.update({
+          'system.injuries': 0,
+          'system.turboTokens': 0,
+          'system.tokensSpentThisEpisode': 0
+        });
+        
+        ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
+        this.render();
+      }
+    });
     
     // Roll stat buttons - ACTOR SHEET
     console.log('🎲 DEBUG: NSBUActorSheet - Setting up .stat-roll click handler');
@@ -1508,6 +1541,31 @@ class NSBUNPCSheet extends ActorSheet {
       const current = Number(this.actor.system.injuries) || 0;
       if (current > 0) {
         await this.actor.update({ 'system.injuries': current - 1 });
+        this.render();
+      }
+    });
+
+    // New Episode button
+    html.find('.new-episode-btn').on('click', async (event) => {
+      event.preventDefault();
+      
+      // Confirm dialog
+      const confirmed = await Dialog.confirm({
+        title: "Start New Episode",
+        content: "<p>This will reset Injuries, Turbo Tokens, and Tokens Spent to 0.</p><p>Are you sure you want to start a new episode?</p>",
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (confirmed) {
+        await this.actor.update({
+          'system.injuries': 0,
+          'system.turboTokens': 0,
+          'system.tokensSpentThisEpisode': 0
+        });
+        
+        ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
         this.render();
       }
     });

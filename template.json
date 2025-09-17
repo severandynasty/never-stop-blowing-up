@@ -20,6 +20,7 @@
         "boomLevel": 1,
         "injuries": 0,
         "turboTokens": 0,
+        "tokensSpentThisEpisode": 0,
         "abilities": [],
         "groupAbilities": [],
         "inventory": "",
@@ -46,6 +47,7 @@
         "boomLevel": 1,
         "injuries": 0,
         "turboTokens": 0,
+        "tokensSpentThisEpisode": 0,
         "abilities": [],
         "groupAbilities": [],
         "notes": ""
