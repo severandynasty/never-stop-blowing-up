@@ -1473,8 +1473,14 @@ class NSBUActorSheet extends ActorSheet {
     
     console.log('🎭 DEBUG: CHARACTER SHEET getData called');
     console.log('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
-    console.log('🎭 DEBUG: Name in data object:', data.name);
+    console.log('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     console.log('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
+    
+    // FIX: Ensure data.name is set properly
+    if (!data.name) {
+      data.name = this.actor.name;
+      console.log('🎭 DEBUG: Fixed data.name to:', data.name);
+    }
     
     return data;
   }
@@ -1700,6 +1706,18 @@ class NSBUNPCSheet extends ActorSheet {
     const data = super.getData(options);
     data.system = this.actor.system ?? {};
     data.items = this.actor.items ? this.actor.items.contents : [];
+    
+    console.log('🎭 DEBUG: NPC SHEET getData called');
+    console.log('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    console.log('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
+    console.log('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
+    
+    // FIX: Ensure data.name is set properly
+    if (!data.name) {
+      data.name = this.actor.name;
+      console.log('🎭 DEBUG: Fixed data.name to:', data.name);
+    }
+    
     return data;
   }
 
