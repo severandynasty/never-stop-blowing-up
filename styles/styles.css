@@ -124,6 +124,52 @@ label {
   letter-spacing: 0.5px;
 }
 
+/* Edit Mode Toggle */
+.edit-mode-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #f8f9fa;
+  border: 2px solid #333;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9em;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+}
+
+.edit-mode-toggle:hover {
+  background: #e9ecef;
+}
+
+.edit-mode-toggle.active {
+  background: #28a745;
+  color: white;
+  border-color: #1e7e34;
+}
+
+.edit-mode-toggle .wrench-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+/* Hide editing controls when edit mode is disabled */
+.nsbu-sheet:not(.edit-mode) .stat-decrease,
+.nsbu-sheet:not(.edit-mode) .stat-increase,
+.nsbu-sheet:not(.edit-mode) .remove-ability,
+.nsbu-sheet:not(.edit-mode) .token-decrease,
+.nsbu-sheet:not(.edit-mode) .token-increase,
+.nsbu-sheet:not(.edit-mode) .injury-decrease,
+.nsbu-sheet:not(.edit-mode) .injury-increase {
+  display: none;
+}
+
 /* Interactive Dice Roll Styling */
 .nsbu-roll-result {
   background: #f8f9fa;
