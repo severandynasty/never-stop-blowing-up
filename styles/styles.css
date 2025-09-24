@@ -6,9 +6,7 @@
   margin-bottom: 1em;
 }
 .stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5em;
+  display: contents;
 }
 .nsbu-right-column {
   grid-column: 4;
