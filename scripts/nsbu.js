@@ -1392,6 +1392,32 @@ class NSBUActorSheet extends ActorSheet {
       }
     });
     
+    // Remove ability buttons
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      const item = this.actor.items.get(itemId);
+      
+      if (!item) {
+        ui.notifications.error('Ability not found!');
+        return;
+      }
+      
+      // Confirm deletion
+      const confirmed = await Dialog.confirm({
+        title: "Remove Ability",
+        content: `<p>Are you sure you want to remove <strong>${item.name}</strong>?</p>`,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (confirmed) {
+        await item.delete();
+        ui.notifications.info(`${item.name} removed from ${this.actor.name}.`);
+      }
+    });
+    
     // Roll stat buttons - ACTOR SHEET
     debugLog('🎲 DEBUG: NSBUActorSheet - Setting up .stat-roll click handler');
     const rollStatButtons = html.find('.stat-roll');
@@ -1631,6 +1657,32 @@ class NSBUNPCSheet extends ActorSheet {
         
         ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
         this.render();
+      }
+    });
+    
+    // Remove ability buttons
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      const item = this.actor.items.get(itemId);
+      
+      if (!item) {
+        ui.notifications.error('Ability not found!');
+        return;
+      }
+      
+      // Confirm deletion
+      const confirmed = await Dialog.confirm({
+        title: "Remove Ability",
+        content: `<p>Are you sure you want to remove <strong>${item.name}</strong>?</p>`,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (confirmed) {
+        await item.delete();
+        ui.notifications.info(`${item.name} removed from ${this.actor.name}.`);
       }
     });
     
