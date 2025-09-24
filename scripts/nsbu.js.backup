@@ -148,10 +148,10 @@ Hooks.once('ready', function() {
     
     debugLog(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
     
-    const tokensToAdd = Math.max(0, parseInt($(this).siblings('.token-input').val()) || 0);
+    const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
     
     if (tokensToAdd <= 0) {
-      $button.removeClass('processing').prop('disabled', false);
+      $button.prop('disabled', false);
       return;
     }
     
@@ -409,58 +409,7 @@ Hooks.once('ready', function() {
   // Global handler for token input changes
   $(document).off('input.nsbu-token', '.token-input');
   $(document).on('input.nsbu-token', '.token-input', function(event) {
-    const $input = $(this);
-    let value = parseInt($input.val());
-    const min = parseInt($input.attr('min')) || 0;
-    const max = parseInt($input.attr('max')) || 999;
-    
-    // Validate and clamp the value
-    if (isNaN(value) || value < min) {
-      $input.val(min);
-    } else if (value > max) {
-      $input.val(max);
-    }
-    
     updateCombinedButtonText($(this).closest('.roll-controls'));
-  });
-
-  // Prevent negative number input in token fields
-  $(document).off('keydown.nsbu-token-prevent', '.token-input');
-  $(document).on('keydown.nsbu-token-prevent', '.token-input', function(event) {
-    // Allow: backspace, delete, tab, escape, enter
-    if ([8, 9, 27, 13, 46].indexOf(event.keyCode) !== -1 ||
-        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-        (event.keyCode === 65 && event.ctrlKey === true) ||
-        (event.keyCode === 67 && event.ctrlKey === true) ||
-        (event.keyCode === 86 && event.ctrlKey === true) ||
-        (event.keyCode === 88 && event.ctrlKey === true) ||
-        // Allow: home, end, left, right
-        (event.keyCode >= 35 && event.keyCode <= 39)) {
-      return;
-    }
-    // Prevent: minus sign, plus sign, decimal point
-    if (event.keyCode === 189 || event.keyCode === 187 || event.keyCode === 190 || event.keyCode === 110) {
-      event.preventDefault();
-    }
-  });
-
-  // Prevent pasting negative values in token fields
-  $(document).off('paste.nsbu-token-prevent', '.token-input');
-  $(document).on('paste.nsbu-token-prevent', '.token-input', function(event) {
-    setTimeout(() => {
-      const $input = $(this);
-      let value = parseInt($input.val());
-      const min = parseInt($input.attr('min')) || 0;
-      const max = parseInt($input.attr('max')) || 999;
-      
-      if (isNaN(value) || value < min) {
-        $input.val(min);
-      } else if (value > max) {
-        $input.val(max);
-      }
-      
-      updateCombinedButtonText($input.closest('.roll-controls'));
-    }, 1);
   });
 
   // Global handler for combined roll button
@@ -488,7 +437,7 @@ Hooks.once('ready', function() {
     // Mark as processing immediately
     $button.addClass('processing').prop('disabled', true);
     
-    const tokensToAdd = Math.max(0, parseInt($(this).closest('.roll-controls').find('.token-input').val()) || 0);
+    const tokensToAdd = parseInt($(this).closest('.roll-controls').find('.token-input').val()) || 0;
     
     if (tokensToAdd === 0) {
       // Just accept the roll
