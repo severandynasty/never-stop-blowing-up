@@ -93,26 +93,30 @@
           </div>
         </div>
       </div>
+
+      <!-- Right Column with Trackers -->
+      <div class="nsbu-right-column">
+        <div class="nsbu-turbo-tokens">
+          <label style="display: block; text-align: center; font-weight: bold;">Turbo Tokens</label>
+          <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em; justify-content: center;">
+            <button type="button" class="token-decrease" style="width:2em;">-</button>
+            <input name="system.turboTokens" type="number" value="{{#if system.turboTokens}}{{system.turboTokens}}{{else}}0{{/if}}" min="0" style="width:3em; text-align:center;"/>
+            <button type="button" class="token-increase" style="width:2em;">+</button>
+          </div>
+        </div>
+
+        <div class="nsbu-injuries">
+          <label style="display: block; text-align: center; font-weight: bold;">Injuries</label>
+          <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em; justify-content: center;">
+            <button type="button" class="injury-decrease" style="width:2em;">-</button>
+            <input name="system.injuries" type="number" value="{{#if system.injuries}}{{system.injuries}}{{else}}0{{/if}}" min="0" max="3" style="width:3em; text-align:center;"/>
+            <button type="button" class="injury-increase" style="width:2em;">+</button>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1em;">
-      <div class="nsbu-injuries">
-        <label style="display: block; text-align: center;">Injuries</label>
-        <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
-          <button type="button" class="injury-decrease" style="width:2em;">-</button>
-          <input name="system.injuries" type="number" value="{{#if system.injuries}}{{system.injuries}}{{else}}0{{/if}}" min="0" max="3" style="width:3em; text-align:center;"/>
-          <button type="button" class="injury-increase" style="width:2em;">+</button>
-        </div>
-      </div>
-      <div class="nsbu-turbo-tokens">
-        <label style="display: block; text-align: center;">Turbo Tokens</label>
-        <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
-          <button type="button" class="token-decrease" style="width:2em;">-</button>
-          <input name="system.turboTokens" type="number" value="{{#if system.turboTokens}}{{system.turboTokens}}{{else}}0{{/if}}" min="0" style="width:3em; text-align:center;"/>
-          <button type="button" class="token-increase" style="width:2em;">+</button>
-        </div>
-      </div>
-    </div>
+
 
     <!-- Episode Tracking Section -->
     <div style="display: flex; align-items: center; justify-content: space-between; gap: 1em; margin-top: 1em; padding: 0.75em; border: 2px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
