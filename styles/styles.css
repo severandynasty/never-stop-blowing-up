@@ -39,8 +39,8 @@
 
 /* Dice Icon Styling */
 .dice-icon {
-  width: 20px;
-  height: 20px;
+  width: 40px;
+  height: 40px;
   display: inline-block;
   vertical-align: middle;
 }
@@ -50,6 +50,8 @@
   align-items: center;
   justify-content: center;
   gap: 4px;
+  min-width: 50px;
+  min-height: 50px;
 }
 
 .nsbu-right-column > div {
