@@ -37,6 +37,38 @@
   justify-content: center;
 }
 
+/* Dice Icon Styling */
+.dice-icon {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  border: none;
+}
+
+.dice-icon:hover {
+  transform: scale(1.1);
+}
+
+.stat-roll:hover .dice-icon {
+  transform: scale(1.1);
+}
+
+.stat-roll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 50px;
+  min-height: 50px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
 .nsbu-right-column > div {
   background: #fff;
   border: 2px solid #222;
@@ -78,6 +110,18 @@
 label {
   display: block;
   font-weight: bold;
+}
+
+/* Subsection Headings */
+.subsection-heading {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #333;
+  margin: 1.5em 0 0.75em 0;
+  padding-bottom: 0.25em;
+  border-bottom: 2px solid #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 /* Interactive Dice Roll Styling */
