@@ -1344,6 +1344,21 @@ class NSBUActorSheet extends ActorSheet {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
+    // Edit Mode Toggle
+    html.find('.edit-mode-toggle').on('click', (event) => {
+      event.preventDefault();
+      const form = html.closest('form');
+      const toggle = html.find('.edit-mode-toggle');
+      
+      if (form.hasClass('edit-mode')) {
+        form.removeClass('edit-mode');
+        toggle.removeClass('active');
+      } else {
+        form.addClass('edit-mode');
+        toggle.addClass('active');
+      }
+    });
+    
     // Stat increase button
     html.find('.stat-increase').on('click', async (event) => {
       event.preventDefault();
@@ -1612,6 +1627,21 @@ class NSBUNPCSheet extends ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
+    
+    // Edit Mode Toggle
+    html.find('.edit-mode-toggle').on('click', (event) => {
+      event.preventDefault();
+      const form = html.closest('form');
+      const toggle = html.find('.edit-mode-toggle');
+      
+      if (form.hasClass('edit-mode')) {
+        form.removeClass('edit-mode');
+        toggle.removeClass('active');
+      } else {
+        form.addClass('edit-mode');
+        toggle.addClass('active');
+      }
+    });
     
     // Stat increase button
     html.find('.stat-increase').on('click', async (event) => {

@@ -124,23 +124,25 @@ label {
   letter-spacing: 0.5px;
 }
 
-/* Edit Mode Toggle */
+/* Edit Mode Toggle - Embedded in Title Bar */
+.nsbu-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .edit-mode-toggle {
-  position: absolute;
-  top: 10px;
-  left: 10px;
   background: #f8f9fa;
   border: 2px solid #333;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.9em;
-  font-weight: bold;
+  justify-content: center;
   transition: background-color 0.2s ease;
-  z-index: 10;
+  flex-shrink: 0;
 }
 
 .edit-mode-toggle:hover {
@@ -154,9 +156,9 @@ label {
 }
 
 .edit-mode-toggle .wrench-icon {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
+  width: 18px;
+  height: 18px;
+  display: block;
 }
 
 /* Hide editing controls when edit mode is disabled */
