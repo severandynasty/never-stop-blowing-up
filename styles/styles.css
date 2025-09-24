@@ -164,11 +164,7 @@ label {
 /* Hide editing controls when edit mode is disabled */
 .nsbu-sheet:not(.edit-mode) .stat-decrease,
 .nsbu-sheet:not(.edit-mode) .stat-increase,
-.nsbu-sheet:not(.edit-mode) .remove-ability,
-.nsbu-sheet:not(.edit-mode) .token-decrease,
-.nsbu-sheet:not(.edit-mode) .token-increase,
-.nsbu-sheet:not(.edit-mode) .injury-decrease,
-.nsbu-sheet:not(.edit-mode) .injury-increase {
+.nsbu-sheet:not(.edit-mode) .remove-ability {
   display: none;
 }
 
