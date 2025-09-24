@@ -1376,7 +1376,7 @@ class NSBUActorSheet extends ActorSheet {
       // Confirm dialog
       const confirmed = await Dialog.confirm({
         title: "Start New Episode",
-        content: "<p>This will reset Injuries, Turbo Tokens, and Tokens Spent to 0.</p><p>Are you sure you want to start a new episode?</p>",
+        content: "<p>This will reset Turbo Tokens and Tokens Spent to 0.</p><p>Injuries will remain unchanged.</p><p>Are you sure you want to start a new episode?</p>",
         yes: () => true,
         no: () => false,
         defaultYes: false
@@ -1384,12 +1384,11 @@ class NSBUActorSheet extends ActorSheet {
       
       if (confirmed) {
         await this.actor.update({
-          'system.injuries': 0,
           'system.turboTokens': 0,
           'system.tokensSpentThisEpisode': 0
         });
         
-        ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
+        ui.notifications.info(`${this.actor.name} started a new episode! Turbo tokens and episode spending reset.`);
         this.render();
       }
     });
@@ -1646,7 +1645,7 @@ class NSBUNPCSheet extends ActorSheet {
       // Confirm dialog
       const confirmed = await Dialog.confirm({
         title: "Start New Episode",
-        content: "<p>This will reset Injuries, Turbo Tokens, and Tokens Spent to 0.</p><p>Are you sure you want to start a new episode?</p>",
+        content: "<p>This will reset Turbo Tokens and Tokens Spent to 0.</p><p>Injuries will remain unchanged.</p><p>Are you sure you want to start a new episode?</p>",
         yes: () => true,
         no: () => false,
         defaultYes: false
@@ -1654,12 +1653,11 @@ class NSBUNPCSheet extends ActorSheet {
       
       if (confirmed) {
         await this.actor.update({
-          'system.injuries': 0,
           'system.turboTokens': 0,
           'system.tokensSpentThisEpisode': 0
         });
         
-        ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
+        ui.notifications.info(`${this.actor.name} started a new episode! Turbo tokens and episode spending reset.`);
         this.render();
       }
     });
