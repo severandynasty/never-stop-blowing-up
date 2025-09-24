@@ -37,6 +37,21 @@
   justify-content: center;
 }
 
+/* Dice Icon Styling */
+.dice-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.stat-roll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
 .nsbu-right-column > div {
   background: #fff;
   border: 2px solid #222;
