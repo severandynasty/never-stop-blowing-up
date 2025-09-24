@@ -174,6 +174,7 @@ Hooks.once('ready', function() {
     
     // Spend the turbo tokens and track episode spending
     const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
+    debugLog(`📊 DEBUG: Token spending - Actor: ${actor.name} (${actor.id}), Current episode tokens: ${currentEpisodeTokens}, Adding: ${tokensToAdd}, New total: ${currentEpisodeTokens + tokensToAdd}`);
     await actor.update({ 
       'system.turboTokens': currentTokens - tokensToAdd,
       'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
@@ -502,6 +503,7 @@ Hooks.once('ready', function() {
       
       // Spend the turbo tokens and track episode spending
       const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
+      debugLog(`📊 DEBUG: Combined button token spending - Actor: ${actor.name} (${actor.id}), Current episode tokens: ${currentEpisodeTokens}, Adding: ${tokensToAdd}, New total: ${currentEpisodeTokens + tokensToAdd}`);
       await actor.update({ 
         'system.turboTokens': currentTokens - tokensToAdd,
         'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
@@ -1517,6 +1519,8 @@ class NSBUActorSheet extends ActorSheet {
     
     debugLog('🎭 DEBUG: CHARACTER SHEET getData called');
     debugLog('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    debugLog('🎭 DEBUG: Actor ID:', this.actor.id);
+    debugLog('🎭 DEBUG: tokensSpentThisEpisode value:', data.system.tokensSpentThisEpisode);
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
@@ -1779,6 +1783,8 @@ class NSBUNPCSheet extends ActorSheet {
     
     debugLog('🎭 DEBUG: NPC SHEET getData called');
     debugLog('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    debugLog('🎭 DEBUG: Actor ID:', this.actor.id);
+    debugLog('🎭 DEBUG: tokensSpentThisEpisode value:', data.system.tokensSpentThisEpisode);
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
