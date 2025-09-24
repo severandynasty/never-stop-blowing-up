@@ -95,36 +95,41 @@
           </div>
         </div>
       </div>
+
+      <!-- Right Column with Trackers -->
+      <div class="nsbu-right-column">
+        <div class="nsbu-turbo-tokens">
+          <label style="display: block; text-align: center; font-weight: bold;">Turbo Tokens</label>
+          <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em; justify-content: center;">
+            <button type="button" class="token-decrease" style="width:2em;">-</button>
+            <input name="system.turboTokens" type="number" value="{{#if system.turboTokens}}{{system.turboTokens}}{{else}}0{{/if}}" min="0" style="width:3em; text-align:center;"/>
+            <button type="button" class="token-increase" style="width:2em;">+</button>
+          </div>
+        </div>
+
+        <div class="nsbu-injuries">
+          <label style="display: block; text-align: center; font-weight: bold;">Injuries</label>
+          <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em; justify-content: center;">
+            <button type="button" class="injury-decrease" style="width:2em;">-</button>
+            <input name="system.injuries" type="number" value="{{#if system.injuries}}{{system.injuries}}{{else}}0{{/if}}" min="0" max="3" style="width:3em; text-align:center;"/>
+            <button type="button" class="injury-increase" style="width:2em;">+</button>
+          </div>
+        </div>
+
+        <div class="nsbu-injury-status" style="text-align: center;">
+          <label style="display: block; text-align: center; font-weight: bold;">Injury Status</label>
+          <div class="injury-status" style="font-weight: bold; font-size: 1.2em; margin-top: 0.25em;">
+            {{#if (eq system.injuries 0)}}<span style="color: #333;">Feelin' Fine</span>{{/if}}
+            {{#if (eq system.injuries 1)}}<span style="color: #333;">Superficial</span>{{/if}}
+            {{#if (eq system.injuries 2)}}<span style="color: #cc6600;">Severe</span>{{/if}}
+            {{#if (eq system.injuries 3)}}<span style="color: red;">Adrenalized</span>{{/if}}
+          </div>
+        </div>
+      </div>
     </div>
 
 
-    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 1em;">
-      <div class="nsbu-injuries">
-        <label style="display: block; text-align: center;">Injuries</label>
-        <div class="injury-controls" style="display: flex; align-items: center; gap: 0.5em;">
-          <button type="button" class="injury-decrease" style="width:2em;">-</button>
-          <input name="system.injuries" type="number" value="{{#if system.injuries}}{{system.injuries}}{{else}}0{{/if}}" min="0" max="3" style="width:3em; text-align:center;"/>
-          <button type="button" class="injury-increase" style="width:2em;">+</button>
-        </div>
-      </div>
-      <div class="nsbu-injury-status" style="flex: 1; text-align: center;">
-        <label style="display: block; text-align: center;">Injury Status</label>
-        <div class="injury-status" style="font-weight: bold; font-size: 1.65em;">
-          {{#if (eq system.injuries 0)}}<span style="color: #333;">Feelin' Fine</span>{{/if}}
-          {{#if (eq system.injuries 1)}}<span style="color: #333;">Superficial</span>{{/if}}
-          {{#if (eq system.injuries 2)}}<span style="color: #cc6600;">Severe</span>{{/if}}
-          {{#if (eq system.injuries 3)}}<span style="color: red;">Adrenalized</span>{{/if}}
-        </div>
-      </div>
-      <div class="nsbu-turbo-tokens">
-        <label style="display: block; text-align: center;">Turbo Tokens</label>
-        <div class="turbo-token-controls" style="display: flex; align-items: center; gap: 0.5em;">
-          <button type="button" class="token-decrease" style="width:2em;">-</button>
-          <input name="system.turboTokens" type="number" value="{{#if system.turboTokens}}{{system.turboTokens}}{{else}}0{{/if}}" min="0" style="width:3em; text-align:center;"/>
-          <button type="button" class="token-increase" style="width:2em;">+</button>
-        </div>
-      </div>
-    </div>
+
 
 
     <div class="nsbu-abilities" style="margin-top: 1em;">

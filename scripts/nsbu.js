@@ -148,10 +148,10 @@ Hooks.once('ready', function() {
     
     debugLog(`💰 DEBUG: Token handler - sequenceId: ${rollSequenceId}, cumulative: ${cumulativeTotal}`);
     
-    const tokensToAdd = parseInt($(this).siblings('.token-input').val()) || 0;
+    const tokensToAdd = Math.max(0, parseInt($(this).siblings('.token-input').val()) || 0);
     
     if (tokensToAdd <= 0) {
-      $button.prop('disabled', false);
+      $button.removeClass('processing').prop('disabled', false);
       return;
     }
     
@@ -174,6 +174,7 @@ Hooks.once('ready', function() {
     
     // Spend the turbo tokens and track episode spending
     const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
+    debugLog(`📊 DEBUG: Token spending - Actor: ${actor.name} (${actor.id}), Current episode tokens: ${currentEpisodeTokens}, Adding: ${tokensToAdd}, New total: ${currentEpisodeTokens + tokensToAdd}`);
     await actor.update({ 
       'system.turboTokens': currentTokens - tokensToAdd,
       'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
@@ -408,7 +409,58 @@ Hooks.once('ready', function() {
   // Global handler for token input changes
   $(document).off('input.nsbu-token', '.token-input');
   $(document).on('input.nsbu-token', '.token-input', function(event) {
+    const $input = $(this);
+    let value = parseInt($input.val());
+    const min = parseInt($input.attr('min')) || 0;
+    const max = parseInt($input.attr('max')) || 999;
+    
+    // Validate and clamp the value
+    if (isNaN(value) || value < min) {
+      $input.val(min);
+    } else if (value > max) {
+      $input.val(max);
+    }
+    
     updateCombinedButtonText($(this).closest('.roll-controls'));
+  });
+
+  // Prevent negative number input in token fields
+  $(document).off('keydown.nsbu-token-prevent', '.token-input');
+  $(document).on('keydown.nsbu-token-prevent', '.token-input', function(event) {
+    // Allow: backspace, delete, tab, escape, enter
+    if ([8, 9, 27, 13, 46].indexOf(event.keyCode) !== -1 ||
+        // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (event.keyCode === 65 && event.ctrlKey === true) ||
+        (event.keyCode === 67 && event.ctrlKey === true) ||
+        (event.keyCode === 86 && event.ctrlKey === true) ||
+        (event.keyCode === 88 && event.ctrlKey === true) ||
+        // Allow: home, end, left, right
+        (event.keyCode >= 35 && event.keyCode <= 39)) {
+      return;
+    }
+    // Prevent: minus sign, plus sign, decimal point
+    if (event.keyCode === 189 || event.keyCode === 187 || event.keyCode === 190 || event.keyCode === 110) {
+      event.preventDefault();
+    }
+  });
+
+  // Prevent pasting negative values in token fields
+  $(document).off('paste.nsbu-token-prevent', '.token-input');
+  $(document).on('paste.nsbu-token-prevent', '.token-input', function(event) {
+    setTimeout(() => {
+      const $input = $(this);
+      let value = parseInt($input.val());
+      const min = parseInt($input.attr('min')) || 0;
+      const max = parseInt($input.attr('max')) || 999;
+      
+      if (isNaN(value) || value < min) {
+        $input.val(min);
+      } else if (value > max) {
+        $input.val(max);
+      }
+      
+      updateCombinedButtonText($input.closest('.roll-controls'));
+    }, 1);
   });
 
   // Global handler for combined roll button
@@ -436,7 +488,7 @@ Hooks.once('ready', function() {
     // Mark as processing immediately
     $button.addClass('processing').prop('disabled', true);
     
-    const tokensToAdd = parseInt($(this).closest('.roll-controls').find('.token-input').val()) || 0;
+    const tokensToAdd = Math.max(0, parseInt($(this).closest('.roll-controls').find('.token-input').val()) || 0);
     
     if (tokensToAdd === 0) {
       // Just accept the roll
@@ -502,6 +554,7 @@ Hooks.once('ready', function() {
       
       // Spend the turbo tokens and track episode spending
       const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
+      debugLog(`📊 DEBUG: Combined button token spending - Actor: ${actor.name} (${actor.id}), Current episode tokens: ${currentEpisodeTokens}, Adding: ${tokensToAdd}, New total: ${currentEpisodeTokens + tokensToAdd}`);
       await actor.update({ 
         'system.turboTokens': currentTokens - tokensToAdd,
         'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
@@ -1374,7 +1427,7 @@ class NSBUActorSheet extends ActorSheet {
       // Confirm dialog
       const confirmed = await Dialog.confirm({
         title: "Start New Episode",
-        content: "<p>This will reset Injuries, Turbo Tokens, and Tokens Spent to 0.</p><p>Are you sure you want to start a new episode?</p>",
+        content: "<p>This will reset Turbo Tokens and Tokens Spent to 0.</p><p>Injuries will remain unchanged.</p><p>Are you sure you want to start a new episode?</p>",
         yes: () => true,
         no: () => false,
         defaultYes: false
@@ -1382,13 +1435,38 @@ class NSBUActorSheet extends ActorSheet {
       
       if (confirmed) {
         await this.actor.update({
-          'system.injuries': 0,
           'system.turboTokens': 0,
           'system.tokensSpentThisEpisode': 0
         });
         
-        ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
+        ui.notifications.info(`${this.actor.name} started a new episode! Turbo tokens and episode spending reset.`);
         this.render();
+      }
+    });
+    
+    // Remove ability buttons
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      const item = this.actor.items.get(itemId);
+      
+      if (!item) {
+        ui.notifications.error('Ability not found!');
+        return;
+      }
+      
+      // Confirm deletion
+      const confirmed = await Dialog.confirm({
+        title: "Remove Ability",
+        content: `<p>Are you sure you want to remove <strong>${item.name}</strong>?</p>`,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (confirmed) {
+        await item.delete();
+        ui.notifications.info(`${item.name} removed from ${this.actor.name}.`);
       }
     });
     
@@ -1491,6 +1569,8 @@ class NSBUActorSheet extends ActorSheet {
     
     debugLog('🎭 DEBUG: CHARACTER SHEET getData called');
     debugLog('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    debugLog('🎭 DEBUG: Actor ID:', this.actor.id);
+    debugLog('🎭 DEBUG: tokensSpentThisEpisode value:', data.system.tokensSpentThisEpisode);
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
@@ -1616,7 +1696,7 @@ class NSBUNPCSheet extends ActorSheet {
       // Confirm dialog
       const confirmed = await Dialog.confirm({
         title: "Start New Episode",
-        content: "<p>This will reset Injuries, Turbo Tokens, and Tokens Spent to 0.</p><p>Are you sure you want to start a new episode?</p>",
+        content: "<p>This will reset Turbo Tokens and Tokens Spent to 0.</p><p>Injuries will remain unchanged.</p><p>Are you sure you want to start a new episode?</p>",
         yes: () => true,
         no: () => false,
         defaultYes: false
@@ -1624,13 +1704,38 @@ class NSBUNPCSheet extends ActorSheet {
       
       if (confirmed) {
         await this.actor.update({
-          'system.injuries': 0,
           'system.turboTokens': 0,
           'system.tokensSpentThisEpisode': 0
         });
         
-        ui.notifications.info(`${this.actor.name} started a new episode! All episode data reset.`);
+        ui.notifications.info(`${this.actor.name} started a new episode! Turbo tokens and episode spending reset.`);
         this.render();
+      }
+    });
+    
+    // Remove ability buttons
+    html.find('.remove-ability').on('click', async (event) => {
+      event.preventDefault();
+      const itemId = event.currentTarget.dataset.itemId;
+      const item = this.actor.items.get(itemId);
+      
+      if (!item) {
+        ui.notifications.error('Ability not found!');
+        return;
+      }
+      
+      // Confirm deletion
+      const confirmed = await Dialog.confirm({
+        title: "Remove Ability",
+        content: `<p>Are you sure you want to remove <strong>${item.name}</strong>?</p>`,
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+      
+      if (confirmed) {
+        await item.delete();
+        ui.notifications.info(`${item.name} removed from ${this.actor.name}.`);
       }
     });
     
@@ -1727,6 +1832,8 @@ class NSBUNPCSheet extends ActorSheet {
     
     debugLog('🎭 DEBUG: NPC SHEET getData called');
     debugLog('🎭 DEBUG: Actor name from this.actor.name:', this.actor.name);
+    debugLog('🎭 DEBUG: Actor ID:', this.actor.id);
+    debugLog('🎭 DEBUG: tokensSpentThisEpisode value:', data.system.tokensSpentThisEpisode);
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
