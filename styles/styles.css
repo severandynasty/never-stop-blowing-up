@@ -30,6 +30,13 @@
   gap: 0.5em;
 }
 
+.nsbu-right-column .nsbu-injury-status {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .nsbu-right-column > div {
   background: #fff;
   border: 2px solid #222;
