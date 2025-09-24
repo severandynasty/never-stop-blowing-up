@@ -112,6 +112,18 @@ label {
   font-weight: bold;
 }
 
+/* Subsection Headings */
+.subsection-heading {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #333;
+  margin: 1.5em 0 0.75em 0;
+  padding-bottom: 0.25em;
+  border-bottom: 2px solid #333;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 /* Interactive Dice Roll Styling */
 .nsbu-roll-result {
   background: #f8f9fa;

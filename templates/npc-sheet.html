@@ -200,7 +200,7 @@
       </div>
       <div class="nsbu-new-episode" style="flex: 1;">
         <button type="button" class="new-episode-btn" style="width: 100%; padding: 12px; background: #e74c3c; color: white; border: 2px solid #c0392b; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
-          =�ļ New Episode
+          =�ļ New Episode
         </button>
       </div>
     </div>
@@ -208,8 +208,8 @@
       </div>
     </div>
 
-    <div class="nsbu-abilities" style="margin-top: 1em;">
-      <label>Abilities</label>
+    <div class="nsbu-abilities">
+      <h3 class="subsection-heading">Abilities</h3>
       <div class="abilities-list" data-drop="abilities">
         {{#each items as |item|}}
           {{#if (eq item.type "upgrade")}}
@@ -230,7 +230,7 @@
     <div style="margin-bottom: 2em;"></div>
 
     <div class="nsbu-group-abilities">
-      <label>Group Abilities</label>
+      <h3 class="subsection-heading">Group Abilities</h3>
       <div class="group-abilities-list" data-drop="group-abilities">
         {{#each items as |item|}}
           {{#if (eq item.type "upgrade")}}

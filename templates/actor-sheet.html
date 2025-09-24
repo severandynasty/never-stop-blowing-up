@@ -199,8 +199,8 @@
       </div>
     </div>
 
-    <div class="nsbu-abilities" style="margin-top: 1em;">
-      <label>Abilities</label>
+    <div class="nsbu-abilities">
+      <h3 class="subsection-heading">Abilities</h3>
       <div class="abilities-list" data-drop="abilities">
         {{#each items as |item|}}
           {{#if (eq item.type "upgrade")}}
@@ -222,7 +222,7 @@
     <div style="margin-bottom: 2em;"></div>
 
     <div class="nsbu-group-abilities">
-      <label>Group Abilities</label>
+      <h3 class="subsection-heading">Group Abilities</h3>
       <div class="group-abilities-list" data-drop="group-abilities">
         {{#each items as |item|}}
           {{#if (or (eq item.type "upgrade") (eq item.type "group-ability"))}}
