@@ -1347,13 +1347,18 @@ class NSBUActorSheet extends ActorSheet {
     // Edit Mode Toggle
     html.find('.edit-mode-toggle').on('click', (event) => {
       event.preventDefault();
+      event.stopPropagation();
+      console.log('🔧 DEBUG: Edit mode toggle clicked (Actor)');
+      
       const form = html.closest('form');
       const toggle = html.find('.edit-mode-toggle');
       
       if (form.hasClass('edit-mode')) {
+        console.log('🔧 DEBUG: Disabling edit mode');
         form.removeClass('edit-mode');
         toggle.removeClass('active');
       } else {
+        console.log('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
       }
@@ -1631,13 +1636,18 @@ class NSBUNPCSheet extends ActorSheet {
     // Edit Mode Toggle
     html.find('.edit-mode-toggle').on('click', (event) => {
       event.preventDefault();
+      event.stopPropagation();
+      console.log('🔧 DEBUG: Edit mode toggle clicked (NPC)');
+      
       const form = html.closest('form');
       const toggle = html.find('.edit-mode-toggle');
       
       if (form.hasClass('edit-mode')) {
+        console.log('🔧 DEBUG: Disabling edit mode');
         form.removeClass('edit-mode');
         toggle.removeClass('active');
       } else {
+        console.log('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
       }
