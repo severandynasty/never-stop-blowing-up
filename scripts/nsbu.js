@@ -1600,6 +1600,20 @@ class NSBUActorSheet extends ActorSheet {
       await this.actor.update(updateData);
       this.render();
     });
+
+    // Portrait image click handler
+    html.find('.nsbu-portrait img').on('click', (event) => {
+      event.preventDefault();
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          await this.actor.update({ img: imagePath });
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      fp.browse();
+    });
   }
 
   getData(options) {
@@ -1903,6 +1917,20 @@ class NSBUNPCSheet extends ActorSheet {
       
       await this.actor.update(updateData);
       this.render();
+    });
+
+    // Portrait image click handler
+    html.find('.nsbu-portrait img').on('click', (event) => {
+      event.preventDefault();
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          await this.actor.update({ img: imagePath });
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      fp.browse();
     });
   }
 
