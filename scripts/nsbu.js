@@ -1667,10 +1667,21 @@ class NSBUActorSheet extends ActorSheet {
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
+    // DEBUG: Check image properties
+    console.log('🖼️ DEBUG: Actor img property:', this.actor.img);
+    console.log('🖼️ DEBUG: Data img property:', data.img);
+    console.log('🖼️ DEBUG: Full data object keys:', Object.keys(data));
+    
     // FIX: Ensure data.name is set properly
     if (!data.name) {
       data.name = this.actor.name;
       debugLog('🎭 DEBUG: Fixed data.name to:', data.name);
+    }
+    
+    // FIX: Ensure data.img is set properly
+    if (!data.img && this.actor.img) {
+      data.img = this.actor.img;
+      console.log('🖼️ DEBUG: Fixed data.img to:', data.img);
     }
     
     return data;
@@ -2024,10 +2035,21 @@ class NSBUNPCSheet extends ActorSheet {
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
+    // DEBUG: Check image properties for NPC
+    console.log('🖼️ DEBUG: NPC Actor img property:', this.actor.img);
+    console.log('🖼️ DEBUG: NPC Data img property:', data.img);
+    console.log('🖼️ DEBUG: NPC Full data object keys:', Object.keys(data));
+    
     // FIX: Ensure data.name is set properly
     if (!data.name) {
       data.name = this.actor.name;
       debugLog('🎭 DEBUG: Fixed data.name to:', data.name);
+    }
+    
+    // FIX: Ensure data.img is set properly for NPC
+    if (!data.img && this.actor.img) {
+      data.img = this.actor.img;
+      console.log('🖼️ DEBUG: Fixed NPC data.img to:', data.img);
     }
     
     return data;
