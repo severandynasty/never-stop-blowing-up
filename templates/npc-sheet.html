@@ -9,12 +9,23 @@
         </svg>
       </div>
     </div>
-    <div class="nsbu-player-info">
-  <label>Character Name</label>
-  <input name="name" type="text" value="{{#if name}}{{name}}{{else}}Actor{{/if}}" placeholder="Character Name" data-dtype="String" class="edit-controlled"/>
-  <label>Catchphrase</label>
-  <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase" class="edit-controlled"/>
-  <div style="margin-bottom: 1em;"></div>
+    <div class="nsbu-character-section">
+      <div class="nsbu-portrait">
+        <img class="profile-img" src="{{img}}" data-tooltip="Character Portrait" data-edit="img" alt="Character Portrait"/>
+        <div class="portrait-overlay">
+          <i class="fas fa-file-import"></i>
+        </div>
+      </div>
+      <div class="nsbu-player-info">
+        <div class="field-group full-width">
+          <label>Character Name</label>
+          <input name="name" type="text" value="{{#if name}}{{name}}{{else}}Actor{{/if}}" placeholder="Character Name" data-dtype="String" class="edit-controlled"/>
+        </div>
+        <div class="field-group full-width">
+          <label>Catchphrase</label>
+          <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase" class="edit-controlled"/>
+        </div>
+      </div>
     </div>
   </div>
 

@@ -1364,20 +1364,20 @@ class NSBUActorSheet extends ActorSheet {
     html.find('.edit-mode-toggle').on('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
-      console.log('🔧 DEBUG: Edit mode toggle clicked (Actor)');
+      debugLog('🔧 DEBUG: Edit mode toggle clicked (Actor)');
       
       const form = html.closest('form');
       const toggle = html.find('.edit-mode-toggle');
       const editControlledFields = html.find('.edit-controlled');
       
       if (form.hasClass('edit-mode')) {
-        console.log('🔧 DEBUG: Disabling edit mode');
+        debugLog('🔧 DEBUG: Disabling edit mode');
         form.removeClass('edit-mode');
         toggle.removeClass('active');
         editControlledFields.prop('readonly', true);
         this.editModeEnabled = false;
       } else {
-        console.log('🔧 DEBUG: Enabling edit mode');
+        debugLog('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
         editControlledFields.prop('readonly', false);
@@ -1600,6 +1600,59 @@ class NSBUActorSheet extends ActorSheet {
       await this.actor.update(updateData);
       this.render();
     });
+
+    // Portrait image click handler
+    debugLog('🖼️ DEBUG: Setting up portrait click handler for CHARACTER SHEET');
+    const portraitImg = html.find('.nsbu-portrait img');
+    debugLog('🖼️ DEBUG: Found portrait img elements:', portraitImg.length);
+    debugLog('🖼️ DEBUG: Portrait img element:', portraitImg[0]);
+    
+    portraitImg.on('click', (event) => {
+      debugLog('🖼️ DEBUG: Portrait image clicked in CHARACTER SHEET!');
+      event.preventDefault();
+      event.stopPropagation();
+      
+      debugLog('🖼️ DEBUG: Creating FilePicker...');
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          debugLog('🖼️ DEBUG: FilePicker callback - selected image:', imagePath);
+          await this.actor.update({ img: imagePath });
+          debugLog('🖼️ DEBUG: Actor image updated successfully');
+          debugLog('🖼️ DEBUG: Re-rendering sheet to show new portrait...');
+          this.render();
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      
+      debugLog('🖼️ DEBUG: Opening FilePicker browser...');
+      fp.browse();
+    });
+    
+    // Also add click handler to the portrait div itself as fallback
+    const portraitDiv = html.find('.nsbu-portrait');
+    debugLog('🖼️ DEBUG: Found portrait div elements:', portraitDiv.length);
+    portraitDiv.on('click', (event) => {
+      debugLog('🖼️ DEBUG: Portrait div clicked in CHARACTER SHEET!');
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          debugLog('🖼️ DEBUG: FilePicker callback (div) - selected image:', imagePath);
+          await this.actor.update({ img: imagePath });
+          debugLog('🖼️ DEBUG: Actor image updated successfully (div)');
+          debugLog('🖼️ DEBUG: Re-rendering sheet to show new portrait (div)...');
+          this.render();
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      
+      fp.browse();
+    });
   }
 
   getData(options) {
@@ -1614,10 +1667,21 @@ class NSBUActorSheet extends ActorSheet {
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
+    // DEBUG: Check image properties
+    debugLog('🖼️ DEBUG: Actor img property:', this.actor.img);
+    debugLog('🖼️ DEBUG: Data img property:', data.img);
+    debugLog('🖼️ DEBUG: Full data object keys:', Object.keys(data));
+    
     // FIX: Ensure data.name is set properly
     if (!data.name) {
       data.name = this.actor.name;
       debugLog('🎭 DEBUG: Fixed data.name to:', data.name);
+    }
+    
+    // FIX: Ensure data.img is set properly
+    if (!data.img && this.actor.img) {
+      data.img = this.actor.img;
+      debugLog('🖼️ DEBUG: Fixed data.img to:', data.img);
     }
     
     return data;
@@ -1673,20 +1737,20 @@ class NSBUNPCSheet extends ActorSheet {
     html.find('.edit-mode-toggle').on('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
-      console.log('🔧 DEBUG: Edit mode toggle clicked (NPC)');
+      debugLog('🔧 DEBUG: Edit mode toggle clicked (NPC)');
       
       const form = html.closest('form');
       const toggle = html.find('.edit-mode-toggle');
       const editControlledFields = html.find('.edit-controlled');
       
       if (form.hasClass('edit-mode')) {
-        console.log('🔧 DEBUG: Disabling edit mode');
+        debugLog('🔧 DEBUG: Disabling edit mode');
         form.removeClass('edit-mode');
         toggle.removeClass('active');
         editControlledFields.prop('readonly', true);
         this.editModeEnabled = false;
       } else {
-        console.log('🔧 DEBUG: Enabling edit mode');
+        debugLog('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
         editControlledFields.prop('readonly', false);
@@ -1904,6 +1968,59 @@ class NSBUNPCSheet extends ActorSheet {
       await this.actor.update(updateData);
       this.render();
     });
+
+    // Portrait image click handler
+    debugLog('🖼️ DEBUG: Setting up portrait click handler for NPC SHEET');
+    const npcPortraitImg = html.find('.nsbu-portrait img');
+    debugLog('🖼️ DEBUG: Found NPC portrait img elements:', npcPortraitImg.length);
+    debugLog('🖼️ DEBUG: NPC Portrait img element:', npcPortraitImg[0]);
+    
+    npcPortraitImg.on('click', (event) => {
+      debugLog('🖼️ DEBUG: Portrait image clicked in NPC SHEET!');
+      event.preventDefault();
+      event.stopPropagation();
+      
+      debugLog('🖼️ DEBUG: Creating FilePicker for NPC...');
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          debugLog('🖼️ DEBUG: FilePicker callback (NPC) - selected image:', imagePath);
+          await this.actor.update({ img: imagePath });
+          debugLog('🖼️ DEBUG: NPC Actor image updated successfully');
+          debugLog('🖼️ DEBUG: Re-rendering NPC sheet to show new portrait...');
+          this.render();
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      
+      debugLog('🖼️ DEBUG: Opening FilePicker browser for NPC...');
+      fp.browse();
+    });
+    
+    // Also add click handler to the portrait div itself as fallback for NPC
+    const npcPortraitDiv = html.find('.nsbu-portrait');
+    debugLog('🖼️ DEBUG: Found NPC portrait div elements:', npcPortraitDiv.length);
+    npcPortraitDiv.on('click', (event) => {
+      debugLog('🖼️ DEBUG: Portrait div clicked in NPC SHEET!');
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          debugLog('🖼️ DEBUG: FilePicker callback (NPC div) - selected image:', imagePath);
+          await this.actor.update({ img: imagePath });
+          debugLog('🖼️ DEBUG: NPC Actor image updated successfully (div)');
+          debugLog('🖼️ DEBUG: Re-rendering NPC sheet to show new portrait (div)...');
+          this.render();
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      
+      fp.browse();
+    });
   }
 
   getData(options) {
@@ -1918,10 +2035,21 @@ class NSBUNPCSheet extends ActorSheet {
     debugLog('🎭 DEBUG: Name in data object BEFORE fix:', data.name);
     debugLog('🎭 DEBUG: realWorldCharacter:', data.system.realWorldCharacter);
     
+    // DEBUG: Check image properties for NPC
+    debugLog('🖼️ DEBUG: NPC Actor img property:', this.actor.img);
+    debugLog('🖼️ DEBUG: NPC Data img property:', data.img);
+    debugLog('🖼️ DEBUG: NPC Full data object keys:', Object.keys(data));
+    
     // FIX: Ensure data.name is set properly
     if (!data.name) {
       data.name = this.actor.name;
       debugLog('🎭 DEBUG: Fixed data.name to:', data.name);
+    }
+    
+    // FIX: Ensure data.img is set properly for NPC
+    if (!data.img && this.actor.img) {
+      data.img = this.actor.img;
+      debugLog('🖼️ DEBUG: Fixed NPC data.img to:', data.img);
     }
     
     return data;
