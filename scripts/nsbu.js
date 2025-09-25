@@ -1344,8 +1344,21 @@ class NSBUActorSheet extends ActorSheet {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
-    // Initialize edit-controlled fields as readonly by default (edit mode disabled)
-    html.find('.edit-controlled').prop('readonly', true);
+    // Restore edit mode state if it was previously enabled
+    const wasEditMode = this.editModeEnabled || false;
+    const form = html.closest('form');
+    const toggle = html.find('.edit-mode-toggle');
+    const editControlledFields = html.find('.edit-controlled');
+    
+    if (wasEditMode) {
+      form.addClass('edit-mode');
+      toggle.addClass('active');
+      editControlledFields.prop('readonly', false);
+    } else {
+      form.removeClass('edit-mode');
+      toggle.removeClass('active');
+      editControlledFields.prop('readonly', true);
+    }
     
     // Edit Mode Toggle
     html.find('.edit-mode-toggle').on('click', (event) => {
@@ -1362,11 +1375,13 @@ class NSBUActorSheet extends ActorSheet {
         form.removeClass('edit-mode');
         toggle.removeClass('active');
         editControlledFields.prop('readonly', true);
+        this.editModeEnabled = false;
       } else {
         console.log('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
         editControlledFields.prop('readonly', false);
+        this.editModeEnabled = true;
       }
     });
     
@@ -1380,7 +1395,6 @@ class NSBUActorSheet extends ActorSheet {
       if (idx === -1) idx = 0;
       if (idx < dieSteps.length - 1) {
         await this.actor.update({[`system.stats.${stat}`]: dieSteps[idx + 1]});
-        this.render();
       }
     });
     
@@ -1639,8 +1653,21 @@ class NSBUNPCSheet extends ActorSheet {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
-    // Initialize edit-controlled fields as readonly by default (edit mode disabled)
-    html.find('.edit-controlled').prop('readonly', true);
+    // Restore edit mode state if it was previously enabled
+    const wasEditMode = this.editModeEnabled || false;
+    const form = html.closest('form');
+    const toggle = html.find('.edit-mode-toggle');
+    const editControlledFields = html.find('.edit-controlled');
+    
+    if (wasEditMode) {
+      form.addClass('edit-mode');
+      toggle.addClass('active');
+      editControlledFields.prop('readonly', false);
+    } else {
+      form.removeClass('edit-mode');
+      toggle.removeClass('active');
+      editControlledFields.prop('readonly', true);
+    }
     
     // Edit Mode Toggle
     html.find('.edit-mode-toggle').on('click', (event) => {
@@ -1657,11 +1684,13 @@ class NSBUNPCSheet extends ActorSheet {
         form.removeClass('edit-mode');
         toggle.removeClass('active');
         editControlledFields.prop('readonly', true);
+        this.editModeEnabled = false;
       } else {
         console.log('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
         editControlledFields.prop('readonly', false);
+        this.editModeEnabled = true;
       }
     });
     
