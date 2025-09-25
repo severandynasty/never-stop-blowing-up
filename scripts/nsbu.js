@@ -1619,6 +1619,8 @@ class NSBUActorSheet extends ActorSheet {
           console.log('🖼️ DEBUG: FilePicker callback - selected image:', imagePath);
           await this.actor.update({ img: imagePath });
           console.log('🖼️ DEBUG: Actor image updated successfully');
+          console.log('🖼️ DEBUG: Re-rendering sheet to show new portrait...');
+          this.render();
         },
         top: this.position.top + 40,
         left: this.position.left + 10
@@ -1642,6 +1644,8 @@ class NSBUActorSheet extends ActorSheet {
           console.log('🖼️ DEBUG: FilePicker callback (div) - selected image:', imagePath);
           await this.actor.update({ img: imagePath });
           console.log('🖼️ DEBUG: Actor image updated successfully (div)');
+          console.log('🖼️ DEBUG: Re-rendering sheet to show new portrait (div)...');
+          this.render();
         },
         top: this.position.top + 40,
         left: this.position.left + 10
@@ -1972,6 +1976,8 @@ class NSBUNPCSheet extends ActorSheet {
           console.log('🖼️ DEBUG: FilePicker callback (NPC) - selected image:', imagePath);
           await this.actor.update({ img: imagePath });
           console.log('🖼️ DEBUG: NPC Actor image updated successfully');
+          console.log('🖼️ DEBUG: Re-rendering NPC sheet to show new portrait...');
+          this.render();
         },
         top: this.position.top + 40,
         left: this.position.left + 10
@@ -1995,6 +2001,8 @@ class NSBUNPCSheet extends ActorSheet {
           console.log('🖼️ DEBUG: FilePicker callback (NPC div) - selected image:', imagePath);
           await this.actor.update({ img: imagePath });
           console.log('🖼️ DEBUG: NPC Actor image updated successfully (div)');
+          console.log('🖼️ DEBUG: Re-rendering NPC sheet to show new portrait (div)...');
+          this.render();
         },
         top: this.position.top + 40,
         left: this.position.left + 10
