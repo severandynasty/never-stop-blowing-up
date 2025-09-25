@@ -56,6 +56,35 @@
   transform: scale(1.1);
 }
 
+/* Remove ALL focus/hover outlines and shadows on dice buttons */
+.stat-roll:focus,
+.stat-roll:focus-visible,
+.stat-roll:hover,
+.stat-roll:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.dice-icon:focus,
+.dice-icon:focus-visible,
+.dice-icon:hover,
+.dice-icon:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Override any button default styling */
+button.stat-roll {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
 .stat-roll {
   display: flex;
   align-items: center;
@@ -166,6 +195,15 @@ label {
 .nsbu-sheet:not(.edit-mode) .stat-increase,
 .nsbu-sheet:not(.edit-mode) .remove-ability {
   display: none;
+}
+
+/* Make text fields readonly when edit mode is disabled */
+.nsbu-sheet:not(.edit-mode) .edit-controlled {
+  pointer-events: none;
+  background-color: #f8f9fa;
+  color: #000000;
+  border-color: #e9ecef;
+  cursor: not-allowed;
 }
 
 /* Interactive Dice Roll Styling */
