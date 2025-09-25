@@ -1344,6 +1344,9 @@ class NSBUActorSheet extends ActorSheet {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
+    // Initialize edit-controlled fields as readonly by default (edit mode disabled)
+    html.find('.edit-controlled').prop('readonly', true);
+    
     // Edit Mode Toggle
     html.find('.edit-mode-toggle').on('click', (event) => {
       event.preventDefault();
@@ -1352,15 +1355,18 @@ class NSBUActorSheet extends ActorSheet {
       
       const form = html.closest('form');
       const toggle = html.find('.edit-mode-toggle');
+      const editControlledFields = html.find('.edit-controlled');
       
       if (form.hasClass('edit-mode')) {
         console.log('🔧 DEBUG: Disabling edit mode');
         form.removeClass('edit-mode');
         toggle.removeClass('active');
+        editControlledFields.prop('readonly', true);
       } else {
         console.log('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
+        editControlledFields.prop('readonly', false);
       }
     });
     
@@ -1633,6 +1639,9 @@ class NSBUNPCSheet extends ActorSheet {
     super.activateListeners(html);
     const dieSteps = [4, 6, 8, 10, 12, 20];
     
+    // Initialize edit-controlled fields as readonly by default (edit mode disabled)
+    html.find('.edit-controlled').prop('readonly', true);
+    
     // Edit Mode Toggle
     html.find('.edit-mode-toggle').on('click', (event) => {
       event.preventDefault();
@@ -1641,15 +1650,18 @@ class NSBUNPCSheet extends ActorSheet {
       
       const form = html.closest('form');
       const toggle = html.find('.edit-mode-toggle');
+      const editControlledFields = html.find('.edit-controlled');
       
       if (form.hasClass('edit-mode')) {
         console.log('🔧 DEBUG: Disabling edit mode');
         form.removeClass('edit-mode');
         toggle.removeClass('active');
+        editControlledFields.prop('readonly', true);
       } else {
         console.log('🔧 DEBUG: Enabling edit mode');
         form.addClass('edit-mode');
         toggle.addClass('active');
+        editControlledFields.prop('readonly', false);
       }
     });
     

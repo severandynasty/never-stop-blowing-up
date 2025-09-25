@@ -168,6 +168,15 @@ label {
   display: none;
 }
 
+/* Make text fields readonly when edit mode is disabled */
+.nsbu-sheet:not(.edit-mode) .edit-controlled {
+  pointer-events: none;
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border-color: #e9ecef;
+  cursor: not-allowed;
+}
+
 /* Interactive Dice Roll Styling */
 .nsbu-roll-result {
   background: #f8f9fa;

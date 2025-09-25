@@ -43,7 +43,7 @@ Complete game reference including:
 
 ## Usage
 
-- Create actors using the character or NPC sheet templates.
+- Create actors using the character or NPC sheet templates.  Click the Edit Mode button (Wrench) to unlock the sheet for editing.
 - Drag and drop abilities from the appropriate compendium onto actor sheets.
 - Click the appropriate dice button for any check.  They will blow up if:
     - A natural maximum value is rolled (e.g. 4 on a d4)
