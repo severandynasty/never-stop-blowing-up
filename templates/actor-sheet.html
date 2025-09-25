@@ -16,13 +16,20 @@
         </div>
       </div>
       <div class="nsbu-player-info">
-        <label>Character Name</label>
-        <input name="name" type="text" value="{{#if name}}{{name}}{{else}}Actor{{/if}}" placeholder="Character Name" data-dtype="String" class="edit-controlled"/>
-        <label>Player</label>
-        <input name="system.player" type="text" value="{{system.player}}" placeholder="Player Name" class="edit-controlled"/>
-        <label>Catchphrase</label>
-        <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase" class="edit-controlled"/>
-        <div style="margin-bottom: 1em;"></div>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Character Name</label>
+            <input name="name" type="text" value="{{#if name}}{{name}}{{else}}Actor{{/if}}" placeholder="Character Name" data-dtype="String" class="edit-controlled"/>
+          </div>
+          <div class="field-group">
+            <label>Player</label>
+            <input name="system.player" type="text" value="{{system.player}}" placeholder="Player Name" class="edit-controlled"/>
+          </div>
+        </div>
+        <div class="field-group full-width">
+          <label>Catchphrase</label>
+          <input name="system.catchphrase" type="text" value="{{system.catchphrase}}" placeholder="Catchphrase" class="edit-controlled"/>
+        </div>
       </div>
     </div>
   </div>

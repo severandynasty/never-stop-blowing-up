@@ -8,8 +8,8 @@
 
 .nsbu-portrait {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 125px;
+  height: 125px;
   border: 2px solid #333;
   border-radius: 8px;
   overflow: hidden;
@@ -49,19 +49,35 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5em;
+  gap: 0.4em;
+}
+
+.nsbu-player-info .field-row {
+  display: flex;
+  gap: 1em;
+  align-items: flex-end;
+}
+
+.nsbu-player-info .field-row .field-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.nsbu-player-info .field-group.full-width {
+  flex: 1;
 }
 
 .nsbu-player-info label {
   font-weight: bold;
   margin-bottom: 0.2em;
+  font-size: 0.9em;
 }
 
 .nsbu-player-info input {
   padding: 0.4em;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-bottom: 0.5em;
 }
 
 .nsbu-stats-grid {
