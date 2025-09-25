@@ -1602,16 +1602,51 @@ class NSBUActorSheet extends ActorSheet {
     });
 
     // Portrait image click handler
-    html.find('.nsbu-portrait img').on('click', (event) => {
+    console.log('🖼️ DEBUG: Setting up portrait click handler for CHARACTER SHEET');
+    const portraitImg = html.find('.nsbu-portrait img');
+    console.log('🖼️ DEBUG: Found portrait img elements:', portraitImg.length);
+    console.log('🖼️ DEBUG: Portrait img element:', portraitImg[0]);
+    
+    portraitImg.on('click', (event) => {
+      console.log('🖼️ DEBUG: Portrait image clicked in CHARACTER SHEET!');
       event.preventDefault();
+      event.stopPropagation();
+      
+      console.log('🖼️ DEBUG: Creating FilePicker...');
       const fp = new FilePicker({
         type: "image",
         callback: async (imagePath) => {
+          console.log('🖼️ DEBUG: FilePicker callback - selected image:', imagePath);
           await this.actor.update({ img: imagePath });
+          console.log('🖼️ DEBUG: Actor image updated successfully');
         },
         top: this.position.top + 40,
         left: this.position.left + 10
       });
+      
+      console.log('🖼️ DEBUG: Opening FilePicker browser...');
+      fp.browse();
+    });
+    
+    // Also add click handler to the portrait div itself as fallback
+    const portraitDiv = html.find('.nsbu-portrait');
+    console.log('🖼️ DEBUG: Found portrait div elements:', portraitDiv.length);
+    portraitDiv.on('click', (event) => {
+      console.log('🖼️ DEBUG: Portrait div clicked in CHARACTER SHEET!');
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          console.log('🖼️ DEBUG: FilePicker callback (div) - selected image:', imagePath);
+          await this.actor.update({ img: imagePath });
+          console.log('🖼️ DEBUG: Actor image updated successfully (div)');
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      
       fp.browse();
     });
   }
@@ -1920,16 +1955,51 @@ class NSBUNPCSheet extends ActorSheet {
     });
 
     // Portrait image click handler
-    html.find('.nsbu-portrait img').on('click', (event) => {
+    console.log('🖼️ DEBUG: Setting up portrait click handler for NPC SHEET');
+    const npcPortraitImg = html.find('.nsbu-portrait img');
+    console.log('🖼️ DEBUG: Found NPC portrait img elements:', npcPortraitImg.length);
+    console.log('🖼️ DEBUG: NPC Portrait img element:', npcPortraitImg[0]);
+    
+    npcPortraitImg.on('click', (event) => {
+      console.log('🖼️ DEBUG: Portrait image clicked in NPC SHEET!');
       event.preventDefault();
+      event.stopPropagation();
+      
+      console.log('🖼️ DEBUG: Creating FilePicker for NPC...');
       const fp = new FilePicker({
         type: "image",
         callback: async (imagePath) => {
+          console.log('🖼️ DEBUG: FilePicker callback (NPC) - selected image:', imagePath);
           await this.actor.update({ img: imagePath });
+          console.log('🖼️ DEBUG: NPC Actor image updated successfully');
         },
         top: this.position.top + 40,
         left: this.position.left + 10
       });
+      
+      console.log('🖼️ DEBUG: Opening FilePicker browser for NPC...');
+      fp.browse();
+    });
+    
+    // Also add click handler to the portrait div itself as fallback for NPC
+    const npcPortraitDiv = html.find('.nsbu-portrait');
+    console.log('🖼️ DEBUG: Found NPC portrait div elements:', npcPortraitDiv.length);
+    npcPortraitDiv.on('click', (event) => {
+      console.log('🖼️ DEBUG: Portrait div clicked in NPC SHEET!');
+      event.preventDefault();
+      event.stopPropagation();
+      
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (imagePath) => {
+          console.log('🖼️ DEBUG: FilePicker callback (NPC div) - selected image:', imagePath);
+          await this.actor.update({ img: imagePath });
+          console.log('🖼️ DEBUG: NPC Actor image updated successfully (div)');
+        },
+        top: this.position.top + 40,
+        left: this.position.left + 10
+      });
+      
       fp.browse();
     });
   }
