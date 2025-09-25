@@ -172,7 +172,7 @@ label {
 .nsbu-sheet:not(.edit-mode) .edit-controlled {
   pointer-events: none;
   background-color: #f8f9fa;
-  color: #6c757d;
+  color: #000000;
   border-color: #e9ecef;
   cursor: not-allowed;
 }
