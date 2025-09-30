@@ -640,7 +640,7 @@ Hooks.once('ready', function() {
               <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
                 <div class="roll-details">Rolling ${stat.toUpperCase()} (d100 continued): ${d100Value}</div>
                 <div class="roll-total">
-                  Current Die: <span class="current-die-total">${d100Value}</span>
+                  <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d100Value}</span>
                   <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d100Value}</span>
                 </div>
                 <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -740,7 +740,7 @@ Hooks.once('ready', function() {
               <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
                 <div class="roll-details">Rolling ${stat.toUpperCase()} (d20 continued): ${d20Value}</div>
                 <div class="roll-total">
-                  Current Die: <span class="current-die-total">${d20Value}</span>
+                  <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d20Value}</span>
                   <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d20Value}</span>
                 </div>
                 <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -1118,7 +1118,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
             <div class="roll-details">Rolling ${stat.toUpperCase()} (d100 continued): ${d100Value}</div>
             <div class="roll-total">
-              Current Die: <span class="current-die-total">${d100Value}</span>
+              <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d100Value}</span>
               <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d100Value}</span>
             </div>
             <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -1199,7 +1199,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
             <div class="roll-details">Rolling ${stat.toUpperCase()} (d20 continued): ${d20Value}</div>
             <div class="roll-total">
-              Current Die: <span class="current-die-total">${d20Value}</span>
+              <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d20Value}</span>
               <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d20Value}</span>
             </div>
             <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -1273,7 +1273,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
         <div class="roll-total">
-          Current Die: <span class="current-die-total">${rollValue}</span>
+          <span class="current-die-label">Current Die:</span> <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
         </div>
         <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
