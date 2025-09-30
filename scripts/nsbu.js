@@ -929,7 +929,7 @@ function updateInjuryWarning($rollControls, injuryLevel, tokenRatio) {
       $warningDiv = $('<div class="injury-warning"></div>');
       $rollControls.find('.turbo-tokens-controls').append($warningDiv);
     }
-    $warningDiv.html(`<i class="fas fa-exclamation-triangle"></i> <strong>Injured!</strong> Tokens cost ${tokenRatio}:1 due to injury level ${injuryLevel}`);
+    $warningDiv.html(`<i class="fas fa-exclamation-triangle"></i> <strong>Injured!</strong> Tokens cost ${tokenRatio}:1`);
     $warningDiv.show();
   } else {
     $warningDiv.hide();
