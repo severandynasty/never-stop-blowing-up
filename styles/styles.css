@@ -488,3 +488,26 @@ label {
   color: blue;
   font-weight: bold;
 }
+
+.current-die-total {
+  color: blue;
+  font-weight: bold;
+}
+
+/* Injury warning styling */
+.injury-warning {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 8px;
+  margin-top: 8px;
+  color: #856404;
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.injury-warning i {
+  color: #f39c12;
+}
