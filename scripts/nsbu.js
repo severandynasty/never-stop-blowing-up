@@ -380,17 +380,27 @@ Hooks.once('ready', function() {
     const currentDie = parseInt($combinedBtn.data('current-die'));
     const tokensNeededForBlowUp = currentDie - dieValue;
     
-    // The effective maximum is the smaller of: available tokens or tokens needed for blow-up
-    const effectiveMax = Math.min(maxAvailable, tokensNeededForBlowUp);
+    // Get injury-adjusted limits
+    const actorId = $rollControls.data('actor-id');
+    const actor = game.actors.get(actorId);
+    const tokenInfo = getInjuryAdjustedTokenInfo(actor, current + 1);
     
-    debugLog(`🔺 DEBUG: Token increase - dieValue: ${dieValue}, currentDie: d${currentDie}, tokensNeeded: ${tokensNeededForBlowUp}, available: ${maxAvailable}, effectiveMax: ${effectiveMax}`);
+    // The effective maximum is the smaller of: available tokens (considering injury), tokens needed for blow-up, or max available
+    const effectiveMax = Math.min(maxAvailable, tokensNeededForBlowUp, tokenInfo.maxAffordableTokens);
+    
+    debugLog(`🔺 DEBUG: Token increase - dieValue: ${dieValue}, currentDie: d${currentDie}, tokensNeeded: ${tokensNeededForBlowUp}, available: ${maxAvailable}, injuryRatio: ${tokenInfo.tokenRatio}, maxAffordable: ${tokenInfo.maxAffordableTokens}, effectiveMax: ${effectiveMax}`);
     
     if (current < effectiveMax) {
       $input.val(current + 1);
+      updateInjuryWarning($rollControls, tokenInfo.injuryLevel, tokenInfo.tokenRatio);
       updateCombinedButtonText($rollControls);
     } else if (current >= tokensNeededForBlowUp && tokensNeededForBlowUp > 0) {
       // Give feedback when they hit the blow-up limit
       ui.notifications.info(`Maximum ${tokensNeededForBlowUp} tokens needed to blow up d${currentDie} (save the rest for next roll!)`);
+    } else if (current >= tokenInfo.maxAffordableTokens) {
+      // Give feedback about injury token limits
+      const costMsg = tokenInfo.tokenRatio > 1 ? ` (${tokenInfo.tokenRatio}:1 due to injury)` : '';
+      ui.notifications.warn(`Not enough tokens! You need ${tokenInfo.tokenRatio} token(s) but only have ${tokenInfo.availableTokens}${costMsg}`);
     }
   });
 
@@ -413,15 +423,29 @@ Hooks.once('ready', function() {
     let value = parseInt($input.val());
     const min = parseInt($input.attr('min')) || 0;
     const max = parseInt($input.attr('max')) || 999;
+    const $rollControls = $input.closest('.roll-controls');
+    
+    // Get injury-adjusted limits
+    const actorId = $rollControls.data('actor-id');
+    const actor = game.actors.get(actorId);
+    const tokenInfo = getInjuryAdjustedTokenInfo(actor, value);
+    
+    // The effective maximum considering injury ratio
+    const effectiveMax = Math.min(max, tokenInfo.maxAffordableTokens);
     
     // Validate and clamp the value
     if (isNaN(value) || value < min) {
       $input.val(min);
-    } else if (value > max) {
-      $input.val(max);
+      value = min;
+    } else if (value > effectiveMax) {
+      $input.val(effectiveMax);
+      value = effectiveMax;
     }
     
-    updateCombinedButtonText($(this).closest('.roll-controls'));
+    // Update injury warning and button text
+    const finalTokenInfo = getInjuryAdjustedTokenInfo(actor, value);
+    updateInjuryWarning($rollControls, finalTokenInfo.injuryLevel, finalTokenInfo.tokenRatio);
+    updateCombinedButtonText($rollControls);
   });
 
   // Prevent negative number input in token fields
@@ -534,10 +558,11 @@ Hooks.once('ready', function() {
       
       debugLog(`💰 DEBUG: Combined button - adding ${tokensToAdd} tokens`);
       
-      const currentTokens = Number(actor.system.turboTokens) || 0;
-      if (tokensToAdd > currentTokens) {
+      const tokenInfo = getInjuryAdjustedTokenInfo(actor, tokensToAdd);
+      if (!tokenInfo.canAfford) {
         $button.prop('disabled', false).removeClass('processing');
-        ui.notifications.warn(`You don't have enough turbo tokens (${tokensToAdd} requested, ${currentTokens} available)`);
+        const costMsg = tokenInfo.tokenRatio > 1 ? ` (${tokensToAdd} tokens × ${tokenInfo.tokenRatio} = ${tokenInfo.actualCost} due to injury)` : '';
+        ui.notifications.warn(`You don't have enough turbo tokens! Need ${tokenInfo.actualCost}, have ${tokenInfo.availableTokens}${costMsg}`);
         return;
       }
       
@@ -552,12 +577,12 @@ Hooks.once('ready', function() {
       debugLog(`💰 DEBUG: Combined button - ${dieValue} + ${tokensToAdd} tokens = ${newDieResult} on d${currentDie}`);
       debugLog(`📊 DEBUG: Updated cumulative total: ${cumulativeTotal} -> ${newCumulativeTotal}`);
       
-      // Spend the turbo tokens and track episode spending
+      // Spend the turbo tokens and track episode spending (using actual cost including injury)
       const currentEpisodeTokens = Number(actor.system.tokensSpentThisEpisode) || 0;
-      debugLog(`📊 DEBUG: Combined button token spending - Actor: ${actor.name} (${actor.id}), Current episode tokens: ${currentEpisodeTokens}, Adding: ${tokensToAdd}, New total: ${currentEpisodeTokens + tokensToAdd}`);
+      debugLog(`📊 DEBUG: Combined button token spending - Actor: ${actor.name} (${actor.id}), Current episode tokens: ${currentEpisodeTokens}, Adding: ${tokensToAdd} (cost: ${tokenInfo.actualCost}), New total: ${currentEpisodeTokens + tokenInfo.actualCost}`);
       await actor.update({ 
-        'system.turboTokens': currentTokens - tokensToAdd,
-        'system.tokensSpentThisEpisode': currentEpisodeTokens + tokensToAdd
+        'system.turboTokens': tokenInfo.availableTokens - tokenInfo.actualCost,
+        'system.tokensSpentThisEpisode': currentEpisodeTokens + tokenInfo.actualCost
       });
       
       // Check if we hit the die maximum (blow-up)
@@ -640,7 +665,7 @@ Hooks.once('ready', function() {
               <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
                 <div class="roll-details">Rolling ${stat.toUpperCase()} (d100 continued): ${d100Value}</div>
                 <div class="roll-total">
-                  Current Die: <span class="current-die-total">${d100Value}</span>
+                  <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d100Value}</span>
                   <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d100Value}</span>
                 </div>
                 <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -740,7 +765,7 @@ Hooks.once('ready', function() {
               <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
                 <div class="roll-details">Rolling ${stat.toUpperCase()} (d20 continued): ${d20Value}</div>
                 <div class="roll-total">
-                  Current Die: <span class="current-die-total">${d20Value}</span>
+                  <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d20Value}</span>
                   <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d20Value}</span>
                 </div>
                 <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -894,6 +919,40 @@ $(document).on('click.nsbu-auto-blowup', '.auto-blowup-btn', async function(even
   // Trigger the combined button click
   $combinedBtn.trigger('click');
 });
+
+// Helper function to update injury warning display
+function updateInjuryWarning($rollControls, injuryLevel, tokenRatio) {
+  let $warningDiv = $rollControls.find('.injury-warning');
+  
+  if (injuryLevel >= 2) {
+    if ($warningDiv.length === 0) {
+      $warningDiv = $('<div class="injury-warning"></div>');
+      $rollControls.find('.turbo-tokens-controls').append($warningDiv);
+    }
+    $warningDiv.html(`<i class="fas fa-exclamation-triangle"></i> <strong>Injured!</strong> Tokens cost ${tokenRatio}:1`);
+    $warningDiv.show();
+  } else {
+    $warningDiv.hide();
+  }
+}
+
+// Helper function to get injury-adjusted token costs
+function getInjuryAdjustedTokenInfo(actor, requestedTokens) {
+  const injuryLevel = actor?.system?.injuries || 0;
+  const tokenRatio = (injuryLevel >= 2) ? 2 : 1;
+  const actualCost = requestedTokens * tokenRatio;
+  const availableTokens = Number(actor?.system?.turboTokens) || 0;
+  const maxAffordableTokens = Math.floor(availableTokens / tokenRatio);
+  
+  return {
+    injuryLevel,
+    tokenRatio,
+    actualCost,
+    availableTokens,
+    maxAffordableTokens,
+    canAfford: actualCost <= availableTokens
+  };
+}
 
 // Helper function to update combined button text based on token input
 function updateCombinedButtonText($rollControls) {
@@ -1118,7 +1177,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
             <div class="roll-details">Rolling ${stat.toUpperCase()} (d100 continued): ${d100Value}</div>
             <div class="roll-total">
-              Current Die: <span class="current-die-total">${d100Value}</span>
+              <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d100Value}</span>
               <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d100Value}</span>
             </div>
             <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -1199,7 +1258,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
           <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
             <div class="roll-details">Rolling ${stat.toUpperCase()} (d20 continued): ${d20Value}</div>
             <div class="roll-total">
-              Current Die: <span class="current-die-total">${d20Value}</span>
+              <span class="current-die-label">Current Die:</span> <span class="current-die-total">${d20Value}</span>
               <br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal + d20Value}</span>
             </div>
             <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -1273,7 +1332,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
         <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
         <div class="roll-total">
-          Current Die: <span class="current-die-total">${rollValue}</span>
+          <span class="current-die-label">Current Die:</span> <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
         </div>
         <div class="roll-controls" data-actor-id="${actor.id}" style="display: none;">
@@ -2299,6 +2358,14 @@ Hooks.on("renderChatMessage", (message, html, data) => {
         debugLog(`🔐 DEBUG: Owner - showing controls, hiding observer`);
         $controls.show();
         $observer.hide();
+        
+        // Initialize injury warning if needed
+        const actorId = $controls.data('actor-id');
+        const actor = game.actors.get(actorId);
+        if (actor) {
+          const tokenInfo = getInjuryAdjustedTokenInfo(actor, 0);
+          updateInjuryWarning($controls, tokenInfo.injuryLevel, tokenInfo.tokenRatio);
+        }
       } else {
         // Hide controls, show observer message
         debugLog(`🔐 DEBUG: Non-owner - hiding controls, showing observer`);
