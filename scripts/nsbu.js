@@ -2262,24 +2262,9 @@ Hooks.once('setup', async function() {
           console.log(`  - Contains ${docs.length} rules reference entries`);
           console.log("  - Rules reference compendium loaded successfully");
           
-          // Fix permissions for all rules reference documents
+          // Permissions are now pre-configured in the compendium database files
           for (const doc of docs) {
             console.log(`    • ${doc.name} (${doc.system?.type})`);
-            
-            // Check if the document needs permission fix
-            if (doc.ownership?.default !== 2) {
-              try {
-                await doc.update({
-                  ownership: {
-                    ...doc.ownership,
-                    default: 2  // OBSERVER permission for all players
-                  }
-                });
-                console.log(`    ✓ Fixed permissions for ${doc.name}`);
-              } catch (err) {
-                console.warn(`    ⚠ Could not fix permissions for ${doc.name}:`, err.message);
-              }
-            }
           }
         }).catch(err => {
           console.error("  - Error loading rules reference:", err);
