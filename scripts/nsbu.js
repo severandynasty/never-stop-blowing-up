@@ -39,6 +39,47 @@ function clearRollSequence(actorId, stat, reason = '') {
 Hooks.once('ready', function() {
   debugLog("=== Setting up NSBU global event handlers ===");
   
+  // Function to apply injury status colors
+  function applyInjuryStatusColors() {
+    $('.injury-status span').each(function() {
+      const $span = $(this);
+      const text = $span.text().trim();
+      
+      // Remove existing injury classes
+      $span.removeClass('injury-severe injury-adrenalized');
+      
+      if (text.includes('Severe')) {
+        $span.addClass('injury-severe');
+      } else if (text.includes('Adrenalized')) {
+        $span.addClass('injury-adrenalized');
+      }
+    });
+  }
+  
+  // Apply colors on ready and whenever sheets render
+  applyInjuryStatusColors();
+  
+  // Watch for changes to injury status
+  const observer = new MutationObserver(function(mutations) {
+    let shouldUpdate = false;
+    mutations.forEach(function(mutation) {
+      if (mutation.target.classList.contains('injury-status') || 
+          mutation.target.closest('.injury-status')) {
+        shouldUpdate = true;
+      }
+    });
+    if (shouldUpdate) {
+      applyInjuryStatusColors();
+    }
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+  
   // Global handler for accept roll button - using namespace to prevent duplicates
   $(document).off('click.nsbu-accept', '.accept-roll-btn');
   $(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {

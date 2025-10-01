@@ -1,6 +1,16 @@
 /* 80s Action Movie Background - Enhanced Orange/Teal Design */
 .actor-sheet.nsbu-sheet {
-  position: relative !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 1em !important;
+  overflow-y: auto !important;
+  box-sizing: border-box !important;
   background: 
     linear-gradient(45deg, 
       transparent 0%, 
@@ -28,7 +38,6 @@
       #16213e 30%, 
       #0f0f23 70%, 
       #0a0a1a 100%) !important;
-  min-height: 100vh !important;
   color: #ffffff !important;
 }
 
@@ -138,12 +147,12 @@
 }
 
 .actor-sheet.nsbu-sheet .stats-row > div {
-  background: rgba(0, 0, 0, 0.2) !important;
+  background: none !important;
   border: none !important;
-  border-radius: 8px !important;
-  padding: 0.75em !important;
-  backdrop-filter: blur(1px) !important;
-  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.1) !important;
+  border-radius: none !important;
+  padding: 0.5em !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
 }
 
 .actor-sheet.nsbu-sheet .nsbu-right-column > div {
@@ -179,11 +188,63 @@
   text-shadow: 0 0 3px rgba(0, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
 }
 
+/* Color-coded injury status */
+.actor-sheet.nsbu-sheet .injury-status span:contains("Severe"),
+.actor-sheet.nsbu-sheet .injury-status span[data-status="severe"] {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-status span:contains("Adrenalized"),
+.actor-sheet.nsbu-sheet .injury-status span[data-status="adrenalized"] {
+  color: #ff0040 !important;
+  text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-red 2s infinite !important;
+}
+
+@keyframes pulse-red {
+  0%, 100% { text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8); }
+  50% { text-shadow: 0 0 10px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8); }
+}
+
 /* Specific fix for category/type text */
 .actor-sheet.nsbu-sheet span[style*="color: #666"],
 .actor-sheet.nsbu-sheet span[style*="color: #888"] {
   color: #a0d8ef !important;
   font-weight: normal !important;
+}
+
+/* Alternative injury status targeting by text content */
+.actor-sheet.nsbu-sheet .injury-status span {
+  color: #ffffff !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-status span:contains("Severe") {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8) !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-status span:contains("Adrenalized") {
+  color: #ff0040 !important;
+  text-shadow: 0 0 5px rgba(255, 0, 64, 0.8) !important;
+  animation: pulse-red 2s infinite !important;
+}
+
+/* CSS cannot select by text content, so we'll need JavaScript for this */
+/* Adding class-based targeting for injury statuses */
+.injury-severe {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+.injury-adrenalized {
+  color: #ff0040 !important;
+  text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-red 2s infinite !important;
 }
 
 /* Button styling */
