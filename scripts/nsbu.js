@@ -63,8 +63,11 @@ Hooks.once('ready', function() {
   const observer = new MutationObserver(function(mutations) {
     let shouldUpdate = false;
     mutations.forEach(function(mutation) {
-      if (mutation.target.classList.contains('injury-status') || 
-          mutation.target.closest('.injury-status')) {
+      // Add null checks to prevent errors
+      if (mutation.target && 
+          mutation.target.classList && 
+          (mutation.target.classList.contains('injury-status') || 
+           (mutation.target.closest && mutation.target.closest('.injury-status')))) {
         shouldUpdate = true;
       }
     });
