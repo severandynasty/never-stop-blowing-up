@@ -1,3 +1,50 @@
+/* 80s Action Movie Background - Gradient Slash Design */
+.nsbu-sheet {
+  position: relative;
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.03) 0%, 
+    transparent 25%, 
+    transparent 50%, 
+    rgba(255, 20, 147, 0.02) 75%, 
+    rgba(255, 140, 0, 0.03) 100%),
+    linear-gradient(-45deg, 
+    rgba(138, 43, 226, 0.02) 0%, 
+    transparent 30%, 
+    transparent 70%, 
+    rgba(0, 191, 255, 0.03) 100%),
+    radial-gradient(ellipse at center, 
+    rgba(25, 25, 35, 0.95) 0%, 
+    rgba(15, 15, 25, 0.98) 100%);
+  background-attachment: fixed;
+}
+
+.nsbu-sheet::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    linear-gradient(45deg, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.01) 42%, 
+      rgba(0, 255, 255, 0.02) 44%, 
+      transparent 46%),
+    linear-gradient(-45deg, 
+      transparent 54%, 
+      rgba(255, 20, 147, 0.01) 56%, 
+      rgba(255, 20, 147, 0.02) 58%, 
+      transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nsbu-sheet > * {
+  position: relative;
+  z-index: 1;
+}
+
 /* Character Section with Portrait */
 .nsbu-character-section {
   display: flex;
