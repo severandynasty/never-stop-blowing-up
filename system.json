@@ -27,6 +27,13 @@
       "path": "packs/rules-reference.db",
       "type": "JournalEntry",
       "system": "never-stop-blowing-up"
+    },
+    {
+      "name": "system-guide",
+      "label": "System Guide",
+      "path": "packs/system-guide.db",
+      "type": "JournalEntry",
+      "system": "never-stop-blowing-up"
     }
   ],
   "compatibility": {
