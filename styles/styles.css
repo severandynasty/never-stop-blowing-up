@@ -1,24 +1,32 @@
 /* 80s Action Movie Background - Gradient Slash Design */
-.nsbu-sheet {
-  position: relative;
-  background: linear-gradient(135deg, 
-    rgba(0, 255, 255, 0.05) 0%, 
-    transparent 25%, 
-    transparent 50%, 
-    rgba(255, 20, 147, 0.03) 75%, 
-    rgba(255, 140, 0, 0.04) 100%),
+.actor-sheet.nsbu-sheet {
+  position: relative !important;
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 45%, 
+      rgba(0, 255, 255, 0.1) 47%, 
+      rgba(0, 255, 255, 0.2) 49%, 
+      rgba(0, 255, 255, 0.1) 51%, 
+      transparent 53%, 
+      transparent 100%),
     linear-gradient(-45deg, 
-    rgba(138, 43, 226, 0.03) 0%, 
-    transparent 30%, 
-    transparent 70%, 
-    rgba(0, 191, 255, 0.04) 100%),
-    radial-gradient(ellipse at center, 
-    rgba(20, 20, 30, 0.98) 0%, 
-    rgba(10, 10, 20, 1) 100%);
-  min-height: 100vh;
+      transparent 0%, 
+      transparent 60%, 
+      rgba(255, 20, 147, 0.08) 62%, 
+      rgba(255, 20, 147, 0.15) 64%, 
+      rgba(255, 20, 147, 0.08) 66%, 
+      transparent 68%, 
+      transparent 100%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
+  min-height: 100vh !important;
 }
 
-.nsbu-sheet::before {
+.actor-sheet.nsbu-sheet::after {
   content: '';
   position: absolute;
   top: 0;
@@ -26,36 +34,24 @@
   right: 0;
   bottom: 0;
   background: 
-    linear-gradient(45deg, 
-      transparent 38%, 
-      rgba(0, 255, 255, 0.02) 40%, 
-      rgba(0, 255, 255, 0.04) 42%, 
-      transparent 44%),
-    linear-gradient(-45deg, 
-      transparent 56%, 
-      rgba(255, 20, 147, 0.02) 58%, 
-      rgba(255, 20, 147, 0.04) 60%, 
-      transparent 62%),
     linear-gradient(135deg, 
-      transparent 70%, 
-      rgba(255, 140, 0, 0.01) 72%, 
-      rgba(255, 140, 0, 0.03) 74%, 
-      transparent 76%);
+      transparent 25%, 
+      rgba(255, 140, 0, 0.06) 27%, 
+      rgba(255, 140, 0, 0.12) 29%, 
+      transparent 31%),
+    repeating-linear-gradient(45deg, 
+      transparent 0px, 
+      transparent 150px, 
+      rgba(0, 255, 255, 0.05) 152px, 
+      rgba(0, 255, 255, 0.05) 154px, 
+      transparent 156px);
   pointer-events: none;
   z-index: 0;
 }
 
-.nsbu-sheet > * {
+.actor-sheet.nsbu-sheet > * {
   position: relative;
   z-index: 1;
-}
-
-/* Enhanced contrast for readability */
-.nsbu-sheet .nsbu-main-grid {
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 8px;
-  padding: 1em;
-  backdrop-filter: blur(0.5px);
 }
 
 /* Character Section with Portrait */
