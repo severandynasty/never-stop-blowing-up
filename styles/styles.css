@@ -28,14 +28,41 @@
       #16213e 30%, 
       #0f0f23 70%, 
       #0a0a1a 100%) !important;
-  min-height: calc(100vh - 100px) !important;
-  padding-bottom: 2em !important;
   color: #ffffff !important;
 }
 
-/* Ensure background covers the entire sheet content */
-.actor-sheet.nsbu-sheet .window-content {
-  background: inherit !important;
+/* Force background on all container elements */
+.actor-sheet.nsbu-sheet,
+.actor-sheet.nsbu-sheet .window-content,
+.actor-sheet.nsbu-sheet .window-app,
+.actor-sheet.nsbu-sheet .nsbu-main-grid {
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
 }
 
 .actor-sheet.nsbu-sheet::after {
@@ -73,11 +100,19 @@
   z-index: 0;
 }
 
-/* Ensure background extends through all content */
-.actor-sheet.nsbu-sheet,
-.actor-sheet.nsbu-sheet .window-content,
-.actor-sheet.nsbu-sheet .nsbu-main-grid {
-  background-attachment: local !important;
+/* Remove any default backgrounds that might interfere */
+.actor-sheet.nsbu-sheet * {
+  background-color: transparent !important;
+}
+
+/* Restore specific backgrounds for UI elements that need them */
+.actor-sheet.nsbu-sheet input,
+.actor-sheet.nsbu-sheet textarea,
+.actor-sheet.nsbu-sheet button,
+.actor-sheet.nsbu-sheet .ability-entry,
+.actor-sheet.nsbu-sheet .group-ability-entry,
+.actor-sheet.nsbu-sheet .nsbu-right-column > div {
+  background-color: revert !important;
 }
 
 .actor-sheet.nsbu-sheet > * {
