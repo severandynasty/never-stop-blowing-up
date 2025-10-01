@@ -35,13 +35,21 @@ Complete game reference including:
 - Player Abilities
 - Group Abilities
 
+### System Guide
+Complete game system documentation including:
+- Building players and NPCs
+- Using the dice roller
+- Spending tokens
+- Giving tokens to other players
+
 ## Installation
 
 1. Download or clone this repository.
 2. Place the folder in your Foundry VTT `Data/systems` directory.
 3. Enable "Never Stop Blowing Up" in your Foundry VTT game settings.
 
-## Usage
+## Basic Usage
+### See System Guide for complete details
 
 - Create actors using the character or NPC sheet templates.  Click the Edit Mode button (Wrench) to unlock the sheet for editing.
 - Drag and drop abilities from the appropriate compendium onto actor sheets.
@@ -65,3 +73,4 @@ See [LICENSE](LICENSE) for details.
 # To Do:
 
 - style/art
+- add foundry manifest
