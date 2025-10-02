@@ -1,3 +1,397 @@
+/* 80s Action Movie Background - Enhanced Orange/Teal Design */
+.actor-sheet.nsbu-sheet {
+  position: relative !important;
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
+  color: #ffffff !important;
+}
+
+/* Force background on all container elements */
+.actor-sheet.nsbu-sheet,
+.actor-sheet.nsbu-sheet .window-content,
+.actor-sheet.nsbu-sheet .window-app,
+.actor-sheet.nsbu-sheet .nsbu-main-grid {
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
+}
+
+/* Remove the ugly border from window-content */
+.window-app.never-stop-blowing-up .window-content {
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
+  padding: 0 !important;
+}
+
+/* Ensure the form inside window-content has proper spacing */
+.window-app.never-stop-blowing-up .window-content form.nsbu-sheet,
+.actor-sheet.nsbu-sheet form.nsbu-sheet,
+form.actor-sheet.nsbu-sheet {
+  background: transparent !important;
+  padding: 1.5em !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.actor-sheet.nsbu-sheet::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  min-height: inherit;
+  background: 
+    linear-gradient(115deg, 
+      transparent 20%, 
+      rgba(255, 140, 0, 0.08) 23%, 
+      rgba(255, 140, 0, 0.15) 26%, 
+      transparent 29%),
+    linear-gradient(-25deg, 
+      transparent 75%, 
+      rgba(0, 255, 255, 0.06) 78%, 
+      rgba(0, 255, 255, 0.12) 81%, 
+      transparent 84%),
+    repeating-linear-gradient(45deg, 
+      transparent 0px, 
+      transparent 120px, 
+      rgba(0, 255, 255, 0.03) 122px, 
+      rgba(0, 255, 255, 0.03) 124px, 
+      transparent 126px),
+    repeating-linear-gradient(-45deg, 
+      transparent 0px, 
+      transparent 180px, 
+      rgba(255, 140, 0, 0.02) 182px, 
+      rgba(255, 140, 0, 0.02) 184px, 
+      transparent 186px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Remove any default backgrounds that might interfere */
+.actor-sheet.nsbu-sheet * {
+  background-color: transparent !important;
+}
+
+/* Restore specific backgrounds for UI elements that need them */
+.actor-sheet.nsbu-sheet input,
+.actor-sheet.nsbu-sheet textarea,
+.actor-sheet.nsbu-sheet button,
+.actor-sheet.nsbu-sheet .ability-entry,
+.actor-sheet.nsbu-sheet .group-ability-entry,
+.actor-sheet.nsbu-sheet .nsbu-right-column > div {
+  background-color: revert !important;
+}
+
+.actor-sheet.nsbu-sheet > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Text readability improvements */
+.actor-sheet.nsbu-sheet label,
+.actor-sheet.nsbu-sheet .subsection-heading,
+.actor-sheet.nsbu-sheet h3 {
+  color: #ffffff !important;
+  text-shadow: 0 0 3px rgba(0, 255, 255, 0.3), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+/* Fix edit mode icon visibility */
+.actor-sheet.nsbu-sheet .edit-mode-toggle {
+  background: rgba(0, 0, 0, 0.7) !important;
+  border: 1px solid rgba(0, 255, 255, 0.5) !important;
+  border-radius: 4px !important;
+  padding: 4px !important;
+}
+
+.actor-sheet.nsbu-sheet .edit-mode-toggle svg,
+.actor-sheet.nsbu-sheet .wrench-icon {
+  color: #00ffff !important;
+  fill: #00ffff !important;
+  filter: drop-shadow(0 0 3px rgba(0, 255, 255, 0.6)) !important;
+}
+
+.actor-sheet.nsbu-sheet .edit-mode-toggle:hover {
+  background: rgba(0, 255, 255, 0.2) !important;
+  border-color: rgba(0, 255, 255, 0.8) !important;
+}
+
+/* Header title styling */
+.actor-sheet.nsbu-sheet .nsbu-title h1 {
+  color: #ffffff !important;
+  text-shadow: 0 0 5px rgba(0, 255, 255, 0.5), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+.actor-sheet.nsbu-sheet .nsbu-title h1 span {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+.actor-sheet.nsbu-sheet input,
+.actor-sheet.nsbu-sheet textarea {
+  background: rgba(0, 0, 0, 0.7) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(0, 255, 255, 0.4) !important;
+  border-radius: 4px !important;
+}
+
+.actor-sheet.nsbu-sheet input:focus,
+.actor-sheet.nsbu-sheet textarea:focus {
+  border-color: rgba(0, 255, 255, 0.8) !important;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.5) !important;
+  outline: none !important;
+}
+
+/* Style the outer window container border (the tan border with scrollbar) */
+.actor-sheet.nsbu-sheet.window-app {
+  border: 2px solid rgba(0, 255, 255, 0.6) !important;
+  border-radius: 8px !important;
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.08), 
+    rgba(255, 140, 0, 0.08)) !important;
+  box-shadow: 
+    0 0 15px rgba(0, 255, 255, 0.3),
+    0 0 25px rgba(255, 140, 0, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Style the scrollbar to match the theme */
+.actor-sheet.nsbu-sheet::-webkit-scrollbar {
+  width: 12px !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.actor-sheet.nsbu-sheet::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border-radius: 6px !important;
+}
+
+.actor-sheet.nsbu-sheet::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.6), 
+    rgba(255, 140, 0, 0.6)) !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+.actor-sheet.nsbu-sheet::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.8), 
+    rgba(255, 140, 0, 0.8)) !important;
+}
+
+.actor-sheet.nsbu-sheet .stats-row > div {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+  padding: 0.75em !important;
+  backdrop-filter: blur(2px) !important;
+}
+
+/* Remove backgrounds from dice roll buttons specifically */
+.actor-sheet.nsbu-sheet .stat-roll {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.25em !important;
+}
+
+.actor-sheet.nsbu-sheet .stat-roll:hover {
+  background: rgba(0, 255, 255, 0.1) !important;
+  border-radius: 4px !important;
+}
+
+.actor-sheet.nsbu-sheet .nsbu-right-column > div {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  border-radius: 6px !important;
+  padding: 0.75em !important;
+  backdrop-filter: blur(2px) !important;
+}
+
+.actor-sheet.nsbu-sheet .ability-entry,
+.actor-sheet.nsbu-sheet .group-ability-entry {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(255, 140, 0, 0.3) !important;
+  border-radius: 4px !important;
+  padding: 0.5em !important;
+  margin-bottom: 0.5em !important;
+  color: #ffffff !important;
+}
+
+.actor-sheet.nsbu-sheet .ability-entry .desc,
+.actor-sheet.nsbu-sheet .group-ability-entry .desc {
+  color: #e0e0e0 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Fix gray text readability throughout */
+.actor-sheet.nsbu-sheet .injury-status span,
+.actor-sheet.nsbu-sheet [style*="color: #333"],
+.actor-sheet.nsbu-sheet [style*="color: #666"],
+.actor-sheet.nsbu-sheet [style*="color: #888"] {
+  color: #ffffff !important;
+  text-shadow: 0 0 3px rgba(0, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Color-coded injury status */
+.actor-sheet.nsbu-sheet .injury-status span:contains("Severe"),
+.actor-sheet.nsbu-sheet .injury-status span[data-status="severe"] {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-status span:contains("Adrenalized"),
+.actor-sheet.nsbu-sheet .injury-status span[data-status="adrenalized"] {
+  color: #ff0040 !important;
+  text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-red 2s infinite !important;
+}
+
+@keyframes pulse-red {
+  0%, 100% { text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8); }
+  50% { text-shadow: 0 0 10px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8); }
+}
+
+/* Specific fix for category/type text */
+.actor-sheet.nsbu-sheet span[style*="color: #666"],
+.actor-sheet.nsbu-sheet span[style*="color: #888"] {
+  color: #a0d8ef !important;
+  font-weight: normal !important;
+}
+
+/* Injury status color styling - multiple selectors for better targeting */
+.actor-sheet.nsbu-sheet .injury-status span,
+.actor-sheet.nsbu-sheet .nsbu-injury-status span,
+.actor-sheet.nsbu-sheet .injury-status,
+.actor-sheet.nsbu-sheet .nsbu-injury-status {
+  color: #ffffff !important;
+}
+
+/* Class-based targeting for injury statuses */
+.actor-sheet.nsbu-sheet .injury-severe,
+.injury-severe {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-adrenalized,
+.injury-adrenalized {
+  color: #ff0040 !important;
+  text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-red 2s infinite !important;
+}
+
+/* Force override for inline styles */
+.actor-sheet.nsbu-sheet [style*="color: #333"] {
+  color: #ffffff !important;
+}
+
+.actor-sheet.nsbu-sheet [style*="color: #333"].injury-severe {
+  color: #ff8c00 !important;
+}
+
+.actor-sheet.nsbu-sheet [style*="color: #333"].injury-adrenalized {
+  color: #ff0040 !important;
+}
+
+/* Button styling */
+.actor-sheet.nsbu-sheet button {
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.2), 
+    rgba(255, 140, 0, 0.2)) !important;
+  border: 1px solid rgba(0, 255, 255, 0.5) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
+
+.actor-sheet.nsbu-sheet button:hover {
+  background: linear-gradient(135deg, 
+    rgba(0, 255, 255, 0.4), 
+    rgba(255, 140, 0, 0.4)) !important;
+  border-color: rgba(0, 255, 255, 0.8) !important;
+  box-shadow: 0 0 8px rgba(0, 255, 255, 0.4) !important;
+}
+
 /* Character Section with Portrait */
 .nsbu-character-section {
   display: flex;

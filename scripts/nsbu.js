@@ -39,6 +39,68 @@ function clearRollSequence(actorId, stat, reason = '') {
 Hooks.once('ready', function() {
   debugLog("=== Setting up NSBU global event handlers ===");
   
+  // Function to apply injury status colors
+  function applyInjuryStatusColors() {
+    // Target both .injury-status and .nsbu-injury-status
+    $('.injury-status span, .nsbu-injury-status span, .injury-status, .nsbu-injury-status').each(function() {
+      const $span = $(this);
+      const text = $span.text().trim().toLowerCase();
+      
+      debugLog('Checking injury text:', text);
+      
+      // Remove existing injury classes
+      $span.removeClass('injury-severe injury-adrenalized');
+      
+      if (text.includes('severe')) {
+        $span.addClass('injury-severe');
+        debugLog('Applied injury-severe class to:', text);
+      } else if (text.includes('adrenalized')) {
+        $span.addClass('injury-adrenalized');
+        debugLog('Applied injury-adrenalized class to:', text);
+      }
+    });
+    
+    // Also apply via direct style for immediate effect
+    $('[style*="color: #333"]:contains("Severe"), [style*="color: #333"]:contains("severe")').css({
+      'color': '#ff8c00 !important',
+      'text-shadow': '0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8)',
+      'font-weight': 'bold'
+    });
+    
+    $('[style*="color: #333"]:contains("Adrenalized"), [style*="color: #333"]:contains("adrenalized")').css({
+      'color': '#ff0040 !important',
+      'text-shadow': '0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8)',
+      'font-weight': 'bold'
+    });
+  }
+  
+  // Apply colors on ready and whenever sheets render
+  applyInjuryStatusColors();
+  
+  // Watch for changes to injury status
+  const observer = new MutationObserver(function(mutations) {
+    let shouldUpdate = false;
+    mutations.forEach(function(mutation) {
+      // Add null checks to prevent errors
+      if (mutation.target && 
+          mutation.target.classList && 
+          (mutation.target.classList.contains('injury-status') || 
+           (mutation.target.closest && mutation.target.closest('.injury-status')))) {
+        shouldUpdate = true;
+      }
+    });
+    if (shouldUpdate) {
+      applyInjuryStatusColors();
+    }
+  });
+  
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+  
   // Global handler for accept roll button - using namespace to prevent duplicates
   $(document).off('click.nsbu-accept', '.accept-roll-btn');
   $(document).on('click.nsbu-accept', '.accept-roll-btn', async function(event) {
