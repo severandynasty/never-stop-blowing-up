@@ -65,17 +65,37 @@
       #0a0a1a 100%) !important;
 }
 
-/* Specifically target window-content to override Foundry defaults */
-.window-content {
-  background: transparent !important;
-  padding: 0 !important;
-}
-
 /* Ensure the form inside window-content has the background and proper spacing - multiple selectors for specificity */
 .window-app.never-stop-blowing-up .window-content form.nsbu-sheet,
 .actor-sheet.nsbu-sheet form.nsbu-sheet,
 form.actor-sheet.nsbu-sheet {
-  background: inherit !important;
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
   padding: 1.5em !important;
   margin: 0 !important;
   box-sizing: border-box !important;
