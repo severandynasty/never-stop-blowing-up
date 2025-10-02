@@ -71,12 +71,14 @@
   padding: 0 !important;
 }
 
-/* Ensure the form inside window-content has the background and proper spacing */
-.actor-sheet.nsbu-sheet form.nsbu-sheet {
+/* Ensure the form inside window-content has the background and proper spacing - multiple selectors for specificity */
+.window-app.never-stop-blowing-up .window-content form.nsbu-sheet,
+.actor-sheet.nsbu-sheet form.nsbu-sheet,
+form.actor-sheet.nsbu-sheet {
   background: inherit !important;
-  padding: 1.5em;
-  margin: 0;
-  box-sizing: border-box;
+  padding: 1.5em !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
 }
 
 .actor-sheet.nsbu-sheet::after {
