@@ -513,19 +513,27 @@ form.actor-sheet.nsbu-sheet {
   justify-content: center;
 }
 
-/* Dice Icon Styling */
+/* Dice Icon Styling with 80s Circular Shadow */
 .dice-icon {
   width: 40px;
   height: 40px;
   display: inline-block;
   vertical-align: middle;
   cursor: pointer;
-  transition: transform 0.1s ease;
+  transition: all 0.2s ease;
   border: none;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.3)) 
+          drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 0 12px rgba(0, 255, 255, 0.2));
 }
 
 .dice-icon:hover {
   transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.5)) 
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 20px rgba(0, 255, 255, 0.3))
+          drop-shadow(0 0 4px rgba(255, 140, 0, 0.4));
 }
 
 .stat-roll:hover .dice-icon {
