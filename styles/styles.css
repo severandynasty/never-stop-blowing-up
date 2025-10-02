@@ -71,10 +71,12 @@
   padding: 0 !important;
 }
 
-/* Ensure the form inside window-content has the background */
+/* Ensure the form inside window-content has the background and proper spacing */
 .actor-sheet.nsbu-sheet form.nsbu-sheet {
   background: inherit !important;
-  padding: 1em;
+  padding: 1.5em;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .actor-sheet.nsbu-sheet::after {
