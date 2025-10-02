@@ -263,17 +263,20 @@ form.actor-sheet.nsbu-sheet {
   backdrop-filter: blur(2px) !important;
 }
 
-/* Remove backgrounds from dice roll buttons specifically */
+/* Remove backgrounds from dice roll buttons completely - show only glowing dice */
 .actor-sheet.nsbu-sheet .stat-roll {
-  background: none !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0.25em !important;
+  border-radius: 0 !important;
 }
 
 .actor-sheet.nsbu-sheet .stat-roll:hover {
-  background: rgba(0, 255, 255, 0.1) !important;
-  border-radius: 4px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
 .actor-sheet.nsbu-sheet .nsbu-right-column > div {
