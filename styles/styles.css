@@ -513,7 +513,7 @@ form.actor-sheet.nsbu-sheet {
   justify-content: center;
 }
 
-/* Dice Icon Styling with 80s Circular Shadow */
+/* Dice Icon Styling with 80s Glow Shadow */
 .dice-icon {
   width: 40px;
   height: 40px;
@@ -522,10 +522,9 @@ form.actor-sheet.nsbu-sheet {
   cursor: pointer;
   transition: all 0.2s ease;
   border: none;
-  border-radius: 50%;
-  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.3)) 
-          drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4))
-          drop-shadow(0 0 12px rgba(0, 255, 255, 0.2));
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4)) 
+          drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 12px rgba(0, 255, 255, 0.3));
 }
 
 .dice-icon:hover {
