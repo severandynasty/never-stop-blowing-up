@@ -351,6 +351,18 @@ form.actor-sheet.nsbu-sheet {
   50% { text-shadow: 0 0 10px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8); }
 }
 
+/* Slow pulse animation for critical injuries (injury value 3) */
+@keyframes pulse-critical {
+  0%, 100% { 
+    text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8);
+    color: #ff0040;
+  }
+  50% { 
+    text-shadow: 0 0 15px rgba(255, 0, 64, 1), 0 0 25px rgba(255, 0, 64, 0.6), 0 1px 2px rgba(0, 0, 0, 0.8);
+    color: #ff4060;
+  }
+}
+
 /* Specific fix for category/type text */
 .actor-sheet.nsbu-sheet span[style*="color: #666"],
 .actor-sheet.nsbu-sheet span[style*="color: #888"] {
@@ -380,6 +392,25 @@ form.actor-sheet.nsbu-sheet {
   text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
   font-weight: bold !important;
   animation: pulse-red 2s infinite !important;
+}
+
+/* Injury value-based styling - Injury value 2 = Orange */
+.actor-sheet.nsbu-sheet .injury-status span[data-injury="2"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[data-injury="2"],
+.actor-sheet.nsbu-sheet .injury-2 {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+/* Injury value-based styling - Injury value 3 = Bright Red with Pulse */
+.actor-sheet.nsbu-sheet .injury-status span[data-injury="3"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[data-injury="3"],
+.actor-sheet.nsbu-sheet .injury-3 {
+  color: #ff0040 !important;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-critical 3s infinite !important;
 }
 
 /* Force override for inline styles */
