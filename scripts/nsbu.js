@@ -60,17 +60,33 @@ Hooks.once('ready', function() {
       }
     });
     
-    // Also apply via direct style for immediate effect
-    $('[style*="color: #333"]:contains("Severe"), [style*="color: #333"]:contains("severe")').css({
-      'color': '#ff8c00 !important',
-      'text-shadow': '0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8)',
-      'font-weight': 'bold'
+    // Remove inline color styles that conflict with CSS classes
+    $('[style*="color: red"]').each(function() {
+      const $elem = $(this);
+      const text = $elem.text().trim().toLowerCase();
+      if (text.includes('adrenalized')) {
+        $elem.addClass('injury-adrenalized');
+        // Remove the inline color style
+        const currentStyle = $elem.attr('style');
+        if (currentStyle) {
+          const updatedStyle = currentStyle.replace(/color:\s*red;?/gi, '');
+          $elem.attr('style', updatedStyle);
+        }
+      }
     });
     
-    $('[style*="color: #333"]:contains("Adrenalized"), [style*="color: #333"]:contains("adrenalized")').css({
-      'color': '#ff0040 !important',
-      'text-shadow': '0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8)',
-      'font-weight': 'bold'
+    $('[style*="color: orange"]').each(function() {
+      const $elem = $(this);
+      const text = $elem.text().trim().toLowerCase();
+      if (text.includes('severe')) {
+        $elem.addClass('injury-severe');
+        // Remove the inline color style
+        const currentStyle = $elem.attr('style');
+        if (currentStyle) {
+          const updatedStyle = currentStyle.replace(/color:\s*orange;?/gi, '');
+          $elem.attr('style', updatedStyle);
+        }
+      }
     });
   }
   

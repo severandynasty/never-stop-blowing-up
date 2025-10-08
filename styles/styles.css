@@ -413,6 +413,41 @@ form.actor-sheet.nsbu-sheet {
   animation: pulse-critical 3s infinite !important;
 }
 
+/* Override inline styles for injury status - target by content */
+.actor-sheet.nsbu-sheet .injury-status span[style*="color: red"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[style*="color: red"] {
+  color: #ff0040 !important;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-critical 3s infinite !important;
+}
+
+/* Override inline styles for orange injury status */
+.actor-sheet.nsbu-sheet .injury-status span[style*="color: orange"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[style*="color: orange"] {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+/* Enhanced class-based styling with stronger specificity */
+.actor-sheet.nsbu-sheet .injury-adrenalized,
+.actor-sheet.nsbu-sheet .injury-status .injury-adrenalized,
+.actor-sheet.nsbu-sheet .nsbu-injury-status .injury-adrenalized {
+  color: #ff0040 !important;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-critical 3s infinite !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-severe,
+.actor-sheet.nsbu-sheet .injury-status .injury-severe,
+.actor-sheet.nsbu-sheet .nsbu-injury-status .injury-severe {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
 /* Force override for inline styles */
 .actor-sheet.nsbu-sheet [style*="color: #333"] {
   color: #ffffff !important;
