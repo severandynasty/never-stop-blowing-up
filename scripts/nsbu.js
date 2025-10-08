@@ -60,38 +60,48 @@ Hooks.once('ready', function() {
       }
     });
     
-    // Remove inline color styles that conflict with CSS classes
+    // Handle specific inline colors from the template
     $('[style*="color: red"]').each(function() {
       const $elem = $(this);
       const text = $elem.text().trim().toLowerCase();
       if (text.includes('adrenalized')) {
         $elem.addClass('injury-adrenalized');
-        // Remove the inline color style
-        const currentStyle = $elem.attr('style');
-        if (currentStyle) {
-          const updatedStyle = currentStyle.replace(/color:\s*red;?/gi, '');
-          $elem.attr('style', updatedStyle);
-        }
+        // Remove the inline color style to let CSS take over
+        $elem.removeAttr('style');
+        debugLog('Applied injury-adrenalized class and removed inline style for:', text);
       }
     });
     
-    $('[style*="color: orange"]').each(function() {
+    $('[style*="color: #cc6600"]').each(function() {
       const $elem = $(this);
       const text = $elem.text().trim().toLowerCase();
       if (text.includes('severe')) {
         $elem.addClass('injury-severe');
-        // Remove the inline color style
-        const currentStyle = $elem.attr('style');
-        if (currentStyle) {
-          const updatedStyle = currentStyle.replace(/color:\s*orange;?/gi, '');
-          $elem.attr('style', updatedStyle);
-        }
+        // Remove the inline color style to let CSS take over
+        $elem.removeAttr('style');
+        debugLog('Applied injury-severe class and removed inline style for:', text);
+      }
+    });
+    
+    // Also check for any orange variations
+    $('[style*="color: orange"], [style*="color: #cc6600"]').each(function() {
+      const $elem = $(this);
+      const text = $elem.text().trim().toLowerCase();
+      if (text.includes('severe')) {
+        $elem.addClass('injury-severe');
+        $elem.removeAttr('style');
+        debugLog('Applied injury-severe class for orange text:', text);
       }
     });
   }
   
   // Apply colors on ready and whenever sheets render
   applyInjuryStatusColors();
+  
+  // Hook into Foundry's render cycle to apply colors after sheet renders
+  Hooks.on('renderActorSheet', () => {
+    setTimeout(() => applyInjuryStatusColors(), 100);
+  });
   
   // Watch for changes to injury status
   const observer = new MutationObserver(function(mutations) {
@@ -101,12 +111,25 @@ Hooks.once('ready', function() {
       if (mutation.target && 
           mutation.target.classList && 
           (mutation.target.classList.contains('injury-status') || 
-           (mutation.target.closest && mutation.target.closest('.injury-status')))) {
+           mutation.target.classList.contains('nsbu-injury-status') ||
+           (mutation.target.closest && (mutation.target.closest('.injury-status') || mutation.target.closest('.nsbu-injury-status'))))) {
         shouldUpdate = true;
+      }
+      
+      // Also check for added nodes that might contain injury status
+      if (mutation.type === 'childList' && mutation.addedNodes) {
+        mutation.addedNodes.forEach(function(node) {
+          if (node.nodeType === 1) { // Element node
+            if (node.matches && (node.matches('.injury-status') || node.matches('.nsbu-injury-status') || 
+                node.querySelector && (node.querySelector('.injury-status') || node.querySelector('.nsbu-injury-status')))) {
+              shouldUpdate = true;
+            }
+          }
+        });
       }
     });
     if (shouldUpdate) {
-      applyInjuryStatusColors();
+      setTimeout(() => applyInjuryStatusColors(), 10);
     }
   });
   
