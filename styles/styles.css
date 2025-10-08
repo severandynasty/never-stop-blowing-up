@@ -1055,3 +1055,33 @@ label {
   border: 1px solid rgba(0, 255, 255, 0.6) !important;
   box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
 }
+
+/* Constrain textarea width to prevent resizing beyond sheet boundaries */
+.actor-sheet.nsbu-sheet textarea {
+  max-width: 100% !important;
+  min-width: 200px !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
+}
+
+/* Specific constraints for inventory and bio textareas */
+.actor-sheet.nsbu-sheet .nsbu-inventory textarea,
+.actor-sheet.nsbu-sheet .nsbu-bio textarea,
+.actor-sheet.nsbu-sheet .nsbu-notes textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 200px !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
+}
+
+/* Apply same constraints to NPC sheets */
+.actor-sheet.nsbu-sheet textarea[name="system.inventory"],
+.actor-sheet.nsbu-sheet textarea[name="system.bio"],
+.actor-sheet.nsbu-sheet textarea[name="system.notes"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 200px !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
+}
