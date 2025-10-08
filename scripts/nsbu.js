@@ -1270,7 +1270,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     
     // Reset the stat to d4 (base die)
     const updateData = {};
-    updateData[`system.${stat}`] = 4;
+    updateData[`system.stats.${stat}`] = 4;
     await actor.update(updateData);
     
     // Enable advantage for this actor/stat combination
@@ -1285,8 +1285,9 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Natural maximum - automatic blow-up
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!${isTrackRestartTrigger ? ' 🔄 TRACK RESTART!' : ''}</div>
         <div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
+        ${isTrackRestartTrigger ? '<div class="track-restart-notice">🔄 TRACK RESTART ACTIVATED!<br/>Stat reset to d4 - Future rolls have advantage!</div>' : ''}
       </div>
     `;
     
