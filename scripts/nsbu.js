@@ -1099,7 +1099,7 @@ function hasTrackRestart(actor) {
   if (!actor || !actor.items) return false;
   
   const trackRestartAbility = actor.items.find(item => 
-    item.type === "upgrade" && 
+    item.type === "group-ability" && 
     item.system?.groupSuite && 
     item.name.toLowerCase().includes("track restart")
   );
