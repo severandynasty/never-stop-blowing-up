@@ -16,6 +16,9 @@ function debugLog(...args) {
 const activeRollSequences = new Map();
 const rollSequenceTimeouts = new Map(); // Track timeouts for auto-cleanup
 
+// Track Track Restart (advantage) states for actors/stats
+const trackRestartStates = new Map(); // Format: "actorId-stat" -> true
+
 // Function to clear a roll sequence and its timeout
 function clearRollSequence(actorId, stat, reason = '') {
   const sequenceKey = `${actorId}-${stat}`;
@@ -1091,6 +1094,20 @@ function getNextDie(currentDie) {
   return currentIdx < dieSteps.length - 1 ? dieSteps[currentIdx + 1] : 20;
 }
 
+// Helper function to check if actor has Track Restart group ability
+function hasTrackRestart(actor) {
+  if (!actor || !actor.items) return false;
+  
+  const trackRestartAbility = actor.items.find(item => 
+    item.type === "upgrade" && 
+    item.system?.groupSuite && 
+    item.name.toLowerCase().includes("track restart")
+  );
+  
+  debugLog(`🔄 DEBUG: Track Restart check for ${actor.name}:`, trackRestartAbility ? "FOUND" : "NOT FOUND");
+  return !!trackRestartAbility;
+}
+
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
   debugLog('🎲🎲🎲 DEBUG: createInteractiveDiceRoll ENTRY POINT', {
@@ -1202,12 +1219,33 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   debugLog(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
   
-  // Create and evaluate the roll
-  const roll = new Roll(`1d${currentDie}`);
-  await roll.evaluate();
-  const rollValue = roll.total;
+  // Check if this stat has Track Restart advantage active
+  const trackRestartKey = `${actor.id}-${stat}`;
+  const hasAdvantage = trackRestartStates.has(trackRestartKey);
   
-  debugLog(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
+  // Create and evaluate the roll(s)
+  let roll, rollValue, advantageRoll, advantageValue;
+  
+  if (hasAdvantage) {
+    // Roll with advantage (2 dice, keep highest)
+    roll = new Roll(`1d${currentDie}`);
+    advantageRoll = new Roll(`1d${currentDie}`);
+    await roll.evaluate();
+    await advantageRoll.evaluate();
+    
+    const roll1 = roll.total;
+    const roll2 = advantageRoll.total;
+    rollValue = Math.max(roll1, roll2);
+    
+    debugLog(`🎲 DEBUG: Advantage roll results: ${roll1}, ${roll2} -> keeping ${rollValue} on d${currentDie}`);
+  } else {
+    // Normal single roll
+    roll = new Roll(`1d${currentDie}`);
+    await roll.evaluate();
+    rollValue = roll.total;
+    
+    debugLog(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
+  }
   
   // Update cumulative total with this roll
   const newCumulativeTotal = cumulativeTotal + rollValue;
@@ -1220,7 +1258,27 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   // Check if this is a natural maximum (automatic blow-up)
   const isNaturalMax = (rollValue === currentDie);
   
+  // Check for Track Restart trigger (natural 20 on d20 with Track Restart ability)
+  const isTrackRestartTrigger = (currentDie === 20 && rollValue === 20 && hasTrackRestart(actor) && !hasAdvantage);
+  
   debugLog(`🎲 DEBUG: isNaturalMax: ${isNaturalMax}, currentTokens: ${currentTokens}`);
+  debugLog(`🔄 DEBUG: Track Restart trigger check: d${currentDie}, roll: ${rollValue}, hasAbility: ${hasTrackRestart(actor)}, hasAdvantage: ${hasAdvantage}, trigger: ${isTrackRestartTrigger}`);
+  
+  // Handle Track Restart trigger
+  if (isTrackRestartTrigger) {
+    debugLog(`🔄 TRACK RESTART: Natural 20 on d20! Resetting ${stat} to d4 and enabling advantage for ${actor.name}`);
+    
+    // Reset the stat to d4 (base die)
+    const updateData = {};
+    updateData[`system.${stat}`] = 4;
+    await actor.update(updateData);
+    
+    // Enable advantage for this actor/stat combination
+    const advantageKey = `${actor.id}-${stat}`;
+    trackRestartStates.set(advantageKey, true);
+    
+    debugLog(`🔄 TRACK RESTART: ${stat} reset to d4 and advantage enabled for ${actor.name}`);
+  }
   
   let content;
   if (isNaturalMax) {
@@ -1431,7 +1489,8 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Normal roll - always show interactive controls (removed auto-accept for 0 tokens)
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}${isTrackRestartTrigger ? ' 🔄 TRACK RESTART!' : ''}${hasAdvantage ? ' (Advantage)' : ''}</div>
+        ${isTrackRestartTrigger ? '<div class="track-restart-notice">🔄 TRACK RESTART ACTIVATED!<br/>Stat reset to d4 - Future rolls have advantage!</div>' : ''}
         <div class="roll-total">
           <span class="current-die-label">Current Die:</span> <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
