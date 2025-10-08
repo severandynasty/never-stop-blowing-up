@@ -191,6 +191,24 @@ form.actor-sheet.nsbu-sheet {
   border-color: rgba(0, 255, 255, 0.8) !important;
 }
 
+/* Edit mode toggle active state - Orange when edit mode is enabled */
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active {
+  background: rgba(255, 140, 0, 0.3) !important;
+  border-color: rgba(255, 140, 0, 0.8) !important;
+}
+
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active svg,
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active .wrench-icon {
+  color: #ff8c00 !important;
+  fill: #ff8c00 !important;
+  filter: drop-shadow(0 0 3px rgba(255, 140, 0, 0.8)) !important;
+}
+
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active:hover {
+  background: rgba(255, 140, 0, 0.4) !important;
+  border-color: rgba(255, 140, 0, 1) !important;
+}
+
 /* Header title styling */
 .actor-sheet.nsbu-sheet .nsbu-title h1 {
   color: #ffffff !important;
