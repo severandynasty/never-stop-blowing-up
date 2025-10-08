@@ -263,17 +263,20 @@ form.actor-sheet.nsbu-sheet {
   backdrop-filter: blur(2px) !important;
 }
 
-/* Remove backgrounds from dice roll buttons specifically */
+/* Remove backgrounds from dice roll buttons completely - show only glowing dice */
 .actor-sheet.nsbu-sheet .stat-roll {
-  background: none !important;
+  background: transparent !important;
   border: none !important;
   box-shadow: none !important;
   padding: 0.25em !important;
+  border-radius: 0 !important;
 }
 
 .actor-sheet.nsbu-sheet .stat-roll:hover {
-  background: rgba(0, 255, 255, 0.1) !important;
-  border-radius: 4px !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
 .actor-sheet.nsbu-sheet .nsbu-right-column > div {
@@ -513,19 +516,26 @@ form.actor-sheet.nsbu-sheet {
   justify-content: center;
 }
 
-/* Dice Icon Styling */
+/* Dice Icon Styling with 80s Glow Shadow */
 .dice-icon {
   width: 40px;
   height: 40px;
   display: inline-block;
   vertical-align: middle;
   cursor: pointer;
-  transition: transform 0.1s ease;
+  transition: all 0.2s ease;
   border: none;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.4)) 
+          drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 12px rgba(0, 255, 255, 0.3));
 }
 
 .dice-icon:hover {
   transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.5)) 
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 20px rgba(0, 255, 255, 0.3))
+          drop-shadow(0 0 4px rgba(255, 140, 0, 0.4));
 }
 
 .stat-roll:hover .dice-icon {
@@ -904,4 +914,144 @@ label {
 
 .injury-warning i {
   color: #f39c12;
+}
+
+/* Item Sheet Styling - Make text readable on dark 80s background */
+.item-sheet {
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
+  color: #ffffff !important;
+}
+
+.item-sheet .window-content {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+.item-sheet .window-content * {
+  color: #ffffff !important;
+}
+
+/* Specific text elements in item sheets */
+.item-sheet input,
+.item-sheet textarea,
+.item-sheet select,
+.item-sheet .form-group label,
+.item-sheet .form-fields label,
+.item-sheet h1, .item-sheet h2, .item-sheet h3, .item-sheet h4,
+.item-sheet p, .item-sheet div, .item-sheet span {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* Input fields styling for better readability */
+.item-sheet input,
+.item-sheet textarea,
+.item-sheet select {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.item-sheet input:focus,
+.item-sheet textarea:focus,
+.item-sheet select:focus {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 255, 255, 0.6) !important;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Group Ability Sheet Styling - Make text readable on dark 80s background */
+.group-ability-sheet {
+  background: 
+    linear-gradient(45deg, 
+      transparent 0%, 
+      transparent 40%, 
+      rgba(0, 255, 255, 0.15) 42%, 
+      rgba(0, 255, 255, 0.25) 46%, 
+      rgba(0, 255, 255, 0.15) 50%, 
+      transparent 54%, 
+      transparent 100%),
+    linear-gradient(-45deg, 
+      transparent 0%, 
+      transparent 55%, 
+      rgba(255, 140, 0, 0.12) 58%, 
+      rgba(255, 140, 0, 0.22) 62%, 
+      rgba(255, 140, 0, 0.12) 66%, 
+      transparent 70%, 
+      transparent 100%),
+    linear-gradient(25deg, 
+      transparent 70%, 
+      rgba(255, 20, 147, 0.08) 73%, 
+      rgba(255, 20, 147, 0.08) 77%, 
+      transparent 80%),
+    linear-gradient(135deg, 
+      #1a1a2e 0%, 
+      #16213e 30%, 
+      #0f0f23 70%, 
+      #0a0a1a 100%) !important;
+  color: #ffffff !important;
+}
+
+.group-ability-sheet .window-content {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+
+.group-ability-sheet .window-content * {
+  color: #ffffff !important;
+}
+
+/* Specific text elements in group ability sheets */
+.group-ability-sheet input,
+.group-ability-sheet textarea,
+.group-ability-sheet select,
+.group-ability-sheet .form-group label,
+.group-ability-sheet .form-fields label,
+.group-ability-sheet h1, .group-ability-sheet h2, .group-ability-sheet h3, .group-ability-sheet h4,
+.group-ability-sheet p, .group-ability-sheet div, .group-ability-sheet span {
+  color: #ffffff !important;
+  background: transparent !important;
+}
+
+/* Input fields styling for better readability in group ability sheets */
+.group-ability-sheet input,
+.group-ability-sheet textarea,
+.group-ability-sheet select {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid rgba(0, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+}
+
+.group-ability-sheet input:focus,
+.group-ability-sheet textarea:focus,
+.group-ability-sheet select:focus {
+  background: rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(0, 255, 255, 0.6) !important;
+  box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
 }
