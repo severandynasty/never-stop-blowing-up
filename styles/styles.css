@@ -191,6 +191,24 @@ form.actor-sheet.nsbu-sheet {
   border-color: rgba(0, 255, 255, 0.8) !important;
 }
 
+/* Edit mode toggle active state - Orange when edit mode is enabled */
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active {
+  background: rgba(255, 140, 0, 0.3) !important;
+  border-color: rgba(255, 140, 0, 0.8) !important;
+}
+
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active svg,
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active .wrench-icon {
+  color: #ff8c00 !important;
+  fill: #ff8c00 !important;
+  filter: drop-shadow(0 0 3px rgba(255, 140, 0, 0.8)) !important;
+}
+
+.actor-sheet.nsbu-sheet .edit-mode-toggle.active:hover {
+  background: rgba(255, 140, 0, 0.4) !important;
+  border-color: rgba(255, 140, 0, 1) !important;
+}
+
 /* Header title styling */
 .actor-sheet.nsbu-sheet .nsbu-title h1 {
   color: #ffffff !important;
@@ -333,6 +351,18 @@ form.actor-sheet.nsbu-sheet {
   50% { text-shadow: 0 0 10px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8); }
 }
 
+/* Slow pulse animation for critical injuries (injury value 3) */
+@keyframes pulse-critical {
+  0%, 100% { 
+    text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8);
+    color: #ff0040;
+  }
+  50% { 
+    text-shadow: 0 0 15px rgba(255, 0, 64, 1), 0 0 25px rgba(255, 0, 64, 0.6), 0 1px 2px rgba(0, 0, 0, 0.8);
+    color: #ff4060;
+  }
+}
+
 /* Specific fix for category/type text */
 .actor-sheet.nsbu-sheet span[style*="color: #666"],
 .actor-sheet.nsbu-sheet span[style*="color: #888"] {
@@ -362,6 +392,60 @@ form.actor-sheet.nsbu-sheet {
   text-shadow: 0 0 5px rgba(255, 0, 64, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
   font-weight: bold !important;
   animation: pulse-red 2s infinite !important;
+}
+
+/* Injury value-based styling - Injury value 2 = Orange */
+.actor-sheet.nsbu-sheet .injury-status span[data-injury="2"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[data-injury="2"],
+.actor-sheet.nsbu-sheet .injury-2 {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+/* Injury value-based styling - Injury value 3 = Bright Red with Pulse */
+.actor-sheet.nsbu-sheet .injury-status span[data-injury="3"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[data-injury="3"],
+.actor-sheet.nsbu-sheet .injury-3 {
+  color: #ff0040 !important;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-critical 3s infinite !important;
+}
+
+/* Override inline styles for injury status - target by content */
+.actor-sheet.nsbu-sheet .injury-status span[style*="color: red"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[style*="color: red"] {
+  color: #ff0040 !important;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-critical 3s infinite !important;
+}
+
+/* Override inline styles for orange injury status */
+.actor-sheet.nsbu-sheet .injury-status span[style*="color: orange"],
+.actor-sheet.nsbu-sheet .nsbu-injury-status span[style*="color: orange"] {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+}
+
+/* Enhanced class-based styling with stronger specificity */
+.actor-sheet.nsbu-sheet .injury-adrenalized,
+.actor-sheet.nsbu-sheet .injury-status .injury-adrenalized,
+.actor-sheet.nsbu-sheet .nsbu-injury-status .injury-adrenalized {
+  color: #ff0040 !important;
+  text-shadow: 0 0 8px rgba(255, 0, 64, 1), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
+  animation: pulse-critical 3s infinite !important;
+}
+
+.actor-sheet.nsbu-sheet .injury-severe,
+.actor-sheet.nsbu-sheet .injury-status .injury-severe,
+.actor-sheet.nsbu-sheet .nsbu-injury-status .injury-severe {
+  color: #ff8c00 !important;
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.8), 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+  font-weight: bold !important;
 }
 
 /* Force override for inline styles */
@@ -1054,4 +1138,34 @@ label {
   background: rgba(0, 0, 0, 0.4) !important;
   border: 1px solid rgba(0, 255, 255, 0.6) !important;
   box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Constrain textarea width to prevent resizing beyond sheet boundaries */
+.actor-sheet.nsbu-sheet textarea {
+  max-width: 100% !important;
+  min-width: 200px !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
+}
+
+/* Specific constraints for inventory and bio textareas */
+.actor-sheet.nsbu-sheet .nsbu-inventory textarea,
+.actor-sheet.nsbu-sheet .nsbu-bio textarea,
+.actor-sheet.nsbu-sheet .nsbu-notes textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 200px !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
+}
+
+/* Apply same constraints to NPC sheets */
+.actor-sheet.nsbu-sheet textarea[name="system.inventory"],
+.actor-sheet.nsbu-sheet textarea[name="system.bio"],
+.actor-sheet.nsbu-sheet textarea[name="system.notes"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 200px !important;
+  resize: vertical !important;
+  box-sizing: border-box !important;
 }
