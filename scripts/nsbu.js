@@ -1852,6 +1852,7 @@ class NSBUActorSheet extends ActorSheet {
         // Reset the stat to d4
         const updateData = {};
         updateData[`system.stats.${stat}`] = 4;
+        updateData[`system.trackRestart.${stat}`] = true;
         await this.actor.update(updateData);
         
         // Enable advantage for this actor/stat combination
@@ -1864,8 +1865,16 @@ class NSBUActorSheet extends ActorSheet {
         const advantageKey = `${this.actor.id}-${stat}`;
         trackRestartStates.delete(advantageKey);
         
+        // Update the actor data to reflect the change
+        const updateData = {};
+        updateData[`system.trackRestart.${stat}`] = false;
+        await this.actor.update(updateData);
+        
         ui.notifications.info(`Track Restart disabled for ${stat.toUpperCase()}.`);
       }
+      
+      // Force a sheet re-render to ensure UI state is properly updated
+      this.render(false);
     });
   }
 
