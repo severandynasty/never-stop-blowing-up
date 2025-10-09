@@ -1220,16 +1220,15 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   if (hasAdvantage) {
     // Roll with advantage (2 dice, keep highest)
-    roll = new Roll(`1d${currentDie}`);
-    advantageRoll = new Roll(`1d${currentDie}`);
+    roll = new Roll(`2d${currentDie}kh1`);
     await roll.evaluate();
-    await advantageRoll.evaluate();
+    rollValue = roll.total;
     
-    const roll1 = roll.total;
-    const roll2 = advantageRoll.total;
-    rollValue = Math.max(roll1, roll2);
+    // Get individual die results for display
+    const diceResults = roll.dice[0].results.map(r => r.result);
+    const advantageDetails = `(${diceResults.join(', ')} → ${rollValue})`;
     
-    debugLog(`🎲 DEBUG: Advantage roll results: ${roll1}, ${roll2} -> keeping ${rollValue} on d${currentDie}`);
+    debugLog(`🎲 DEBUG: Advantage roll results: ${advantageDetails} on d${currentDie}`);
   } else {
     // Normal single roll
     roll = new Roll(`1d${currentDie}`);
@@ -1257,7 +1256,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Natural maximum - automatic blow-up
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!${hasAdvantage ? ` (Advantage: ${roll.dice[0].results.map(r => r.result).join(', ')} → ${rollValue})` : ''}</div>
         <div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
       </div>
     `;
@@ -1461,7 +1460,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Normal roll - always show interactive controls (removed auto-accept for 0 tokens)
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}${hasAdvantage ? ' (Advantage)' : ''}</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}${hasAdvantage ? ` (Advantage: ${roll.dice[0].results.map(r => r.result).join(', ')} → ${rollValue})` : ''}</div>
         <div class="roll-total">
           <span class="current-die-label">Current Die:</span> <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
@@ -1845,46 +1844,28 @@ class NSBUActorSheet extends ActorSheet {
     });
 
     // Track Restart checkbox handlers
-    html.find('.track-restart-checkbox').on('change', (event) => {
+    html.find('.track-restart-checkbox').on('change', async (event) => {
       const checkbox = event.currentTarget;
-      const toggle = checkbox.closest('.track-restart-toggle');
-      const button = toggle.querySelector('.track-restart-btn');
+      const stat = checkbox.dataset.stat;
       
       if (checkbox.checked) {
-        button.style.display = 'inline-block';
+        // Reset the stat to d4
+        const updateData = {};
+        updateData[`system.stats.${stat}`] = 4;
+        await this.actor.update(updateData);
+        
+        // Enable advantage for this actor/stat combination
+        const advantageKey = `${this.actor.id}-${stat}`;
+        trackRestartStates.set(advantageKey, true);
+        
+        ui.notifications.info(`Track Restart activated for ${stat.toUpperCase()}! Stat reset to d4 and advantage enabled.`);
       } else {
-        button.style.display = 'none';
+        // Disable advantage for this actor/stat combination
+        const advantageKey = `${this.actor.id}-${stat}`;
+        trackRestartStates.delete(advantageKey);
+        
+        ui.notifications.info(`Track Restart disabled for ${stat.toUpperCase()}.`);
       }
-    });
-
-    // Initialize Track Restart button visibility
-    html.find('.track-restart-checkbox').each((i, checkbox) => {
-      const toggle = checkbox.closest('.track-restart-toggle');
-      const button = toggle.querySelector('.track-restart-btn');
-      
-      if (checkbox.checked) {
-        button.style.display = 'inline-block';
-      } else {
-        button.style.display = 'none';
-      }
-    });
-
-    // Track Restart button handlers
-    html.find('.track-restart-btn').on('click', async (event) => {
-      event.preventDefault();
-      const stat = event.currentTarget.dataset.stat;
-      
-      // Reset the stat to d4
-      const updateData = {};
-      updateData[`system.stats.${stat}`] = 4;
-      await this.actor.update(updateData);
-      
-      // Enable advantage for this actor/stat combination
-      const advantageKey = `${this.actor.id}-${stat}`;
-      trackRestartStates.set(advantageKey, true);
-      
-      ui.notifications.info(`Track Restart activated for ${stat.toUpperCase()}! Stat reset to d4 and advantage enabled.`);
-      this.render();
     });
   }
 
