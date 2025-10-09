@@ -828,6 +828,25 @@ label {
   border: 2px solid #00e5ff;
 }
 
+/* Track Restart Toggle Styling */
+.track-restart-toggle {
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.track-restart-toggle:hover {
+  opacity: 1;
+}
+
+.track-restart-toggle input[type="checkbox"] {
+  accent-color: #00bcd4;
+}
+
+/* Show Track Restart toggles in edit mode */
+.edit-mode .track-restart-toggle {
+  display: block !important;
+}
+
 .turbo-tokens-section {
   background: #e3f2fd;
   border: 1px solid #2196f3;

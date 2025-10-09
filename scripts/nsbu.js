@@ -1095,17 +1095,9 @@ function getNextDie(currentDie) {
 }
 
 // Helper function to check if actor has Track Restart group ability
-function hasTrackRestart(actor) {
-  if (!actor || !actor.items) return false;
-  
-  const trackRestartAbility = actor.items.find(item => 
-    item.type === "group-ability" && 
-    item.system?.groupSuite && 
-    item.name.toLowerCase().includes("track restart")
-  );
-  
-  debugLog(`🔄 DEBUG: Track Restart check for ${actor.name}:`, trackRestartAbility ? "FOUND" : "NOT FOUND");
-  return !!trackRestartAbility;
+function hasTrackRestart(actor, stat) {
+  if (!actor || !actor.system) return false;
+  return actor.system.trackRestart?.[stat] || false;
 }
 
 // Helper function to create interactive dice roll
@@ -1258,36 +1250,15 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   // Check if this is a natural maximum (automatic blow-up)
   const isNaturalMax = (rollValue === currentDie);
   
-  // Check for Track Restart trigger (natural 20 on d20 with Track Restart ability)
-  const isTrackRestartTrigger = (currentDie === 20 && rollValue === 20 && hasTrackRestart(actor) && !hasAdvantage);
-  
   debugLog(`🎲 DEBUG: isNaturalMax: ${isNaturalMax}, currentTokens: ${currentTokens}`);
-  debugLog(`🔄 DEBUG: Track Restart trigger check: d${currentDie}, roll: ${rollValue}, hasAbility: ${hasTrackRestart(actor)}, hasAdvantage: ${hasAdvantage}, trigger: ${isTrackRestartTrigger}`);
-  
-  // Handle Track Restart trigger
-  if (isTrackRestartTrigger) {
-    debugLog(`🔄 TRACK RESTART: Natural 20 on d20! Resetting ${stat} to d4 and enabling advantage for ${actor.name}`);
-    
-    // Reset the stat to d4 (base die)
-    const updateData = {};
-    updateData[`system.stats.${stat}`] = 4;
-    await actor.update(updateData);
-    
-    // Enable advantage for this actor/stat combination
-    const advantageKey = `${actor.id}-${stat}`;
-    trackRestartStates.set(advantageKey, true);
-    
-    debugLog(`🔄 TRACK RESTART: ${stat} reset to d4 and advantage enabled for ${actor.name}`);
-  }
   
   let content;
   if (isNaturalMax) {
     // Natural maximum - automatic blow-up
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!${isTrackRestartTrigger ? ' 🔄 TRACK RESTART!' : ''}</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
         <div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
-        ${isTrackRestartTrigger ? '<div class="track-restart-notice">🔄 TRACK RESTART ACTIVATED!<br/>Stat reset to d4 - Future rolls have advantage!</div>' : ''}
       </div>
     `;
     
@@ -1490,8 +1461,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Normal roll - always show interactive controls (removed auto-accept for 0 tokens)
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}${isTrackRestartTrigger ? ' 🔄 TRACK RESTART!' : ''}${hasAdvantage ? ' (Advantage)' : ''}</div>
-        ${isTrackRestartTrigger ? '<div class="track-restart-notice">🔄 TRACK RESTART ACTIVATED!<br/>Stat reset to d4 - Future rolls have advantage!</div>' : ''}
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}${hasAdvantage ? ' (Advantage)' : ''}</div>
         <div class="roll-total">
           <span class="current-die-label">Current Die:</span> <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
@@ -1872,6 +1842,49 @@ class NSBUActorSheet extends ActorSheet {
       });
       
       fp.browse();
+    });
+
+    // Track Restart checkbox handlers
+    html.find('.track-restart-checkbox').on('change', (event) => {
+      const checkbox = event.currentTarget;
+      const toggle = checkbox.closest('.track-restart-toggle');
+      const button = toggle.querySelector('.track-restart-btn');
+      
+      if (checkbox.checked) {
+        button.style.display = 'inline-block';
+      } else {
+        button.style.display = 'none';
+      }
+    });
+
+    // Initialize Track Restart button visibility
+    html.find('.track-restart-checkbox').each((i, checkbox) => {
+      const toggle = checkbox.closest('.track-restart-toggle');
+      const button = toggle.querySelector('.track-restart-btn');
+      
+      if (checkbox.checked) {
+        button.style.display = 'inline-block';
+      } else {
+        button.style.display = 'none';
+      }
+    });
+
+    // Track Restart button handlers
+    html.find('.track-restart-btn').on('click', async (event) => {
+      event.preventDefault();
+      const stat = event.currentTarget.dataset.stat;
+      
+      // Reset the stat to d4
+      const updateData = {};
+      updateData[`system.stats.${stat}`] = 4;
+      await this.actor.update(updateData);
+      
+      // Enable advantage for this actor/stat combination
+      const advantageKey = `${this.actor.id}-${stat}`;
+      trackRestartStates.set(advantageKey, true);
+      
+      ui.notifications.info(`Track Restart activated for ${stat.toUpperCase()}! Stat reset to d4 and advantage enabled.`);
+      this.render();
     });
   }
 
