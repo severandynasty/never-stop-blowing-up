@@ -815,6 +815,38 @@ label {
   100% { transform: scale(1); }
 }
 
+.track-restart-notice {
+  background: linear-gradient(45deg, #00bcd4, #4fc3f7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  animation: pulse 2s infinite;
+  border: 2px solid #00e5ff;
+}
+
+/* Track Restart Toggle Styling */
+.track-restart-toggle {
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.track-restart-toggle:hover {
+  opacity: 1;
+}
+
+.track-restart-toggle input[type="checkbox"] {
+  accent-color: #00bcd4;
+}
+
+/* Show Track Restart toggles in edit mode */
+.edit-mode .track-restart-toggle {
+  display: block !important;
+}
+
 .turbo-tokens-section {
   background: #e3f2fd;
   border: 1px solid #2196f3;

@@ -52,6 +52,12 @@
             </button>
             <button type="button" class="stat-increase" data-stat="weapons" style="width:1.5em;">+</button>
           </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.weapons" {{#if system.trackRestart.weapons}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="weapons"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Brawl</label>
@@ -68,6 +74,12 @@
             </button>
             <button type="button" class="stat-increase" data-stat="brawl" style="width:1.5em;">+</button>
           </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.brawl" {{#if system.trackRestart.brawl}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="brawl"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Hot</label>
@@ -83,6 +95,12 @@
               {{#unless system.stats.hot}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
             </button>
             <button type="button" class="stat-increase" data-stat="hot" style="width:1.5em;">+</button>
+          </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.hot" {{#if system.trackRestart.hot}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="hot"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
           </div>
         </div>
       </div>
@@ -102,6 +120,12 @@
             </button>
             <button type="button" class="stat-increase" data-stat="drive" style="width:1.5em;">+</button>
           </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.drive" {{#if system.trackRestart.drive}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="drive"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Stunts</label>
@@ -118,6 +142,12 @@
             </button>
             <button type="button" class="stat-increase" data-stat="stunts" style="width:1.5em;">+</button>
           </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.stunts" {{#if system.trackRestart.stunts}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="stunts"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Wits</label>
@@ -133,6 +163,12 @@
               {{#unless system.stats.wits}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
             </button>
             <button type="button" class="stat-increase" data-stat="wits" style="width:1.5em;">+</button>
+          </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.wits" {{#if system.trackRestart.wits}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="wits"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
           </div>
         </div>
       </div>
@@ -152,6 +188,12 @@
             </button>
             <button type="button" class="stat-increase" data-stat="tech" style="width:1.5em;">+</button>
           </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.tech" {{#if system.trackRestart.tech}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="tech"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Tough</label>
@@ -168,6 +210,12 @@
             </button>
             <button type="button" class="stat-increase" data-stat="tough" style="width:1.5em;">+</button>
           </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.tough" {{#if system.trackRestart.tough}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="tough"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
+          </div>
         </div>
         <div style="display: flex; flex-direction: column; align-items: center;">
           <label>Sneak</label>
@@ -183,6 +231,12 @@
               {{#unless system.stats.sneak}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
             </button>
             <button type="button" class="stat-increase" data-stat="sneak" style="width:1.5em;">+</button>
+          </div>
+          <div class="track-restart-toggle edit-controlled" style="display: none; margin-top: 2px;">
+            <label style="font-size: 0.7em; display: flex; align-items: center; gap: 2px; cursor: pointer;">
+              <input type="checkbox" name="system.trackRestart.sneak" {{#if system.trackRestart.sneak}}checked{{/if}} style="width: 12px; height: 12px;" class="track-restart-checkbox" data-stat="sneak"/>
+              <span style="color: #00bcd4;">🔄 Track Restart</span>
+            </label>
           </div>
         </div>
       </div>

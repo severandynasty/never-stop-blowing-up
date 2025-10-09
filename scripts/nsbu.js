@@ -16,6 +16,9 @@ function debugLog(...args) {
 const activeRollSequences = new Map();
 const rollSequenceTimeouts = new Map(); // Track timeouts for auto-cleanup
 
+// Track Track Restart (advantage) states for actors/stats
+const trackRestartStates = new Map(); // Format: "actorId-stat" -> true
+
 // Function to clear a roll sequence and its timeout
 function clearRollSequence(actorId, stat, reason = '') {
   const sequenceKey = `${actorId}-${stat}`;
@@ -1091,6 +1094,12 @@ function getNextDie(currentDie) {
   return currentIdx < dieSteps.length - 1 ? dieSteps[currentIdx + 1] : 20;
 }
 
+// Helper function to check if actor has Track Restart group ability
+function hasTrackRestart(actor, stat) {
+  if (!actor || !actor.system) return false;
+  return actor.system.trackRestart?.[stat] || false;
+}
+
 // Helper function to create interactive dice roll
 async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal = 0, rollSequenceId = null) {
   debugLog('🎲🎲🎲 DEBUG: createInteractiveDiceRoll ENTRY POINT', {
@@ -1202,12 +1211,32 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
   
   debugLog(`🎲 DEBUG: Rolling d${currentDie} (index ${dieIdx})`);
   
-  // Create and evaluate the roll
-  const roll = new Roll(`1d${currentDie}`);
-  await roll.evaluate();
-  const rollValue = roll.total;
+  // Check if this stat has Track Restart advantage active
+  const trackRestartKey = `${actor.id}-${stat}`;
+  const hasAdvantage = trackRestartStates.has(trackRestartKey);
   
-  debugLog(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
+  // Create and evaluate the roll(s)
+  let roll, rollValue, advantageRoll, advantageValue;
+  
+  if (hasAdvantage) {
+    // Roll with advantage (2 dice, keep highest)
+    roll = new Roll(`2d${currentDie}kh1`);
+    await roll.evaluate();
+    rollValue = roll.total;
+    
+    // Get individual die results for display
+    const diceResults = roll.dice[0].results.map(r => r.result);
+    const advantageDetails = `(${diceResults.join(', ')} → ${rollValue})`;
+    
+    debugLog(`🎲 DEBUG: Advantage roll results: ${advantageDetails} on d${currentDie}`);
+  } else {
+    // Normal single roll
+    roll = new Roll(`1d${currentDie}`);
+    await roll.evaluate();
+    rollValue = roll.total;
+    
+    debugLog(`🎲 DEBUG: Roll result: ${rollValue} on d${currentDie}`);
+  }
   
   // Update cumulative total with this roll
   const newCumulativeTotal = cumulativeTotal + rollValue;
@@ -1227,7 +1256,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Natural maximum - automatic blow-up
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue} 🎯 NATURAL MAX!${hasAdvantage ? ` (Advantage: ${roll.dice[0].results.map(r => r.result).join(', ')} → ${rollValue})` : ''}</div>
         <div class="blow-up-notice">💥 BLOW UP!<br/>${stat.toUpperCase()} upgraded to d${dieSteps[dieIdx + 1] || currentDie}!</div>
       </div>
     `;
@@ -1431,7 +1460,7 @@ async function createInteractiveDiceRoll(actor, stat, statValue, cumulativeTotal
     // Normal roll - always show interactive controls (removed auto-accept for 0 tokens)
     content = `
       <div class="nsbu-roll-result" data-roll-id="${rollId}" data-actor-id="${actor.id}">
-        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}</div>
+        <div class="roll-details">Rolling ${stat.toUpperCase()} (d${currentDie}): ${rollValue}${hasAdvantage ? ` (Advantage: ${roll.dice[0].results.map(r => r.result).join(', ')} → ${rollValue})` : ''}</div>
         <div class="roll-total">
           <span class="current-die-label">Current Die:</span> <span class="current-die-total">${rollValue}</span>
           ${cumulativeTotal > 0 ? `<br/>Cumulative Total: <span class="cumulative-total">${newCumulativeTotal}</span>` : ''}
@@ -1812,6 +1841,40 @@ class NSBUActorSheet extends ActorSheet {
       });
       
       fp.browse();
+    });
+
+    // Track Restart checkbox handlers
+    html.find('.track-restart-checkbox').on('change', async (event) => {
+      const checkbox = event.currentTarget;
+      const stat = checkbox.dataset.stat;
+      
+      if (checkbox.checked) {
+        // Reset the stat to d4
+        const updateData = {};
+        updateData[`system.stats.${stat}`] = 4;
+        updateData[`system.trackRestart.${stat}`] = true;
+        await this.actor.update(updateData);
+        
+        // Enable advantage for this actor/stat combination
+        const advantageKey = `${this.actor.id}-${stat}`;
+        trackRestartStates.set(advantageKey, true);
+        
+        ui.notifications.info(`Track Restart activated for ${stat.toUpperCase()}! Stat reset to d4 and advantage enabled.`);
+      } else {
+        // Disable advantage for this actor/stat combination
+        const advantageKey = `${this.actor.id}-${stat}`;
+        trackRestartStates.delete(advantageKey);
+        
+        // Update the actor data to reflect the change
+        const updateData = {};
+        updateData[`system.trackRestart.${stat}`] = false;
+        await this.actor.update(updateData);
+        
+        ui.notifications.info(`Track Restart disabled for ${stat.toUpperCase()}.`);
+      }
+      
+      // Force a sheet re-render to ensure UI state is properly updated
+      this.render(false);
     });
   }
 
