@@ -602,8 +602,6 @@ form.actor-sheet.nsbu-sheet {
 
 /* Dice Icon Styling with 80s Glow Shadow */
 .dice-icon {
-  width: 40px;
-  height: 40px;
   display: inline-block;
   vertical-align: middle;
   cursor: pointer;
@@ -615,7 +613,6 @@ form.actor-sheet.nsbu-sheet {
 }
 
 .dice-icon:hover {
-  transform: scale(1.1);
   filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.5)) 
           drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))
           drop-shadow(0 0 20px rgba(0, 255, 255, 0.3))
@@ -623,7 +620,10 @@ form.actor-sheet.nsbu-sheet {
 }
 
 .stat-roll:hover .dice-icon {
-  transform: scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(0, 255, 255, 0.5)) 
+          drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5))
+          drop-shadow(0 0 20px rgba(0, 255, 255, 0.3))
+          drop-shadow(0 0 4px rgba(255, 140, 0, 0.4));
 }
 
 /* Remove ALL focus/hover outlines and shadows on dice buttons */
@@ -845,6 +845,58 @@ label {
 /* Show Track Restart toggles in edit mode */
 .edit-mode .track-restart-toggle {
   display: block !important;
+}
+
+/* Dice container for overlapping effect */
+.dice-container {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+}
+
+/* Normal dice display */
+.dice-container .dice-icon {
+  width: 40px;
+  height: 40px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Advantage dice styling - create overlapping effect */
+.dice-container.advantage-dice .dice-icon {
+  position: relative;
+  z-index: 2;
+  transform: rotate(-15deg) translate(-6px, 0);
+  transition: all 0.2s ease;
+  width: 40px;
+  height: 40px;
+}
+
+.advantage-die-overlay {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transform: translate(16px, 4px) rotate(30deg);
+  z-index: 1;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.advantage-die-overlay .dice-icon {
+  width: 40px;
+  height: 40px;
+  filter: brightness(0.9) drop-shadow(0 0 8px rgba(0, 255, 255, 0.3)) 
+          drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 0 12px rgba(0, 255, 255, 0.2));
+}
+
+/* Ensure stat buttons can accommodate larger dice */
+.stat-roll {
+  min-width: 3em !important;
+  overflow: visible;
 }
 
 .turbo-tokens-section {

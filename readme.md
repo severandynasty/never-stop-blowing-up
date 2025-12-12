@@ -69,8 +69,5 @@ Foundry game system created by Blake Keller.
 
 See [LICENSE](LICENSE) for details.
 
-
 # To Do:
-
-- style/art
 - add foundry manifest
