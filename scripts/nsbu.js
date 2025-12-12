@@ -42,6 +42,35 @@ function clearRollSequence(actorId, stat, reason = '') {
 Hooks.once('ready', function() {
   debugLog("=== Setting up NSBU global event handlers ===");
   
+  // Restore Track Restart states from persistent actor data
+  function restoreTrackRestartStates() {
+    debugLog("🔄 DEBUG: Restoring Track Restart states from actor data...");
+    
+    const actors = game.actors.contents;
+    let restoredCount = 0;
+    
+    actors.forEach(actor => {
+      if (actor.system?.trackRestart) {
+        const trackRestartData = actor.system.trackRestart;
+        const stats = ['weapons', 'brawl', 'hot', 'drive', 'stunts', 'wits', 'tech', 'tough', 'sneak'];
+        
+        stats.forEach(stat => {
+          if (trackRestartData[stat] === true) {
+            const advantageKey = `${actor.id}-${stat}`;
+            trackRestartStates.set(advantageKey, true);
+            restoredCount++;
+            debugLog(`🔄 DEBUG: Restored Track Restart for ${actor.name} - ${stat}`);
+          }
+        });
+      }
+    });
+    
+    debugLog(`🔄 DEBUG: Restored ${restoredCount} Track Restart states`);
+  }
+  
+  // Call the restore function
+  restoreTrackRestartStates();
+  
   // Function to apply injury status colors
   function applyInjuryStatusColors() {
     // Target both .injury-status and .nsbu-injury-status
@@ -963,6 +992,24 @@ Hooks.once('ready', function() {
   // Show initial debug logging status
   const debugEnabled = game?.settings?.get("never-stop-blowing-up", "enableDebugLogging") || false;
   console.log(`🔧 NSBU Debug Logging is currently ${debugEnabled ? 'ENABLED' : 'DISABLED'} (can be changed in Game Settings)`);
+});
+
+// Restore Track Restart states when actors are loaded or updated
+Hooks.on('preUpdateActor', function(actor, updateData, options, userId) {
+  // If Track Restart data is being updated, sync with runtime state
+  if (updateData.system?.trackRestart) {
+    const stats = ['weapons', 'brawl', 'hot', 'drive', 'stunts', 'wits', 'tech', 'tough', 'sneak'];
+    stats.forEach(stat => {
+      const advantageKey = `${actor.id}-${stat}`;
+      if (updateData.system.trackRestart[stat] === true) {
+        trackRestartStates.set(advantageKey, true);
+        debugLog(`🔄 DEBUG: Synced Track Restart activation for ${actor.name} - ${stat}`);
+      } else if (updateData.system.trackRestart[stat] === false) {
+        trackRestartStates.delete(advantageKey);
+        debugLog(`🔄 DEBUG: Synced Track Restart deactivation for ${actor.name} - ${stat}`);
+      }
+    });
+  }
 });
 
 // Global handler for auto blow-up button

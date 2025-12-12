@@ -16,6 +16,17 @@
           "tough": 4,
           "sneak": 4
         },
+        "trackRestart": {
+          "weapons": false,
+          "brawl": false,
+          "hot": false,
+          "drive": false,
+          "stunts": false,
+          "wits": false,
+          "tech": false,
+          "tough": false,
+          "sneak": false
+        },
         "hp": 10,
         "boomLevel": 1,
         "injuries": 0,
