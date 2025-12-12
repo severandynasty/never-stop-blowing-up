@@ -44,9 +44,10 @@ Complete game system documentation including:
 
 ## Installation
 
-1. Download or clone this repository.
-2. Place the folder in your Foundry VTT `Data/systems` directory.
-3. Enable "Never Stop Blowing Up" in your Foundry VTT game settings.
+1. In Foundry VTT: Go to "Game Systems" tab.
+2. Click "Install System".
+3. Paste this URL in the manifest field: https://raw.githubusercontent.com/severandynasty/never-stop-blowing-up/main/system.json
+4. Click "Install" - Foundry will automatically download and install your system!
 
 ## Basic Usage
 ### See System Guide for complete details
@@ -68,6 +69,3 @@ Foundry game system created by Blake Keller.
 ## License
 
 See [LICENSE](LICENSE) for details.
-
-# To Do:
-- add foundry manifest

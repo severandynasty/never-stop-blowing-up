@@ -4,6 +4,13 @@
   "description": "A custom tabletop RPG system inspired by Kids on Bikes, featuring explosive action and collaborative storytelling.",
   "version": "1.0.0",
   "authors": [{ "name": "Blake Keller" }],
+  "url": "https://github.com/severandynasty/never-stop-blowing-up",
+  "manifest": "https://raw.githubusercontent.com/severandynasty/never-stop-blowing-up/main/system.json",
+  "download": "https://github.com/severandynasty/never-stop-blowing-up/archive/refs/heads/main.zip",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "bugs": "https://github.com/severandynasty/never-stop-blowing-up/issues",
+  "changelog": "https://github.com/severandynasty/never-stop-blowing-up/releases",
   "esmodules": ["scripts/nsbu.js"],
   "styles": ["styles/styles.css"],
   "packs": [
@@ -38,7 +45,12 @@
   ],
   "compatibility": {
     "minimum": "12",
-    "verified": "12.343"
+    "verified": "12.343",
+    "maximum": "12"
+  },
+  "relationships": {
+    "systems": [],
+    "requires": []
   },
   "languages": [
     {
@@ -46,8 +58,5 @@
       "name": "English",
       "path": "lang/en.json"
     }
-  ],
-  "manifest": "system.json",
-  "readme": "README.md",
-  "license": "LICENSE"
+  ]
 }
