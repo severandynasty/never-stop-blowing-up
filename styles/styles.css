@@ -855,12 +855,13 @@ label {
   height: 48px;
   min-width: 48px;
   min-height: 48px;
+  overflow: hidden;
 }
 
 /* Normal dice display */
 .dice-container .dice-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   position: relative;
   z-index: 1;
 }
@@ -869,26 +870,32 @@ label {
 .dice-container.advantage-dice .dice-icon {
   position: relative;
   z-index: 2;
-  transform: rotate(-15deg);
+  transform: rotate(-15deg) translate(-6px, 0);
   transition: transform 0.2s ease;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
 }
 
 .advantage-die-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  transform: translate(12px, 12px) rotate(30deg);
+  top: 2px;
+  left: 2px;
+  transform: translate(16px, 4px) rotate(30deg);
   z-index: 1;
   opacity: 0.8;
   pointer-events: none;
 }
 
 .advantage-die-overlay .dice-icon {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   filter: brightness(0.9);
+}
+
+/* Ensure stat buttons can accommodate larger dice */
+.stat-roll {
+  min-width: 3em !important;
+  overflow: visible;
 }
 
 .turbo-tokens-section {
