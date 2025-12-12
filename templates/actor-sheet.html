@@ -43,34 +43,24 @@
             <button type="button" class="stat-decrease" data-stat="weapons" style="width:1.5em;">-</button>
             <button type="button" class="stat-roll" data-stat="weapons" style="min-width:2.5em;">
               <div class="dice-container {{#if system.trackRestart.weapons}}advantage-dice{{/if}}">
-                {{#if (eq system.stats.weapons 4)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
+                {{#if (eq system.stats.weapons 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
+                {{#if (eq system.stats.weapons 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
+                {{#if (eq system.stats.weapons 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
+                {{#if (eq system.stats.weapons 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
+                {{#if (eq system.stats.weapons 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
+                {{#if (eq system.stats.weapons 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
+                {{#unless system.stats.weapons}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
+                {{#if system.trackRestart.weapons}}
+                  <div class="advantage-die-overlay">
+                    {{#if (eq system.stats.weapons 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
+                    {{#if (eq system.stats.weapons 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
+                    {{#if (eq system.stats.weapons 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
+                    {{#if (eq system.stats.weapons 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
+                    {{#if (eq system.stats.weapons 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
+                    {{#if (eq system.stats.weapons 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
+                    {{#unless system.stats.weapons}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
+                  </div>
                 {{/if}}
-                {{#if (eq system.stats.weapons 6)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.weapons 8)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.weapons 10)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.weapons 12)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.weapons 20)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20"></div>{{/if}}
-                {{/if}}
-                {{#unless system.stats.weapons}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
-                  {{#if system.trackRestart.weapons}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
-                {{/unless}}
               </div>
             </button>
             <button type="button" class="stat-increase" data-stat="weapons" style="width:1.5em;">+</button>
@@ -88,34 +78,24 @@
             <button type="button" class="stat-decrease" data-stat="brawl" style="width:1.5em;">-</button>
             <button type="button" class="stat-roll" data-stat="brawl" style="min-width:2.5em;">
               <div class="dice-container {{#if system.trackRestart.brawl}}advantage-dice{{/if}}">
-                {{#if (eq system.stats.brawl 4)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
+                {{#if (eq system.stats.brawl 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
+                {{#if (eq system.stats.brawl 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
+                {{#if (eq system.stats.brawl 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
+                {{#if (eq system.stats.brawl 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
+                {{#if (eq system.stats.brawl 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
+                {{#if (eq system.stats.brawl 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
+                {{#unless system.stats.brawl}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
+                {{#if system.trackRestart.brawl}}
+                  <div class="advantage-die-overlay">
+                    {{#if (eq system.stats.brawl 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
+                    {{#if (eq system.stats.brawl 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
+                    {{#if (eq system.stats.brawl 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
+                    {{#if (eq system.stats.brawl 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
+                    {{#if (eq system.stats.brawl 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
+                    {{#if (eq system.stats.brawl 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
+                    {{#unless system.stats.brawl}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
+                  </div>
                 {{/if}}
-                {{#if (eq system.stats.brawl 6)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.brawl 8)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.brawl 10)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.brawl 12)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.brawl 20)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20"></div>{{/if}}
-                {{/if}}
-                {{#unless system.stats.brawl}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
-                  {{#if system.trackRestart.brawl}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
-                {{/unless}}
               </div>
             </button>
             <button type="button" class="stat-increase" data-stat="brawl" style="width:1.5em;">+</button>
@@ -133,34 +113,24 @@
             <button type="button" class="stat-decrease" data-stat="hot" style="width:1.5em;">-</button>
             <button type="button" class="stat-roll" data-stat="hot" style="min-width:2.5em;">
               <div class="dice-container {{#if system.trackRestart.hot}}advantage-dice{{/if}}">
-                {{#if (eq system.stats.hot 4)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
+                {{#if (eq system.stats.hot 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
+                {{#if (eq system.stats.hot 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
+                {{#if (eq system.stats.hot 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
+                {{#if (eq system.stats.hot 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
+                {{#if (eq system.stats.hot 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
+                {{#if (eq system.stats.hot 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
+                {{#unless system.stats.hot}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
+                {{#if system.trackRestart.hot}}
+                  <div class="advantage-die-overlay">
+                    {{#if (eq system.stats.hot 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
+                    {{#if (eq system.stats.hot 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
+                    {{#if (eq system.stats.hot 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
+                    {{#if (eq system.stats.hot 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
+                    {{#if (eq system.stats.hot 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
+                    {{#if (eq system.stats.hot 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
+                    {{#unless system.stats.hot}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
+                  </div>
                 {{/if}}
-                {{#if (eq system.stats.hot 6)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.hot 8)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.hot 10)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.hot 12)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12"></div>{{/if}}
-                {{/if}}
-                {{#if (eq system.stats.hot 20)}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20"></div>{{/if}}
-                {{/if}}
-                {{#unless system.stats.hot}}
-                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
-                  {{#if system.trackRestart.hot}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
-                {{/unless}}
               </div>
             </button>
             <button type="button" class="stat-increase" data-stat="hot" style="width:1.5em;">+</button>
@@ -215,24 +185,34 @@
             <button type="button" class="stat-decrease" data-stat="stunts" style="width:1.5em;">-</button>
             <button type="button" class="stat-roll" data-stat="stunts" style="min-width:2.5em;">
               <div class="dice-container {{#if system.trackRestart.stunts}}advantage-dice{{/if}}">
-                {{#if (eq system.stats.stunts 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
-                {{#if (eq system.stats.stunts 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
-                {{#if (eq system.stats.stunts 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
-                {{#if (eq system.stats.stunts 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
-                {{#if (eq system.stats.stunts 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
-                {{#if (eq system.stats.stunts 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
-                {{#unless system.stats.stunts}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
-                {{#if system.trackRestart.stunts}}
-                  <div class="advantage-die-overlay">
-                    {{#if (eq system.stats.stunts 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
-                    {{#if (eq system.stats.stunts 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
-                    {{#if (eq system.stats.stunts 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
-                    {{#if (eq system.stats.stunts 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
-                    {{#if (eq system.stats.stunts 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
-                    {{#if (eq system.stats.stunts 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
-                    {{#unless system.stats.stunts}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
-                  </div>
+                {{#if (eq system.stats.stunts 4)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
                 {{/if}}
+                {{#if (eq system.stats.stunts 6)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.stunts 8)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.stunts 10)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.stunts 12)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.stunts 20)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20"></div>{{/if}}
+                {{/if}}
+                {{#unless system.stats.stunts}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
+                  {{#if system.trackRestart.stunts}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
+                {{/unless}}
               </div>
             </button>
             <button type="button" class="stat-increase" data-stat="stunts" style="width:1.5em;">+</button>
@@ -250,24 +230,34 @@
             <button type="button" class="stat-decrease" data-stat="wits" style="width:1.5em;">-</button>
             <button type="button" class="stat-roll" data-stat="wits" style="min-width:2.5em;">
               <div class="dice-container {{#if system.trackRestart.wits}}advantage-dice{{/if}}">
-                {{#if (eq system.stats.wits 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
-                {{#if (eq system.stats.wits 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
-                {{#if (eq system.stats.wits 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
-                {{#if (eq system.stats.wits 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
-                {{#if (eq system.stats.wits 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
-                {{#if (eq system.stats.wits 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
-                {{#unless system.stats.wits}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
-                {{#if system.trackRestart.wits}}
-                  <div class="advantage-die-overlay">
-                    {{#if (eq system.stats.wits 4)}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/if}}
-                    {{#if (eq system.stats.wits 6)}}<img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">{{/if}}
-                    {{#if (eq system.stats.wits 8)}}<img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">{{/if}}
-                    {{#if (eq system.stats.wits 10)}}<img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">{{/if}}
-                    {{#if (eq system.stats.wits 12)}}<img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">{{/if}}
-                    {{#if (eq system.stats.wits 20)}}<img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">{{/if}}
-                    {{#unless system.stats.wits}}<img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">{{/unless}}
-                  </div>
+                {{#if (eq system.stats.wits 4)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
                 {{/if}}
+                {{#if (eq system.stats.wits 6)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d6.png" class="dice-icon" alt="d6"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.wits 8)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d8.png" class="dice-icon" alt="d8"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.wits 10)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d10.png" class="dice-icon" alt="d10"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.wits 12)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d12.png" class="dice-icon" alt="d12"></div>{{/if}}
+                {{/if}}
+                {{#if (eq system.stats.wits 20)}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d20.png" class="dice-icon" alt="d20"></div>{{/if}}
+                {{/if}}
+                {{#unless system.stats.wits}}
+                  <img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4">
+                  {{#if system.trackRestart.wits}}<div class="advantage-die-overlay"><img src="systems/never-stop-blowing-up/assets/dice/d4.png" class="dice-icon" alt="d4"></div>{{/if}}
+                {{/unless}}
               </div>
             </button>
             <button type="button" class="stat-increase" data-stat="wits" style="width:1.5em;">+</button>
