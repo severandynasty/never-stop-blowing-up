@@ -851,14 +851,16 @@ label {
 .dice-container {
   position: relative;
   display: inline-block;
-  width: 100%;
-  height: 100%;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
 }
 
 /* Normal dice display */
 .dice-container .dice-icon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   position: relative;
   z-index: 1;
 }
@@ -869,6 +871,8 @@ label {
   z-index: 2;
   transform: rotate(-15deg);
   transition: transform 0.2s ease;
+  width: 32px;
+  height: 32px;
 }
 
 .advantage-die-overlay {
@@ -881,8 +885,8 @@ label {
 }
 
 .advantage-die-overlay .dice-icon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   filter: brightness(0.9);
 }
 
