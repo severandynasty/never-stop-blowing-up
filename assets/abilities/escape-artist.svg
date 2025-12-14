@@ -1,0 +1,75 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradient Definitions -->
+        <linearGradient id="combatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f44336;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="stealthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9c27b0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3f51b5;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="socialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#e91e63;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff4081;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="techGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00bcd4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4caf50;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="vehicleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffeb3b;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="tokenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ffeb3b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffc107;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="groupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#e91e63;stop-opacity:1" />
+            <stop offset="33%" style="stop-color:#00bcd4;stop-opacity:1" />
+            <stop offset="66%" style="stop-color:#ff9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#9c27b0;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- Glow Effects -->
+        <filter id="neonGlow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge> 
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- Retro Grid Pattern -->
+        <pattern id="retroGrid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+            <path d="M 8 0 L 0 0 0 8" fill="none" stroke="rgba(0, 188, 212, 0.3)" stroke-width="0.5"/>
+        </pattern>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="64" height="64" fill="#1a1a2e" rx="4"/>
+    
+    <!-- Retro Grid Overlay -->
+    <rect width="64" height="64" fill="url(#retroGrid)" opacity="0.3"/>
+    <!-- Scanlines -->
+    <g opacity="0.1">
+        <line x1="0" y1="0" x2="64" y2="0" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="4" x2="64" y2="4" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="8" x2="64" y2="8" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="12" x2="64" y2="12" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="16" x2="64" y2="16" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="20" x2="64" y2="20" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="24" x2="64" y2="24" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="28" x2="64" y2="28" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="32" x2="64" y2="32" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="36" x2="64" y2="36" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="40" x2="64" y2="40" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="44" x2="64" y2="44" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="48" x2="64" y2="48" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="52" x2="64" y2="52" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="56" x2="64" y2="56" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="60" x2="64" y2="60" stroke="#00bcd4" stroke-width="0.5"/>
+    </g><!-- Stick figure breaking free from restraints -->
+                             <circle cx="32" cy="16" r="3" fill="url(#stealthGrad)" filter="url(#neonGlow)"/>
+                             <!-- Body -->
+                             <path d="M32 19 L32 32" stroke="url(#stealthGrad)" stroke-width="2"/>
+                             <!-- Arms breaking free (dramatic pose) -->
+                             <path d="M32 22 L22 18" stroke="url(#stealthGrad)" stroke-width="2"/>
+                             <path d="M32 22 L42 18" stroke="url(#stealthGrad)" stroke-width="2"/>
+                             <!-- Broken restraints -->
+                             <path d="M20 18 L16 20" stroke="#9c27b0" stroke-width="3"/>
+                             <path d="M44 18 L48 20" stroke="#9c27b0" stroke-width="3"/>
+                             <!-- Break marks -->
+                             <path d="M18 16 L22 20 M22 16 L18 20" stroke="#ffeb3b" stroke-width="1"/>
+                             <path d="M42 16 L46 20 M46 16 L42 20" stroke="#ffeb3b" stroke-width="1"/>
+                             <!-- Legs -->
+                             <path d="M32 32 L28 44" stroke="url(#stealthGrad)" stroke-width="2"/>
+                             <path d="M32 32 L36 44" stroke="url(#stealthGrad)" stroke-width="2"/>
+                             <!-- Freedom motion lines -->
+                             <path d="M16 24 L20 24 M44 24 L48 24" stroke="#9c27b0" stroke-width="1" opacity="0.7"/></svg>

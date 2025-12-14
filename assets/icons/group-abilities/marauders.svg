@@ -1,0 +1,66 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradient Definitions -->
+        <linearGradient id="combatGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#f44336;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff9800;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="stealthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#9c27b0;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#3f51b5;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="socialGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#e91e63;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ff4081;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="techGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00bcd4;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#4caf50;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="vehicleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffeb3b;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="tokenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ffeb3b;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#ffc107;stop-opacity:1" />
+        </linearGradient>
+        <linearGradient id="groupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#e91e63;stop-opacity:1" />
+            <stop offset="33%" style="stop-color:#00bcd4;stop-opacity:1" />
+            <stop offset="66%" style="stop-color:#ff9800;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:#9c27b0;stop-opacity:1" />
+        </linearGradient>
+        
+        <!-- Glow Effects -->
+        <filter id="neonGlow">
+            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+            <feMerge> 
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        
+        <!-- Retro Grid Pattern -->
+        <pattern id="retroGrid" x="0" y="0" width="8" height="8" patternUnits="userSpaceOnUse">
+            <path d="M 8 0 L 0 0 0 8" fill="none" stroke="rgba(0, 188, 212, 0.3)" stroke-width="0.5"/>
+        </pattern>
+    </defs>
+    
+    <!-- Background -->
+    <rect width="64" height="64" fill="#1a1a2e" rx="4"/>
+    
+    <!-- Retro Grid Overlay -->
+    <rect width="64" height="64" fill="url(#retroGrid)" opacity="0.3"/>
+    <!-- Scanlines -->
+    <g opacity="0.1">
+        <line x1="0" y1="0" x2="64" y2="0" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="4" x2="64" y2="4" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="8" x2="64" y2="8" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="12" x2="64" y2="12" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="16" x2="64" y2="16" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="20" x2="64" y2="20" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="24" x2="64" y2="24" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="28" x2="64" y2="28" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="32" x2="64" y2="32" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="36" x2="64" y2="36" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="40" x2="64" y2="40" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="44" x2="64" y2="44" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="48" x2="64" y2="48" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="52" x2="64" y2="52" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="56" x2="64" y2="56" stroke="#00bcd4" stroke-width="0.5"/><line x1="0" y1="60" x2="64" y2="60" stroke="#00bcd4" stroke-width="0.5"/>
+    </g><!-- D10 Die for d10 unlock requirement -->
+                         <polygon points="32,8 48,20 44,32 48,44 32,56 16,44 20,32 16,20" fill="url(#groupGrad)" filter="url(#neonGlow)"/>
+                         <polygon points="32,12 44,22 41,32 44,42 32,52 20,42 23,32 20,22" fill="#1a1a2e"/>
+                         <!-- Subtle marauder accent lines positioned away from center -->
+                         <path d="M20 20 L26 26 M42 20 L36 26 M20 44 L26 38 M42 44 L36 38" stroke="#ff9800" stroke-width="1.5" opacity="0.4"/>
+                         <!-- Ten in center with high contrast -->
+                         <text x="32" y="36" text-anchor="middle" fill="#f44336" font-family="monospace" font-size="10" font-weight="bold">10</text>
+                         <!-- Dark outline for better text readability -->
+                         <text x="32" y="36" text-anchor="middle" fill="#1a1a2e" font-family="monospace" font-size="10" font-weight="bold" stroke="#1a1a2e" stroke-width="0.5">10</text></svg>
