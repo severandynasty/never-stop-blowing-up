@@ -2415,6 +2415,15 @@ Hooks.once("init", () => {
   
   console.log("=== NSBU game settings registered ===");
   
+  // Register Handlebars helpers
+  Handlebars.registerHelper("stripSortPrefix", function(name) {
+    if (typeof name !== 'string') return name;
+    // Remove common sort prefixes like "01_", "d6_", etc.
+    return name.replace(/^(d\d+_|\d+_|[a-z]+_)/i, '');
+  });
+  
+  console.log("=== NSBU Handlebars helpers registered ===");
+  
   // Check system information that's available at init
   console.log("System ID:", game.system.id);
   console.log("System title:", game.system.title);
