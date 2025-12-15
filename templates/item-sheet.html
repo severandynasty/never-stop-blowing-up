@@ -8,8 +8,10 @@
   </header>
   
   <section class="sheet-body">
-    <!-- Debug: show what data is available -->
-    {{!-- Debug info: system has description: {{#if system.description}}YES{{else}}NO{{/if}} --}}
+    <!-- Temporary debug to see what's happening -->
+    <div style="border: 1px solid red; margin: 4px; padding: 4px; font-size: 10px;">
+      DEBUG: name={{name}}, system.description={{system.description}}, system exists={{#if system}}YES{{else}}NO{{/if}}
+    </div>
     
     {{#if system.description}}
       <h2>Description</h2>
