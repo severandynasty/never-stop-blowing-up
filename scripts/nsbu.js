@@ -2518,7 +2518,7 @@ Hooks.once('setup', async function() {
 
   // Register item sheets
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
-    types: ["explosive", "gear", "upgrade"],
+    types: ["ability", "explosive", "gear", "upgrade"],
     makeDefault: true
   });
   
