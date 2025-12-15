@@ -135,6 +135,12 @@ function buildGroupAbilitiesCompendium() {
         const suiteName = ability['Group Suite'].split(' (')[0]; // Remove unlock requirement from name
         const abilityName = ability['Ability Name'];
         const unlockRequirement = ability['Group Suite'].match(/\(([^)]+)\)/)?.[1] || '';
+        const diceRequirement = ability['Group Suite'].match(/d(\d+)/)?.[0] || 'd6';
+        
+        // Create sort prefix based on dice order and index within that group
+        const diceOrderNumber = diceOrder[diceRequirement] || 999;
+        const sortPrefix = String(diceOrderNumber * 100 + (index % 100)).padStart(3, '0');
+        
         const suiteSlug = createSlug(suiteName);
         const abilitySlug = createSlug(abilityName);
         const fileName = `${suiteSlug}-${abilitySlug}.svg`;
@@ -142,15 +148,16 @@ function buildGroupAbilitiesCompendium() {
         
         return {
             _id: uuidv4().replace(/-/g, ''),
-            name: `${suiteName}: ${abilityName}`,
+            name: `${sortPrefix}_${suiteName}: ${abilityName}`,
             type: 'group-ability',
             img: iconPath,
             system: {
                 description: ability['Effect'],
                 groupSuite: suiteName,
                 unlockRequirement: unlockRequirement,
-                diceRequirement: ability['Group Suite'].match(/d(\d+)/)?.[0] || 'd6',
-                category: 'group'
+                diceRequirement: diceRequirement,
+                category: 'group',
+                originalName: `${suiteName}: ${abilityName}` // Store the clean name for display
             },
             effects: [],
             flags: {},
