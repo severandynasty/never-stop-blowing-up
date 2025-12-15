@@ -137,9 +137,9 @@ function buildGroupAbilitiesCompendium() {
         const unlockRequirement = ability['Group Suite'].match(/\(([^)]+)\)/)?.[1] || '';
         const diceRequirement = ability['Group Suite'].match(/d(\d+)/)?.[0] || 'd6';
         
-        // Create sort prefix based on dice order and index within that group
+        // Create simple numeric sort prefix based on dice order and index
         const diceOrderNumber = diceOrder[diceRequirement] || 999;
-        const sortPrefix = String(diceOrderNumber * 100 + (index % 100)).padStart(3, '0');
+        const sortPrefix = diceOrderNumber * 10 + (index % 10);
         
         const suiteSlug = createSlug(suiteName);
         const abilitySlug = createSlug(abilityName);
@@ -148,7 +148,7 @@ function buildGroupAbilitiesCompendium() {
         
         return {
             _id: uuidv4().replace(/-/g, ''),
-            name: `${sortPrefix}_${suiteName}: ${abilityName}`,
+            name: `${sortPrefix} ${suiteName}: ${abilityName}`,
             type: 'group-ability',
             img: iconPath,
             system: {
