@@ -2359,15 +2359,6 @@ class NSBUItemSheet extends ItemSheet {
     if (!data.img) data.img = this.item.img;
     if (!data.name) data.name = this.item.name;
     
-    // Debug logging for the image issue
-    debugLog(`🖼️ Item Sheet getData (fixed):`, {
-      name: data.name,
-      img: data.img,
-      itemImg: this.item.img,
-      hasSystem: !!data.system,
-      systemKeys: Object.keys(data.system)
-    });
-    
     return data;
   }
 
@@ -2389,15 +2380,6 @@ class NSBUGroupAbilitySheet extends ItemSheet {
     // Explicitly set img and name properties if they're missing
     if (!data.img) data.img = this.item.img;
     if (!data.name) data.name = this.item.name;
-    
-    // Debug logging for the image issue
-    debugLog(`🖼️ Group Ability Sheet getData (fixed):`, {
-      name: data.name,
-      img: data.img,
-      itemImg: this.item.img,
-      hasSystem: !!data.system,
-      systemKeys: Object.keys(data.system)
-    });
     
     return data;
   }
