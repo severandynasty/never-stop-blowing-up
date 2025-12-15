@@ -2354,6 +2354,16 @@ class NSBUItemSheet extends ItemSheet {
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
+    
+    // Debug logging for the image issue
+    debugLog(`🖼️ Item Sheet getData:`, {
+      name: data.name,
+      img: data.img,
+      itemImg: this.item.img,
+      hasSystem: !!data.system,
+      systemKeys: Object.keys(data.system)
+    });
+    
     return data;
   }
 
@@ -2371,6 +2381,16 @@ class NSBUGroupAbilitySheet extends ItemSheet {
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
+    
+    // Debug logging for the image issue
+    debugLog(`🖼️ Group Ability Sheet getData:`, {
+      name: data.name,
+      img: data.img,
+      itemImg: this.item.img,
+      hasSystem: !!data.system,
+      systemKeys: Object.keys(data.system)
+    });
+    
     return data;
   }
 
