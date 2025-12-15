@@ -2355,8 +2355,12 @@ class NSBUItemSheet extends ItemSheet {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
     
+    // Explicitly set img and name properties if they're missing
+    if (!data.img) data.img = this.item.img;
+    if (!data.name) data.name = this.item.name;
+    
     // Debug logging for the image issue
-    debugLog(`🖼️ Item Sheet getData:`, {
+    debugLog(`🖼️ Item Sheet getData (fixed):`, {
       name: data.name,
       img: data.img,
       itemImg: this.item.img,
@@ -2382,8 +2386,12 @@ class NSBUGroupAbilitySheet extends ItemSheet {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
     
+    // Explicitly set img and name properties if they're missing
+    if (!data.img) data.img = this.item.img;
+    if (!data.name) data.name = this.item.name;
+    
     // Debug logging for the image issue
-    debugLog(`🖼️ Group Ability Sheet getData:`, {
+    debugLog(`🖼️ Group Ability Sheet getData (fixed):`, {
       name: data.name,
       img: data.img,
       itemImg: this.item.img,
