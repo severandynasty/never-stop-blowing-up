@@ -2,19 +2,57 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-// Helper function to convert CSV to array of objects
+// Helper function to convert CSV to array of objects with proper quote handling
 function parseCSV(csvContent) {
     const lines = csvContent.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
+    const headers = parseCSVLine(lines[0]);
     
     return lines.slice(1).map(line => {
-        const values = line.split(',').map(v => v.trim());
+        const values = parseCSVLine(line);
         const obj = {};
         headers.forEach((header, index) => {
             obj[header] = values[index] || '';
         });
         return obj;
     });
+}
+
+// Helper function to parse a single CSV line handling quotes properly
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    let i = 0;
+    
+    while (i < line.length) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+        
+        if (char === '"') {
+            if (inQuotes && nextChar === '"') {
+                // Escaped quote
+                current += '"';
+                i += 2;
+            } else {
+                // Start or end of quoted field
+                inQuotes = !inQuotes;
+                i++;
+            }
+        } else if (char === ',' && !inQuotes) {
+            // Field separator
+            result.push(current.trim());
+            current = '';
+            i++;
+        } else {
+            current += char;
+            i++;
+        }
+    }
+    
+    // Add the last field
+    result.push(current.trim());
+    
+    return result;
 }
 
 // Helper function to create a slug from a name
