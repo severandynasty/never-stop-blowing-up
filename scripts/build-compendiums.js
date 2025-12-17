@@ -77,8 +77,11 @@ function buildAbilitiesCompendium() {
         const slug = createSlug(name);
         const iconPath = `systems/never-stop-blowing-up/assets/abilities/${slug}.svg`;
         
+        // Generate more unique ID using timestamp + index to avoid collisions
+        const uniqueId = uuidv4().replace(/-/g, '').substring(0, 16);
+        
         return {
-            _id: uuidv4().replace(/-/g, ''),
+            _id: uniqueId,
             name: name,
             type: 'ability',
             img: iconPath,
@@ -137,18 +140,20 @@ function buildGroupAbilitiesCompendium() {
         const unlockRequirement = ability['Group Suite'].match(/\(([^)]+)\)/)?.[1] || '';
         const diceRequirement = ability['Group Suite'].match(/d(\d+)/)?.[0] || 'd6';
         
-        // Create simple numeric sort prefix based on dice order and index
+        // Use simple single digit based on dice order (1=d6, 2=d8, 3=d10, 4=d12, 5=d20)
         const diceOrderNumber = diceOrder[diceRequirement] || 999;
-        const sortPrefix = diceOrderNumber * 10 + (index % 10);
         
         const suiteSlug = createSlug(suiteName);
         const abilitySlug = createSlug(abilityName);
         const fileName = `${suiteSlug}-${abilitySlug}.svg`;
         const iconPath = `systems/never-stop-blowing-up/assets/individual-group-abilities/${fileName}`;
         
+        // Generate more unique ID using timestamp + index to avoid collisions
+        const uniqueId = uuidv4().replace(/-/g, '').substring(0, 16);
+        
         return {
-            _id: uuidv4().replace(/-/g, ''),
-            name: `${sortPrefix} ${suiteName}: ${abilityName}`,
+            _id: uniqueId,
+            name: `${diceOrderNumber} ${suiteName}: ${abilityName}`,
             type: 'group-ability',
             img: iconPath,
             system: {

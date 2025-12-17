@@ -2428,8 +2428,8 @@ Hooks.once("init", () => {
   // Register Handlebars helpers
   Handlebars.registerHelper("stripSortPrefix", function(name) {
     if (typeof name !== 'string') return name;
-    // Remove numeric sort prefixes like "10 ", "20 ", "1 ", "2 ", etc.
-    return name.replace(/^\d+\s/, '');
+    // Remove single digit sort prefixes like "1 ", "2 ", "3 ", etc.
+    return name.replace(/^\d\s/, '');
   });
   
   console.log("=== NSBU Handlebars helpers registered ===");
