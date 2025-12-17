@@ -1980,6 +1980,30 @@ class NSBUActorSheet extends ActorSheet {
     await this.actor.update(formData);
     debugLog('🎭 DEBUG: Actor update completed in _updateObject');
   }
+
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    
+    // Handle Item drops
+    if (data.type === "Item") {
+      const item = await Item.implementation.fromDropData(data);
+      const itemData = item.toObject();
+      
+      // Handle ability and group-ability items
+      if (itemData.type === "ability" || itemData.type === "group-ability") {
+        return this._onDropOwnedItem(event, itemData);
+      }
+    }
+    
+    // Fall back to default behavior for other types
+    return super._onDrop(event);
+  }
+
+  async _onDropOwnedItem(event, itemData) {
+    // Create the item as an embedded document on the actor
+    const item = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    return item;
+  }
 }
 
 class NSBUNPCSheet extends ActorSheet {
@@ -2347,6 +2371,30 @@ class NSBUNPCSheet extends ActorSheet {
     
     await this.actor.update(formData);
     debugLog('🎭 DEBUG: Actor update completed in _updateObject');
+  }
+
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    
+    // Handle Item drops
+    if (data.type === "Item") {
+      const item = await Item.implementation.fromDropData(data);
+      const itemData = item.toObject();
+      
+      // Handle ability and group-ability items
+      if (itemData.type === "ability" || itemData.type === "group-ability") {
+        return this._onDropOwnedItem(event, itemData);
+      }
+    }
+    
+    // Fall back to default behavior for other types
+    return super._onDrop(event);
+  }
+
+  async _onDropOwnedItem(event, itemData) {
+    // Create the item as an embedded document on the actor
+    const item = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    return item;
   }
 }
 
