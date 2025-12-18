@@ -4,10 +4,8 @@
   "description": "A custom tabletop RPG system for Foundry VTT featuring explosive action and collaborative storytelling",
   "main": "scripts/nsbu.js",
   "scripts": {
-    "build-icons": "node assets/icons/generate-icons.js",
     "build-compendiums": "node scripts/build-compendiums.js",
-    "copy-icons": "xcopy \"assets\\icons\\abilities\\*.svg\" \"assets\\abilities\\\" /Y && xcopy \"assets\\icons\\group-abilities\\*.svg\" \"assets\\group-abilities\\\" /Y && xcopy \"assets\\icons\\individual-group-abilities\\*.svg\" \"assets\\individual-group-abilities\\\" /Y",
-    "build": "npm run build-icons && npm run copy-icons && npm run build-compendiums",
+    "build": "npm run build-compendiums",
     "rebuild": "npm run build"
   },
   "keywords": ["foundry", "vtt", "rpg", "tabletop", "ttrpg"],
