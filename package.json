@@ -10,7 +10,7 @@
   },
   "keywords": ["foundry", "vtt", "rpg", "tabletop", "ttrpg"],
   "author": "Blake Keller",
-  "license": "MIT",
+  "license": "CC-BY-NC-SA-4.0",
   "dependencies": {
     "uuid": "^9.0.0"
   },
