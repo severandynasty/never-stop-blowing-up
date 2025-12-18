@@ -7,7 +7,7 @@ A custom tabletop RPG system for Foundry Virtual Tabletop, inspired by Kids on B
 - Custom character sheets for PCs and NPCs, each with unique layouts and fields
 - **Player Abilities compendium** - 36 abilities organized by category for individual characters
 - **Group Abilities compendium** - 27 team-based abilities organized by die progression (d6-d20)
-- **Rules Reference Journal** - Quick access to core mechanics and full PDF rulebook
+- **Rules Reference Journal** - Quick access to core mechanics and full rulebook
 - Dice macros for fast gameplay with exploding dice mechanics
 - Die progression system (d4 → d6 → d8 → d10 → d12 → d20)
 - Option to use either a d20 or d100 when a player blows up a d20 stat, configure in the Game Settings menu

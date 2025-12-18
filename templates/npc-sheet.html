@@ -216,7 +216,7 @@
       </div>
       <div class="nsbu-new-episode" style="flex: 1;">
         <button type="button" class="new-episode-btn" style="width: 100%; padding: 12px; background: #e74c3c; color: white; border: 2px solid #c0392b; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1.1em;">
-          =�ļ New Episode
+          ⚡🎬 New Episode
         </button>
       </div>
     </div>
@@ -228,7 +228,7 @@
       <h3 class="subsection-heading">Abilities</h3>
       <div class="abilities-list" data-drop="abilities">
         {{#each items as |item|}}
-          {{#if (eq item.type "upgrade")}}
+          {{#if (or (eq item.type "upgrade") (eq item.type "ability"))}}
             {{#unless item.system.groupSuite}}
               <div class="ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1 1 auto;">
@@ -249,8 +249,8 @@
       <h3 class="subsection-heading">Group Abilities</h3>
       <div class="group-abilities-list" data-drop="group-abilities">
         {{#each items as |item|}}
-          {{#if (eq item.type "upgrade")}}
-            {{#if item.system.groupSuite}}
+          {{#if (or (eq item.type "upgrade") (eq item.type "group-ability"))}}
+            {{#if (or item.system.groupSuite (eq item.type "group-ability"))}}
               <div class="group-ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1 1 auto;">
                   <span style="font-weight:bold;">{{item.name}}</span>

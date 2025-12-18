@@ -1980,6 +1980,30 @@ class NSBUActorSheet extends ActorSheet {
     await this.actor.update(formData);
     debugLog('🎭 DEBUG: Actor update completed in _updateObject');
   }
+
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    
+    // Handle Item drops
+    if (data.type === "Item") {
+      const item = await Item.implementation.fromDropData(data);
+      const itemData = item.toObject();
+      
+      // Handle ability and group-ability items
+      if (itemData.type === "ability" || itemData.type === "group-ability") {
+        return this._onDropOwnedItem(event, itemData);
+      }
+    }
+    
+    // Fall back to default behavior for other types
+    return super._onDrop(event);
+  }
+
+  async _onDropOwnedItem(event, itemData) {
+    // Create the item as an embedded document on the actor
+    const item = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    return item;
+  }
 }
 
 class NSBUNPCSheet extends ActorSheet {
@@ -2348,12 +2372,41 @@ class NSBUNPCSheet extends ActorSheet {
     await this.actor.update(formData);
     debugLog('🎭 DEBUG: Actor update completed in _updateObject');
   }
+
+  async _onDrop(event) {
+    const data = TextEditor.getDragEventData(event);
+    
+    // Handle Item drops
+    if (data.type === "Item") {
+      const item = await Item.implementation.fromDropData(data);
+      const itemData = item.toObject();
+      
+      // Handle ability and group-ability items
+      if (itemData.type === "ability" || itemData.type === "group-ability") {
+        return this._onDropOwnedItem(event, itemData);
+      }
+    }
+    
+    // Fall back to default behavior for other types
+    return super._onDrop(event);
+  }
+
+  async _onDropOwnedItem(event, itemData) {
+    // Create the item as an embedded document on the actor
+    const item = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    return item;
+  }
 }
 
 class NSBUItemSheet extends ItemSheet {
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
+    
+    // Explicitly set img and name properties if they're missing
+    if (!data.img) data.img = this.item.img;
+    if (!data.name) data.name = this.item.name;
+    
     return data;
   }
 
@@ -2371,6 +2424,11 @@ class NSBUGroupAbilitySheet extends ItemSheet {
   getData(options) {
     const data = super.getData(options);
     data.system = this.item.system ?? {};
+    
+    // Explicitly set img and name properties if they're missing
+    if (!data.img) data.img = this.item.img;
+    if (!data.name) data.name = this.item.name;
+    
     return data;
   }
 
@@ -2414,6 +2472,15 @@ Hooks.once("init", () => {
   });
   
   console.log("=== NSBU game settings registered ===");
+  
+  // Register Handlebars helpers
+  Handlebars.registerHelper("stripSortPrefix", function(name) {
+    if (typeof name !== 'string') return name;
+    // Remove single digit sort prefixes like "1 ", "2 ", "3 ", etc.
+    return name.replace(/^\d\s/, '');
+  });
+  
+  console.log("=== NSBU Handlebars helpers registered ===");
   
   // Check system information that's available at init
   console.log("System ID:", game.system.id);
@@ -2499,7 +2566,7 @@ Hooks.once('setup', async function() {
 
   // Register item sheets
   Items.registerSheet("never-stop-blowing-up", NSBUItemSheet, {
-    types: ["explosive", "gear", "upgrade"],
+    types: ["ability", "explosive", "gear", "upgrade"],
     makeDefault: true
   });
   

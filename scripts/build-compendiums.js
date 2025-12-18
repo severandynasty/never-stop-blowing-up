@@ -2,19 +2,57 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
-// Helper function to convert CSV to array of objects
+// Helper function to convert CSV to array of objects with proper quote handling
 function parseCSV(csvContent) {
     const lines = csvContent.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
+    const headers = parseCSVLine(lines[0]);
     
     return lines.slice(1).map(line => {
-        const values = line.split(',').map(v => v.trim());
+        const values = parseCSVLine(line);
         const obj = {};
         headers.forEach((header, index) => {
             obj[header] = values[index] || '';
         });
         return obj;
     });
+}
+
+// Helper function to parse a single CSV line handling quotes properly
+function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let inQuotes = false;
+    let i = 0;
+    
+    while (i < line.length) {
+        const char = line[i];
+        const nextChar = line[i + 1];
+        
+        if (char === '"') {
+            if (inQuotes && nextChar === '"') {
+                // Escaped quote
+                current += '"';
+                i += 2;
+            } else {
+                // Start or end of quoted field
+                inQuotes = !inQuotes;
+                i++;
+            }
+        } else if (char === ',' && !inQuotes) {
+            // Field separator
+            result.push(current.trim());
+            current = '';
+            i++;
+        } else {
+            current += char;
+            i++;
+        }
+    }
+    
+    // Add the last field
+    result.push(current.trim());
+    
+    return result;
 }
 
 // Helper function to create a slug from a name
@@ -39,8 +77,11 @@ function buildAbilitiesCompendium() {
         const slug = createSlug(name);
         const iconPath = `systems/never-stop-blowing-up/assets/abilities/${slug}.svg`;
         
+        // Generate more unique ID using timestamp + index to avoid collisions
+        const uniqueId = uuidv4().replace(/-/g, '').substring(0, 16);
+        
         return {
-            _id: uuidv4().replace(/-/g, ''),
+            _id: uniqueId,
             name: name,
             type: 'ability',
             img: iconPath,
@@ -97,22 +138,31 @@ function buildGroupAbilitiesCompendium() {
         const suiteName = ability['Group Suite'].split(' (')[0]; // Remove unlock requirement from name
         const abilityName = ability['Ability Name'];
         const unlockRequirement = ability['Group Suite'].match(/\(([^)]+)\)/)?.[1] || '';
+        const diceRequirement = ability['Group Suite'].match(/d(\d+)/)?.[0] || 'd6';
+        
+        // Use simple single digit based on dice order (1=d6, 2=d8, 3=d10, 4=d12, 5=d20)
+        const diceOrderNumber = diceOrder[diceRequirement] || 999;
+        
         const suiteSlug = createSlug(suiteName);
         const abilitySlug = createSlug(abilityName);
         const fileName = `${suiteSlug}-${abilitySlug}.svg`;
         const iconPath = `systems/never-stop-blowing-up/assets/individual-group-abilities/${fileName}`;
         
+        // Generate more unique ID using timestamp + index to avoid collisions
+        const uniqueId = uuidv4().replace(/-/g, '').substring(0, 16);
+        
         return {
-            _id: uuidv4().replace(/-/g, ''),
-            name: `${suiteName}: ${abilityName}`,
+            _id: uniqueId,
+            name: `${diceOrderNumber} ${suiteName}: ${abilityName}`,
             type: 'group-ability',
             img: iconPath,
             system: {
                 description: ability['Effect'],
                 groupSuite: suiteName,
                 unlockRequirement: unlockRequirement,
-                diceRequirement: ability['Group Suite'].match(/d(\d+)/)?.[0] || 'd6',
-                category: 'group'
+                diceRequirement: diceRequirement,
+                category: 'group',
+                originalName: `${suiteName}: ${abilityName}` // Store the clean name for display
             },
             effects: [],
             flags: {},

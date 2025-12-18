@@ -11,6 +11,12 @@
     {{#if system.description}}
       <h2>Description</h2>
       <div class="description-text" style="background: #f5f5f5; padding: 0.75em; border-radius: 4px; margin-bottom: 1em;">{{system.description}}</div>
+    {{else if system.effect}}
+      <h2>Effect</h2>
+      <div class="description-text" style="background: #f5f5f5; padding: 0.75em; border-radius: 4px; margin-bottom: 1em;">{{system.effect}}</div>
+    {{else}}
+      <h2>Description</h2>
+      <div class="description-text" style="background: #f5f5f5; padding: 0.75em; border-radius: 4px; margin-bottom: 1em;">No description available.</div>
     {{/if}}
     
     <div style="display: flex; gap: 1em; margin-bottom: 1em;">
