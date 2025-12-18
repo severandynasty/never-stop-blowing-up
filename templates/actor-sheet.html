@@ -424,7 +424,7 @@
       <h3 class="subsection-heading">Abilities</h3>
       <div class="abilities-list" data-drop="abilities">
         {{#each items as |item|}}
-          {{#if (eq item.type "upgrade")}}
+          {{#if (or (eq item.type "upgrade") (eq item.type "ability"))}}
             {{#unless item.system.groupSuite}}
               <div class="ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1 1 auto;">
@@ -446,7 +446,7 @@
       <h3 class="subsection-heading">Group Abilities</h3>
       <div class="group-abilities-list" data-drop="group-abilities">
         {{#each items as |item|}}
-          {{#if (or (eq item.type "upgrade") (eq item.type "group-ability"))}}
+          {{#if (or (eq item.type "upgrade") (eq item.type "group-ability") (eq item.type "ability"))}}
             {{#if (or item.system.groupSuite (eq item.type "group-ability"))}}
               <div class="group-ability-entry" data-item-id="{{item._id}}" style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                 <div style="flex: 1 1 auto;">
