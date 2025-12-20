@@ -2,7 +2,7 @@
   "id": "never-stop-blowing-up",
   "title": "Never Stop Blowing Up",
   "description": "A custom tabletop RPG system inspired by Kids on Bikes, featuring explosive action and collaborative storytelling.",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "authors": [{ "name": "Blake Keller" }],
   "url": "https://github.com/severandynasty/never-stop-blowing-up",
   "manifest": "https://raw.githubusercontent.com/severandynasty/never-stop-blowing-up/main/system.json",
@@ -17,36 +17,36 @@
     {
       "name": "abilities",
       "label": "Player Abilities",
-      "path": "packs/abilities.db",
+      "path": "packs/abilities",
       "type": "Item",
       "system": "never-stop-blowing-up"
     },
     {
       "name": "group-abilities",
-      "label": "Group Abilities", 
-      "path": "packs/group-abilities.db",
+      "label": "Group Abilities",
+      "path": "packs/group-abilities",
       "type": "Item",
       "system": "never-stop-blowing-up"
     },
     {
       "name": "rules-reference",
       "label": "Game Rules",
-      "path": "packs/rules-reference.db",
+      "path": "packs/rules-reference",
       "type": "JournalEntry",
       "system": "never-stop-blowing-up"
     },
     {
       "name": "system-guide",
       "label": "System Guide",
-      "path": "packs/system-guide.db",
+      "path": "packs/system-guide",
       "type": "JournalEntry",
       "system": "never-stop-blowing-up"
     }
   ],
   "compatibility": {
-    "minimum": "12",
-    "verified": "12.343",
-    "maximum": "12"
+    "minimum": "13",
+    "verified": "13",
+    "maximum": "13"
   },
   "relationships": {
     "systems": [],
