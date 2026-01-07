@@ -12,7 +12,7 @@ A custom tabletop RPG system for Foundry Virtual Tabletop, inspired by Kids on B
 - Die progression system (d4 → d6 → d8 → d10 → d12 → d20)
 - Option to use either a d20 or d100 when a player blows up a d20 stat, configure in the Game Settings menu
 - Turbo Token tracking and management
-- Designed for Foundry VTT v12.343
+- Compatible with Foundry VTT v13
 
 ## Compendiums
 
