@@ -1,3 +1,5 @@
+import { getInjuryAdjustedTokenInfo } from "./rules/injury-adjusted-token-cost.js";
+
 // Debug logging helper function
 function debugLog(...args) {
   // Check if debug logging is enabled in game settings
@@ -1085,24 +1087,6 @@ function updateInjuryWarning($rollControls, injuryLevel, tokenRatio) {
   } else {
     $warningDiv.hide();
   }
-}
-
-// Helper function to get injury-adjusted token costs
-function getInjuryAdjustedTokenInfo(actor, requestedTokens) {
-  const injuryLevel = actor?.system?.injuries || 0;
-  const tokenRatio = (injuryLevel >= 2) ? 2 : 1;
-  const actualCost = requestedTokens * tokenRatio;
-  const availableTokens = Number(actor?.system?.turboTokens) || 0;
-  const maxAffordableTokens = Math.floor(availableTokens / tokenRatio);
-  
-  return {
-    injuryLevel,
-    tokenRatio,
-    actualCost,
-    availableTokens,
-    maxAffordableTokens,
-    canAfford: actualCost <= availableTokens
-  };
 }
 
 // Helper function to update combined button text based on token input
